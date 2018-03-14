@@ -1,9 +1,11 @@
-# This template creates the following resources
-# - An Redshift cluster
-# - A Redshift subnet group
-# - You should want your Redshift cluster in a VPC
+locals {
+  redshift_subnet_group_name             = "${coalesce(var.redshift_subnet_group_name, element(concat(aws_redshift_subnet_group.this.*.name, list("")), 0))}"
+  enable_create_redshift_subnet_group    = "${var.redshift_subnet_group_name == "" ? 0 : 1}"
+  parameter_group_name                   = "${coalesce(var.parameter_group_name, element(concat(aws_redshift_parameter_group.this.*.id, list("")), 0))}"
+  enable_create_redshift_parameter_group = "${var.parameter_group_name == "" ? 0 : 1}"
+}
 
-resource "aws_redshift_cluster" "main_redshift_cluster" {
+resource "aws_redshift_cluster" "this" {
   cluster_identifier = "${var.cluster_identifier}"
   cluster_version    = "${var.cluster_version}"
   node_type          = "${var.cluster_node_type}"
@@ -14,12 +16,10 @@ resource "aws_redshift_cluster" "main_redshift_cluster" {
 
   port = "${var.cluster_port}"
 
-  # Because we're assuming a VPC, we use this option, but only one SG id
-  vpc_security_group_ids = ["${aws_security_group.main_redshift_access.id}"]
+  vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
 
-  # We're creating a subnet group in the module and passing in the name
-  cluster_subnet_group_name    = "${aws_redshift_subnet_group.main_redshift_subnet_group.name}"
-  cluster_parameter_group_name = "${aws_redshift_parameter_group.main_redshift_cluster.id}"
+  cluster_subnet_group_name    = "${local.redshift_subnet_group_name}"
+  cluster_parameter_group_name = "${local.parameter_group_name}"
 
   publicly_accessible = "${var.publicly_accessible}"
 
@@ -31,18 +31,20 @@ resource "aws_redshift_cluster" "main_redshift_cluster" {
   # IAM Roles
   iam_roles = ["${var.cluster_iam_roles}"]
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
-  tags = "${var.default_tags}"
-
   # Encryption
   encrypted  = "${var.encrypted}"
   kms_key_id = "${var.kms_key_id}"
+
+  tags = "${var.tags}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
-resource "aws_redshift_parameter_group" "main_redshift_cluster" {
+resource "aws_redshift_parameter_group" "this" {
+  count = "${local.enable_create_redshift_parameter_group}"
+
   name   = "${var.cluster_identifier}-${replace(var.cluster_parameter_group, ".", "-")}-custom-params"
   family = "${var.cluster_parameter_group}"
 
@@ -52,44 +54,12 @@ resource "aws_redshift_parameter_group" "main_redshift_cluster" {
   }
 }
 
-resource "aws_redshift_subnet_group" "main_redshift_subnet_group" {
-  name        = "${var.cluster_identifier}-redshift-subnetgrp"
+resource "aws_redshift_subnet_group" "this" {
+  count = "${local.enable_create_redshift_subnet_group}"
+
+  name        = "${var.cluster_identifier}"
   description = "Redshift subnet group of ${var.cluster_identifier}"
   subnet_ids  = ["${var.subnets}"]
 
-  tags = "${var.default_tags}"
-}
-
-# Security groups
-resource "aws_security_group" "main_redshift_access" {
-  name        = "${var.cluster_identifier}-redshift-access"
-  description = "Allow access to the cluster: ${var.cluster_identifier}"
-  vpc_id      = "${var.redshift_vpc_id}"
-
-  tags = "${merge(var.default_tags, map(
-    "Name", "${var.cluster_identifier}-redshift-access"
-  ))}"
-}
-
-# Keep rules separated to not recreate the cluster when deleting/adding rules
-resource "aws_security_group_rule" "allow_port_inbound" {
-  type = "ingress"
-
-  from_port   = "${var.cluster_port}"
-  to_port     = "${var.cluster_port}"
-  protocol    = "tcp"
-  cidr_blocks = ["${var.private_cidr}"]
-
-  security_group_id = "${aws_security_group.main_redshift_access.id}"
-}
-
-resource "aws_security_group_rule" "allow_all_outbound" {
-  type = "egress"
-
-  from_port   = 0
-  to_port     = 0
-  protocol    = "-1"
-  cidr_blocks = ["0.0.0.0/0"]
-
-  security_group_id = "${aws_security_group.main_redshift_access.id}"
+  tags = "${var.tags}"
 }

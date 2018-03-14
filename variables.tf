@@ -1,7 +1,3 @@
-#
-# Module: tf_aws_redshift
-#
-
 # Redshift Cluster Variables
 
 variable "cluster_identifier" {
@@ -60,19 +56,24 @@ variable "publicly_accessible" {
 }
 
 # Redshift Subnet Group Variables
+variable "redshift_subnet_group_name" {
+  description = "The name of a cluster subnet group to be associated with this cluster. If not specified, new subnet will be created."
+  default     = ""
+}
+
+variable "parameter_group_name" {
+  description = "The name of the parameter group to be associated with this cluster. If not specified new parameter group will be created."
+  default     = ""
+}
+
 variable "subnets" {
   description = "List of subnets DB should be available at. It might be one subnet."
-  type        = "list"
+  default     = []
 }
 
-variable "private_cidr" {
-  description = "VPC private addressing, used for a security group"
-  type        = "list"
-}
-
-variable "redshift_vpc_id" {
-  description = "VPC to connect to, used for a security group"
-  type        = "string"
+variable "vpc_security_group_ids" {
+  description = "A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster."
+  default     = []
 }
 
 variable "skip_final_snapshot" {
@@ -86,7 +87,6 @@ variable "preferred_maintenance_window" {
 }
 
 variable "automated_snapshot_retention_period" {
-  type        = "string"
   description = "How long will we retain backups"
   default     = 0
 }
@@ -95,8 +95,9 @@ variable "wlm_json_configuration" {
   default = "[{\"query_concurrency\": 5}]"
 }
 
-variable "default_tags" {
-  type = "map"
+variable "tags" {
+  description = "A mapping of tags to assign to all resources"
+  default     = {}
 }
 
 variable "encrypted" {

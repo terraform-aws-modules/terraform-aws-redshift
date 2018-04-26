@@ -109,3 +109,8 @@ variable "kms_key_id" {
   description = "(Optional) The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true."
   default     = ""
 }
+
+variable "enhanced_vpc_routing" {
+  description = "(Optional) If true, enhanced VPC routing is enabled."
+  default     = false
+}

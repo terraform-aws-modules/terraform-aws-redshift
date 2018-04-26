@@ -35,6 +35,9 @@ resource "aws_redshift_cluster" "this" {
 
   tags = "${var.tags}"
 
+  # Enhanced VPC routing
+  enhanced_vpc_routing = "${var.enhanced_vpc_routing}"
+
   lifecycle {
     prevent_destroy = true
   }

@@ -15,7 +15,7 @@ variable "cluster_version" {
 variable "cluster_node_type" {
   description = "Node Type of Redshift cluster"
 
-  # Valid Values: ds2.xlarge | ds2.8xlarge | ds2.xlarge | ds2.8xlarge | dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge.
+  # Valid Values: dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge | ds2.xlarge | ds2.8xlarge.
   # http://docs.aws.amazon.com/cli/latest/reference/redshift/create-cluster.html
 }
 

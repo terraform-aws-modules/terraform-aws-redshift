@@ -8,6 +8,7 @@ resource "aws_redshift_cluster" "this" {
   cluster_version    = "${var.cluster_version}"
   node_type          = "${var.cluster_node_type}"
   number_of_nodes    = "${var.cluster_number_of_nodes}"
+  cluster_type       = "${var.cluster_number_of_nodes > 1 ? "single-node" : "multi-node" }"
   database_name      = "${var.cluster_database_name}"
   master_username    = "${var.cluster_master_username}"
   master_password    = "${var.cluster_master_password}"

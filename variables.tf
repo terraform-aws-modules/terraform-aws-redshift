@@ -20,7 +20,7 @@ variable "cluster_node_type" {
 }
 
 variable "cluster_number_of_nodes" {
-  description = "Number of Node in the cluster"
+  description = "Number of nodes in the cluster (values greater than 1 will trigger 'cluster_type' of 'multi-node')"
   default     = 3
 }
 

@@ -114,3 +114,8 @@ variable "enhanced_vpc_routing" {
   description = "(Optional) If true, enhanced VPC routing is enabled."
   default     = false
 }
+
+variable "allow_version_upgrade" {
+  description = "(Optional) If true, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster."
+  default     = true
+}

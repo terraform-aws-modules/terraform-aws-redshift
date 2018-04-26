@@ -26,6 +26,7 @@ resource "aws_redshift_cluster" "this" {
   skip_final_snapshot                 = "${var.skip_final_snapshot}"
   automated_snapshot_retention_period = "${var.automated_snapshot_retention_period }"
   preferred_maintenance_window        = "${var.preferred_maintenance_window}"
+  allow_version_upgrade               = "${var.allow_version_upgrade}"
 
   # IAM Roles
   iam_roles = ["${var.cluster_iam_roles}"]

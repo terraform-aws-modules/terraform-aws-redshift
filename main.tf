@@ -42,7 +42,7 @@ resource "aws_redshift_cluster" "this" {
   enhanced_vpc_routing = "${var.enhanced_vpc_routing}"
 
   lifecycle {
-    prevent_destroy = "${var.prevent_destroy}"
+    prevent_destroy = true
   }
 
   logging {

@@ -42,13 +42,13 @@ resource "aws_redshift_cluster" "this" {
   enhanced_vpc_routing = "${var.enhanced_vpc_routing}"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = "${var.prevent_destroy}"
   }
 
   logging {
-      enable        = "${var.enable_logging}"
-      bucket_name   = "${var.logging_bucket_name}"
-      s3_key_prefix = "${var.logging_s3_key_prefix}"
+    enable        = "${var.enable_logging}"
+    bucket_name   = "${var.logging_bucket_name}"
+    s3_key_prefix = "${var.logging_s3_key_prefix}"
   }
 }
 

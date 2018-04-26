@@ -37,6 +37,11 @@ variable "cluster_port" {
   default = 5439
 }
 
+variable "prevent_destroy" {
+  description = "Prevent Terraform from being able to destroy the RedShift cluster."
+  default     = true
+}
+
 # This is for a custom parameter to be passed to the DB
 # We're "cloning" default ones, but we need to specify which should be copied
 variable "cluster_parameter_group" {

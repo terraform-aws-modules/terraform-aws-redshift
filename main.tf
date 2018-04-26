@@ -23,6 +23,7 @@ resource "aws_redshift_cluster" "this" {
   publicly_accessible = "${var.publicly_accessible}"
 
   # Snapshots and backups
+  final_snapshot_identifier           = "${var.final_snapshot_identifier}"
   skip_final_snapshot                 = "${var.skip_final_snapshot}"
   automated_snapshot_retention_period = "${var.automated_snapshot_retention_period }"
   preferred_maintenance_window        = "${var.preferred_maintenance_window}"
@@ -42,6 +43,12 @@ resource "aws_redshift_cluster" "this" {
 
   lifecycle {
     prevent_destroy = true
+  }
+
+  logging {
+      enable        = "${var.enable_logging}"
+      bucket_name   = "${var.logging_bucket_name}"
+      s3_key_prefix = "${var.logging_s3_key_prefix}"
   }
 }
 

@@ -15,7 +15,7 @@ variable "cluster_version" {
 variable "cluster_node_type" {
   description = "Node Type of Redshift cluster"
 
-  # Valid Values: ds1.xlarge | ds1.8xlarge | ds2.xlarge | ds2.8xlarge | dc1.large | dc1.8xlarge.
+  # Valid Values: ds2.xlarge | ds2.8xlarge | ds2.xlarge | ds2.8xlarge | dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge.
   # http://docs.aws.amazon.com/cli/latest/reference/redshift/create-cluster.html
 }
 
@@ -76,6 +76,12 @@ variable "vpc_security_group_ids" {
   default     = []
 }
 
+# Snapshots and maintenance windows
+variable "final_snapshot_identifier" {
+  description = "(Optional) The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, 'skip_final_snapshot' must be false."
+  default     = false
+}
+
 variable "skip_final_snapshot" {
   description = "If true (default), no snapshot will be made before deleting DB"
   default     = true
@@ -89,6 +95,22 @@ variable "preferred_maintenance_window" {
 variable "automated_snapshot_retention_period" {
   description = "How long will we retain backups"
   default     = 0
+}
+
+# Logging
+variable "enable_logging" {
+    description = "Enables logging information such as queries and connection attempts, for the specified Amazon Redshift cluster."
+    default     = false
+}
+
+variable "logging_bucket_name" {
+    description = "(Optional, required when enable_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions."
+    default     = false
+}
+
+variable "logging_s3_key_prefix" {
+    description = "(Optional) The prefix applied to the log file names."
+    default     = false
 }
 
 variable "wlm_json_configuration" {

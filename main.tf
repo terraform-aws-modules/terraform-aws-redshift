@@ -36,19 +36,20 @@ resource "aws_redshift_cluster" "this" {
   encrypted  = "${var.encrypted}"
   kms_key_id = "${var.kms_key_id}"
 
-  tags = "${var.tags}"
-
   # Enhanced VPC routing
   enhanced_vpc_routing = "${var.enhanced_vpc_routing}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
+  # Logging
   logging {
     enable        = "${var.enable_logging}"
     bucket_name   = "${var.logging_bucket_name}"
     s3_key_prefix = "${var.logging_s3_key_prefix}"
+  }
+
+  tags = "${var.tags}"
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 

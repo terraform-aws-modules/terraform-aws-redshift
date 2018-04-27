@@ -1,6 +1,8 @@
 locals {
   redshift_subnet_group_name             = "${coalesce(var.redshift_subnet_group_name, element(concat(aws_redshift_subnet_group.this.*.name, list("")), 0))}"
+  enable_create_redshift_subnet_group    = "${var.redshift_subnet_group_name == "" ? 1 : 0}"
   parameter_group_name                   = "${coalesce(var.parameter_group_name, element(concat(aws_redshift_parameter_group.this.*.id, list("")), 0))}"
+  enable_create_redshift_parameter_group = "${var.parameter_group_name == "" ? 0 : 1}"
 }
 
 resource "aws_redshift_cluster" "this" {
@@ -54,7 +56,7 @@ resource "aws_redshift_cluster" "this" {
 }
 
 resource "aws_redshift_parameter_group" "this" {
-  count = "${var.parameter_group_name != "" ? 1 : 0}"
+  count = "${local.enable_create_redshift_parameter_group}"
 
   name   = "${var.cluster_identifier}-${replace(var.cluster_parameter_group, ".", "-")}-custom-params"
   family = "${var.cluster_parameter_group}"
@@ -66,7 +68,7 @@ resource "aws_redshift_parameter_group" "this" {
 }
 
 resource "aws_redshift_subnet_group" "this" {
-  count = "${var.redshift_subnet_group_name != "" ? 0 : 1}"
+  count = "${local.enable_create_redshift_subnet_group}"
 
   name        = "${var.cluster_identifier}"
   description = "Redshift subnet group of ${var.cluster_identifier}"

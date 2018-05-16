@@ -1,5 +1,3 @@
-# Redshift Cluster Variables
-
 variable "cluster_identifier" {
   description = "Custom name of the cluster"
 }
@@ -55,7 +53,6 @@ variable "publicly_accessible" {
   default     = false
 }
 
-# Redshift Subnet Group Variables
 variable "redshift_subnet_group_name" {
   description = "The name of a cluster subnet group to be associated with this cluster. If not specified, new subnet will be created."
   default     = ""
@@ -76,7 +73,6 @@ variable "vpc_security_group_ids" {
   default     = []
 }
 
-# Snapshots and maintenance windows
 variable "final_snapshot_identifier" {
   description = "(Optional) The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, 'skip_final_snapshot' must be false."
   default     = false
@@ -97,20 +93,19 @@ variable "automated_snapshot_retention_period" {
   default     = 0
 }
 
-# Logging
 variable "enable_logging" {
-    description = "Enables logging information such as queries and connection attempts, for the specified Amazon Redshift cluster."
-    default     = false
+  description = "Enables logging information such as queries and connection attempts, for the specified Amazon Redshift cluster."
+  default     = false
 }
 
 variable "logging_bucket_name" {
-    description = "(Optional, required when enable_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions."
-    default     = false
+  description = "(Optional, required when enable_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions."
+  default     = false
 }
 
 variable "logging_s3_key_prefix" {
-    description = "(Optional) The prefix applied to the log file names."
-    default     = false
+  description = "(Optional) The prefix applied to the log file names."
+  default     = false
 }
 
 variable "wlm_json_configuration" {

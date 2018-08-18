@@ -49,10 +49,6 @@ resource "aws_redshift_cluster" "this" {
   }
 
   tags = "${var.tags}"
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_redshift_parameter_group" "this" {

@@ -69,7 +69,7 @@ module "redshift" {
 | skip_final_snapshot | If true (default), no snapshot will be made before deleting DB | string | `true` | no |
 | subnets | List of subnets DB should be available at. It might be one subnet. | string | `<list>` | no |
 | tags | A mapping of tags to assign to all resources | string | `<map>` | no |
-| vpc_security_group_ids | A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster. | string | `<list>` | no |
+| vpc_security_group_ids | A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster. | list | - | yes |
 | wlm_json_configuration |  | string | `[{"query_concurrency": 5}]` | no |
 
 ## Outputs

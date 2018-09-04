@@ -46,5 +46,6 @@ module "redshift" {
   cluster_master_username = "mydbuser"
   cluster_master_password = "MySecretPassw0rd"
 
-  subnets = ["${module.vpc.redshift_subnet_group}"]
+  subnets                = ["${module.vpc.redshift_subnets}"]
+  vpc_security_group_ids = ["${module.sg.this_security_group_id}"]
 }

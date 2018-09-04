@@ -70,7 +70,7 @@ variable "subnets" {
 
 variable "vpc_security_group_ids" {
   description = "A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster."
-  default     = []
+  type        = "list"
 }
 
 variable "final_snapshot_identifier" {

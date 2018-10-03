@@ -61,6 +61,30 @@ resource "aws_redshift_parameter_group" "this" {
     name  = "wlm_json_configuration"
     value = "${var.wlm_json_configuration}"
   }
+
+  parameter {
+    # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-ssl-support.html
+    name  = "require_ssl"
+    value = "${var.require_ssl}"
+  }
+
+  parameter {
+    name  = "use_fips_ssl"
+    value = "${var.use_fips_ssl}"
+  }
+
+  parameter {
+    # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html
+    name  = "enable_user_activity_logging"
+    value = "${var.enable_user_activity_logging}"
+  }
+
+  parameter {
+    # ref: https://docs.aws.amazon.com/redshift/latest/dg/r_analyze_threshold_percent.html
+    name  = "analyze_threshold_percent"
+    value = "${var.analyze_threshold_percent}"
+  }
+
 }
 
 resource "aws_redshift_subnet_group" "this" {

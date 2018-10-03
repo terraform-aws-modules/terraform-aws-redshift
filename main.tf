@@ -1,8 +1,6 @@
 locals {
   redshift_subnet_group_name             = "${coalesce(var.redshift_subnet_group_name, element(concat(aws_redshift_subnet_group.this.*.name, list("")), 0))}"
   enable_create_redshift_subnet_group    = "${var.redshift_subnet_group_name == "" ? 1 : 0}"
-  parameter_group_name                   = "${coalesce(var.parameter_group_name, element(concat(aws_redshift_parameter_group.this.*.id, list("")), 0))}"
-  enable_create_redshift_parameter_group = "${var.parameter_group_name == "" ? 0 : 1}"
 }
 
 resource "aws_redshift_cluster" "this" {
@@ -20,7 +18,7 @@ resource "aws_redshift_cluster" "this" {
   vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
 
   cluster_subnet_group_name    = "${local.redshift_subnet_group_name}"
-  cluster_parameter_group_name = "${local.parameter_group_name}"
+  cluster_parameter_group_name  = "${aws_redshift_parameter_group.this.id}"
 
   publicly_accessible = "${var.publicly_accessible}"
 
@@ -52,9 +50,7 @@ resource "aws_redshift_cluster" "this" {
 }
 
 resource "aws_redshift_parameter_group" "this" {
-  count = "${local.enable_create_redshift_parameter_group}"
-
-  name   = "${var.cluster_identifier}-${replace(var.cluster_parameter_group, ".", "-")}-custom-params"
+  name   = "${var.cluster_identifier}_parameters"
   family = "${var.cluster_parameter_group}"
 
   parameter {
@@ -77,12 +73,6 @@ resource "aws_redshift_parameter_group" "this" {
     # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html
     name  = "enable_user_activity_logging"
     value = "${var.enable_user_activity_logging}"
-  }
-
-  parameter {
-    # ref: https://docs.aws.amazon.com/redshift/latest/dg/r_analyze_threshold_percent.html
-    name  = "analyze_threshold_percent"
-    value = "${var.analyze_threshold_percent}"
   }
 
 }

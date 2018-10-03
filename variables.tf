@@ -110,20 +110,16 @@ variable "logging_s3_key_prefix" {
 
 # parameter group config bits
 # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html
-variable "analyze_threshold_percent" {
-  default = "10"
-}
-
 variable "enable_user_activity_logging" {
-  default = false
+  default = "false"
 }
 
 variable "require_ssl" {
-  default = false
+  default = "false"
 }
 
 variable "use_fips_ssl" {
-  default = false
+  default = "false"
 }
 
 variable "wlm_json_configuration" {

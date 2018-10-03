@@ -50,7 +50,7 @@ resource "aws_redshift_cluster" "this" {
 }
 
 resource "aws_redshift_parameter_group" "this" {
-  name   = "${var.cluster_identifier}_parameters"
+  name   = "${replace(var.cluster_identifier, ".", "-")}-parameters"
   family = "${var.cluster_parameter_group}"
 
   parameter {

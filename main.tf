@@ -51,7 +51,7 @@ resource "aws_redshift_cluster" "this" {
   tags = "${var.tags}"
 
   lifecycle {
-    ignore_changes = [ "${var.ignored_changes}" ]
+    ignore_changes = [ "master_password" ]
   }
 
 }

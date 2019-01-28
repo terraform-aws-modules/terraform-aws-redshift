@@ -136,3 +136,9 @@ variable "allow_version_upgrade" {
   description = "(Optional) If true, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster."
   default     = true
 }
+
+variable "ignored_changes" {
+  description = "(Optional) A list of aws_redshift_cluster arguments that ignored if they change external to this module, e.g. master_password"
+  type = "list"
+  default = []
+}

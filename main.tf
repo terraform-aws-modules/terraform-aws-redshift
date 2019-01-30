@@ -49,6 +49,11 @@ resource "aws_redshift_cluster" "this" {
   }
 
   tags = "${var.tags}"
+
+  lifecycle {
+    ignore_changes = [ "master_password" ]
+  }
+
 }
 
 resource "aws_redshift_parameter_group" "this" {

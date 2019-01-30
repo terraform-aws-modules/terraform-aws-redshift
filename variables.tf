@@ -112,22 +112,22 @@ variable "logging_s3_key_prefix" {
 # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html
 variable "enable_user_activity_logging" {
   description = "Enable logging of user activity. See https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html"
-  default = "false"
+  default     = "false"
 }
 
 variable "require_ssl" {
   description = "Require SSL to connect to this cluster"
-  default = "false"
+  default     = "false"
 }
 
 variable "use_fips_ssl" {
   description = "Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant."
-  default = "false"
+  default     = "false"
 }
 
 variable "wlm_json_configuration" {
   description = "Configuration bits for WLM json. see https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html"
-  default = "[{\"query_concurrency\": 5}]"
+  default     = "[{\"query_concurrency\": 5}]"
 }
 
 variable "tags" {

@@ -68,6 +68,8 @@ module "redshift" {
 | redshift\_subnet\_group\_name | The name of a cluster subnet group to be associated with this cluster. If not specified, new subnet will be created. | string | `""` | no |
 | require\_ssl | Require SSL to connect to this cluster | string | `"false"` | no |
 | skip\_final\_snapshot | If true (default), no snapshot will be made before deleting DB | string | `"true"` | no |
+| snapshot_identifier | (Optional) The name of the snapshot from which to create the new cluster. | string | `""` | no |
+| snapshot_cluster_identifier | (Optional) The name of the cluster the source snapshot was created from. | string | `""` | no |
 | subnets | List of subnets DB should be available at. It might be one subnet. | list | `[]` | no |
 | tags | A mapping of tags to assign to all resources | map | `{}` | no |
 | use\_fips\_ssl | Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant. | string | `"false"` | no |

@@ -8,11 +8,18 @@ These types of resources are supported:
 * [Redshift parameter group](https://www.terraform.io/docs/providers/aws/r/redshift_parameter_group.html)
 * [Redshift subnet group](https://www.terraform.io/docs/providers/aws/r/redshift_subnet_group.html)
 
+## Terraform versions
+
+Terraform 0.12. Pin module version to `~> v2.0`. Submit pull-requests to `master` branch.
+
+Terraform 0.11. Pin module version to `~> v1.0`. Submit pull-requests to `terraform011` branch.
+
 ## Usage
 
 ```hcl
 module "redshift" {
   source  = "terraform-aws-modules/redshift/aws"
+  version = "~> 2.0"
 
   cluster_identifier      = "my-cluster"
   cluster_node_type       = "dc1.large"

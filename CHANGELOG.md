@@ -3,9 +3,15 @@
 
 
 
+<a name="v2.0.0"></a>
+## [v2.0.0] - 0001-01-01
+
+
+
 <a name="v1.7.0"></a>
 ## [v1.7.0] - 2019-06-12
 
+- Updated CHANGELOG
 - Added CHANGELOG
 - Allow restore Redshift from snapshot ([#14](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/14))
 
@@ -90,7 +96,8 @@
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.0.0...HEAD
+[v2.0.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v1.7.0...v2.0.0
 [v1.7.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v1.6.0...v1.7.0
 [v1.6.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v1.4.0...v1.5.0

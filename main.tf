@@ -25,6 +25,10 @@ resource "aws_redshift_cluster" "this" {
 
   publicly_accessible = "${var.publicly_accessible}"
 
+  # Restore from snapshot
+  snapshot_identifier                 = "${var.snapshot_identifier}"
+  snapshot_cluster_identifier         = "${var.snapshot_cluster_identifier}"
+
   # Snapshots and backups
   final_snapshot_identifier           = "${var.final_snapshot_identifier}"
   skip_final_snapshot                 = "${var.skip_final_snapshot}"

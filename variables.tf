@@ -120,6 +120,16 @@ variable "require_ssl" {
   default     = "false"
 }
 
+variable "snapshot_identifier" {
+  description = "(Optional) The name of the snapshot from which to create the new cluster."
+  default     = ""
+}
+
+variable "snapshot_cluster_identifier" {
+  description = "(Optional) The name of the cluster the source snapshot was created from."
+  default     = ""
+}
+
 variable "use_fips_ssl" {
   description = "Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant."
   default     = "false"

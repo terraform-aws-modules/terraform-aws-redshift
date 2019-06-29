@@ -1,3 +1,8 @@
+output "this_redshift_cluster_arn" {
+  description = "The Redshift cluster ARN"
+  value       = aws_redshift_cluster.this.arn
+}
+
 output "this_redshift_cluster_id" {
   description = "The Redshift cluster ID"
   value       = aws_redshift_cluster.this.id

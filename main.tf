@@ -93,6 +93,8 @@ resource "aws_redshift_parameter_group" "this" {
     name  = "enable_user_activity_logging"
     value = var.enable_user_activity_logging
   }
+
+  tags = var.tags
 }
 
 resource "aws_redshift_subnet_group" "this" {

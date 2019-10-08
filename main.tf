@@ -34,6 +34,7 @@ resource "aws_redshift_cluster" "this" {
   # Restore from snapshot
   snapshot_identifier         = var.snapshot_identifier
   snapshot_cluster_identifier = var.snapshot_cluster_identifier
+  owner_account               = var.owner_account
 
   # Snapshots and backups
   final_snapshot_identifier           = var.final_snapshot_identifier

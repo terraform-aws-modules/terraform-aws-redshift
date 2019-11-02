@@ -29,13 +29,14 @@ variable "cluster_database_name" {
   type        = string
 }
 
-# Self-explainatory variables
 variable "cluster_master_username" {
-  type = string
+  description = "Master username"
+  type        = string
 }
 
 variable "cluster_master_password" {
-  type = string
+  description = "Password for master user"
+  type        = string
 }
 
 variable "cluster_port" {

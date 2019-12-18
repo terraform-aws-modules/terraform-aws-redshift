@@ -155,6 +155,12 @@ variable "snapshot_cluster_identifier" {
   default     = null
 }
 
+variable "snapshot_copy_destination_region" {
+  description = "(Optional) The name of the region where the snapshot will be copied."
+  type        = string
+  default     = ""
+}
+
 variable "use_fips_ssl" {
   description = "Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant."
   type        = string

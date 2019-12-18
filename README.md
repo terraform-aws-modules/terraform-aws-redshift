@@ -76,6 +76,7 @@ module "redshift" {
 | require\_ssl | Require SSL to connect to this cluster | string | `"false"` | no |
 | skip\_final\_snapshot | If true (default), no snapshot will be made before deleting DB | bool | `"true"` | no |
 | snapshot\_cluster\_identifier | (Optional) The name of the cluster the source snapshot was created from. | string | `"null"` | no |
+| snapshot\_copy\_destination_region | (Optional) The name of the region where the snapshot will be copied. | string | `""` | no |
 | snapshot\_identifier | (Optional) The name of the snapshot from which to create the new cluster. | string | `"null"` | no |
 | subnets | List of subnets DB should be available at. It might be one subnet. | list(string) | `[]` | no |
 | tags | A mapping of tags to assign to all resources | map(string) | `{}` | no |

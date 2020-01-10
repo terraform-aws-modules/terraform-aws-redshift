@@ -1,7 +1,7 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
-
+- Added a list input for wlm_configuration ([#26](https://github.com/terraform-aws-modules/terraform-aws-redshift/pull/26))
 
 <a name="v2.2.0"></a>
 ## [v2.2.0] - 2019-11-02

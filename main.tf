@@ -74,7 +74,7 @@ resource "aws_redshift_parameter_group" "this" {
 
   parameter {
     name  = "wlm_json_configuration"
-    value = var.wlm_json_configuration
+    value = jsonencode(var.wlm_configuration)
   }
 
   parameter {

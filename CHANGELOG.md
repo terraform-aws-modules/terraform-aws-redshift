@@ -1,7 +1,7 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
-
+- Add tags to aws_redshift_parameter_group creation as per other resources
 
 <a name="v2.2.0"></a>
 ## [v2.2.0] - 2019-11-02

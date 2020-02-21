@@ -3,9 +3,17 @@
 
 
 
+<a name="v2.4.0"></a>
+## [v2.4.0] - 2020-02-21
+
+- Add the option to copy snapshots to a different region ([#24](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/24))
+- [ADD] missing owner_account var for restoring from cross-account shared shapshot ([#23](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/23))
+
+
 <a name="v2.3.0"></a>
 ## [v2.3.0] - 2020-02-18
 
+- Updated CHANGELOG
 - Updated pre-commit-terraform
 - Add tags to aws_redshift_parameter_group ([#20](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/20))
 
@@ -119,7 +127,8 @@
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.4.0...HEAD
+[v2.4.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.3.0...v2.4.0
 [v2.3.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.2.0...v2.3.0
 [v2.2.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.1.0...v2.2.0
 [v2.1.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.0.0...v2.1.0

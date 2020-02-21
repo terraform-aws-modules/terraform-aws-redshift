@@ -43,6 +43,15 @@ resource "aws_redshift_cluster" "this" {
   preferred_maintenance_window        = var.preferred_maintenance_window
   allow_version_upgrade               = var.allow_version_upgrade
 
+  # Snapshots copy to another region
+  dynamic "snapshot_copy" {
+    for_each = compact([var.snapshot_copy_destination_region])
+    content {
+      destination_region = var.snapshot_copy_destination_region
+      retention_period   = var.automated_snapshot_retention_period
+    }
+  }
+
   # IAM Roles
   iam_roles = var.cluster_iam_roles
 

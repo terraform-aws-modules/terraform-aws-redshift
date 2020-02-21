@@ -51,5 +51,5 @@ module "redshift" {
   subnets                = module.vpc.redshift_subnets
   vpc_security_group_ids = [module.sg.this_security_group_id]
 
-  redshift_subnet_group_name = module.vpc.redshift_subnet_group
+  //  redshift_subnet_group_name = module.vpc.redshift_subnet_group
 }

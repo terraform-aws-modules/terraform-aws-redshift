@@ -161,6 +161,12 @@ variable "snapshot_copy_destination_region" {
   default     = null
 }
 
+variable "owner_account" {
+  description = "(Optional) The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot."
+  type        = string
+  default     = null
+}
+
 variable "use_fips_ssl" {
   description = "Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant."
   type        = string

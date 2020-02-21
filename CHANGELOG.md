@@ -3,9 +3,17 @@
 
 
 
+<a name="v2.3.0"></a>
+## [v2.3.0] - 2020-02-18
+
+- Updated pre-commit-terraform
+- Add tags to aws_redshift_parameter_group ([#20](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/20))
+
+
 <a name="v2.2.0"></a>
 ## [v2.2.0] - 2019-11-02
 
+- Updated CHANGELOG
 - Added missing descriptions to vars
 
 
@@ -111,7 +119,8 @@
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.3.0...HEAD
+[v2.3.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.2.0...v2.3.0
 [v2.2.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.1.0...v2.2.0
 [v2.1.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v1.7.0...v2.0.0

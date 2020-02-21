@@ -47,7 +47,7 @@ resource "aws_redshift_cluster" "this" {
     for_each = compact([var.snapshot_copy_destination_region])
     content {
       destination_region = var.snapshot_copy_destination_region
-      retention_period = var.automated_snapshot_retention_period
+      retention_period   = var.automated_snapshot_retention_period
     }
   }
 

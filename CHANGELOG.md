@@ -1,6 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+
+<a name="v2.5.0"></a>
+## [v2.5.0] - 2020-04-27
+
+- fix: final_snapshot_identifier should be string, not bool ([#35](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/35))
 
 
 <a name="v2.4.0"></a>
@@ -13,7 +23,6 @@
 <a name="v2.3.0"></a>
 ## [v2.3.0] - 2020-02-18
 
-- Updated CHANGELOG
 - Updated pre-commit-terraform
 - Add tags to aws_redshift_parameter_group ([#20](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/20))
 
@@ -21,29 +30,24 @@
 <a name="v2.2.0"></a>
 ## [v2.2.0] - 2019-11-02
 
-- Updated CHANGELOG
 - Added missing descriptions to vars
 
 
 <a name="v2.1.0"></a>
 ## [v2.1.0] - 2019-07-08
 
-- Updated CHANGELOG
 - Add Redshift cluster ARN to output ([#18](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/18))
 
 
 <a name="v2.0.0"></a>
 ## [v2.0.0] - 2019-06-12
 
-- Updated CHANGELOG
 - Upgraded module to support Terraform 0.12 ([#16](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/16))
 
 
 <a name="v1.7.0"></a>
 ## [v1.7.0] - 2019-06-12
 
-- Updated CHANGELOG
-- Added CHANGELOG
 - Allow restore Redshift from snapshot ([#14](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/14))
 
 
@@ -51,7 +55,6 @@
 ## [v1.6.0] - 2019-01-30
 
 - Run pre-commit hook
-- Merge pull request [#9](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/9) from gpanula/expanded_parameters
 - add some useful descriptions to the variables
 - add bits back in to allow for providing existing subnet and/or parameter groups
 - only lowercase alphanumeric characters and hyphens allowed in parameter group name
@@ -62,7 +65,6 @@
 <a name="v1.5.0"></a>
 ## [v1.5.0] - 2019-01-30
 
-- Merge pull request [#13](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/13) from firstlookmedia/master
 - ignore git master_password changes
 - add support for passing ignored_changes
 
@@ -76,7 +78,6 @@
 <a name="v1.3.0"></a>
 ## [v1.3.0] - 2018-08-18
 
-- Merge pull request [#8](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/8) from terraform-aws-modules/remove_lifecycle_to_destroy
 - Removed lifecycle to allow to destroy the cluster
 
 
@@ -89,7 +90,6 @@
 <a name="v1.1.0"></a>
 ## [v1.1.0] - 2018-04-27
 
-- Merge pull request [#5](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/5) from sc250024/enhanced-redshift-functionality
 - Restored some of the logic of `enable_create_redshift_*` locals
 - Moving tags and lifecycle to the end
 - Removing duplicate types
@@ -127,7 +127,8 @@
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.4.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.5.0...HEAD
+[v2.5.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.4.0...v2.5.0
 [v2.4.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.3.0...v2.4.0
 [v2.3.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.2.0...v2.3.0
 [v2.2.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.1.0...v2.2.0

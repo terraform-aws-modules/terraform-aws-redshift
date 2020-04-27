@@ -45,6 +45,10 @@ module "redshift" {
 * [Complete Redshift example](https://github.com/terraform-aws-modules/terraform-aws-redshift/tree/master/examples/complete) creates VPC with Redshift subnet, VPC security group and Redshift cluster itself.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -54,7 +58,7 @@ module "redshift" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | allow\_version\_upgrade | (Optional) If true, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster. | `bool` | `true` | no |
 | automated\_snapshot\_retention\_period | How long will we retain backups | `number` | `0` | no |
 | cluster\_database\_name | The name of the database to create | `string` | n/a | yes |
@@ -71,20 +75,20 @@ module "redshift" {
 | enable\_user\_activity\_logging | Enable logging of user activity. See https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html | `string` | `"false"` | no |
 | encrypted | (Optional) If true , the data in the cluster is encrypted at rest. | `bool` | `false` | no |
 | enhanced\_vpc\_routing | (Optional) If true, enhanced VPC routing is enabled. | `bool` | `false` | no |
-| final\_snapshot\_identifier | (Optional) The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, 'skip\_final\_snapshot' must be false. | `bool` | `false` | no |
+| final\_snapshot\_identifier | (Optional) The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, 'skip\_final\_snapshot' must be false. | `string` | `""` | no |
 | kms\_key\_id | (Optional) The ARN for the KMS encryption key. When specifying kms\_key\_id, encrypted needs to be set to true. | `string` | `""` | no |
-| logging\_bucket\_name | (Optional, required when enable\_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions. | `string` | n/a | yes |
-| logging\_s3\_key\_prefix | (Optional) The prefix applied to the log file names. | `string` | n/a | yes |
-| owner\_account | (Optional) The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot. | `string` | n/a | yes |
+| logging\_bucket\_name | (Optional, required when enable\_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions. | `string` | `null` | no |
+| logging\_s3\_key\_prefix | (Optional) The prefix applied to the log file names. | `string` | `null` | no |
+| owner\_account | (Optional) The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot. | `string` | `null` | no |
 | parameter\_group\_name | The name of the parameter group to be associated with this cluster. If not specified new parameter group will be created. | `string` | `""` | no |
 | preferred\_maintenance\_window | When AWS can run snapshot, can't overlap with maintenance window | `string` | `"sat:10:00-sat:10:30"` | no |
 | publicly\_accessible | Determines if Cluster can be publicly available (NOT recommended) | `bool` | `false` | no |
 | redshift\_subnet\_group\_name | The name of a cluster subnet group to be associated with this cluster. If not specified, new subnet will be created. | `string` | `""` | no |
 | require\_ssl | Require SSL to connect to this cluster | `string` | `"false"` | no |
 | skip\_final\_snapshot | If true (default), no snapshot will be made before deleting DB | `bool` | `true` | no |
-| snapshot\_cluster\_identifier | (Optional) The name of the cluster the source snapshot was created from. | `string` | n/a | yes |
-| snapshot\_copy\_destination\_region | (Optional) The name of the region where the snapshot will be copied. | `string` | n/a | yes |
-| snapshot\_identifier | (Optional) The name of the snapshot from which to create the new cluster. | `string` | n/a | yes |
+| snapshot\_cluster\_identifier | (Optional) The name of the cluster the source snapshot was created from. | `string` | `null` | no |
+| snapshot\_copy\_destination\_region | (Optional) The name of the region where the snapshot will be copied. | `string` | `null` | no |
+| snapshot\_identifier | (Optional) The name of the snapshot from which to create the new cluster. | `string` | `null` | no |
 | subnets | List of subnets DB should be available at. It might be one subnet. | `list(string)` | `[]` | no |
 | tags | A mapping of tags to assign to all resources | `map(string)` | `{}` | no |
 | use\_fips\_ssl | Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant. | `string` | `"false"` | no |

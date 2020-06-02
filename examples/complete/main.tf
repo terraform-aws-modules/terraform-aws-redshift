@@ -21,7 +21,7 @@ module "vpc" {
 # Security group
 ###########################
 module "sg" {
-  source  = "terraform-aws-modules/security-group/aws//modules/redshift"
+  source  = "terraform-aws-modules/security-group/aws/modules/redshift"
   version = "~> 3.0"
 
   name   = "demo-redshift"

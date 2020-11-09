@@ -82,6 +82,7 @@ module "redshift" {
 | kms\_key\_id | (Optional) The ARN for the KMS encryption key. When specifying kms\_key\_id, encrypted needs to be set to true. | `string` | `""` | no |
 | logging\_bucket\_name | (Optional, required when enable\_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions. | `string` | `null` | no |
 | logging\_s3\_key\_prefix | (Optional) The prefix applied to the log file names. | `string` | `null` | no |
+| max\_concurrency\_scaling\_clusters | (Optional) Max concurrency scaling clusters parameter (0 to 10) | `string` | `1` | no |
 | owner\_account | (Optional) The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot. | `string` | `null` | no |
 | parameter\_group\_name | The name of the parameter group to be associated with this cluster. If not specified new parameter group will be created. | `string` | `""` | no |
 | preferred\_maintenance\_window | When AWS can run snapshot, can't overlap with maintenance window | `string` | `"sat:10:00-sat:10:30"` | no |

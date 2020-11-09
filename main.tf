@@ -104,6 +104,12 @@ resource "aws_redshift_parameter_group" "this" {
     value = var.enable_user_activity_logging
   }
 
+  parameter {
+    # ref: https://docs.aws.amazon.com/redshift/latest/dg/concurrency-scaling.html
+    name  = "max_concurrency_scaling_clusters"
+    value = var.max_concurrency_scaling_clusters
+  }
+
   tags = var.tags
 }
 

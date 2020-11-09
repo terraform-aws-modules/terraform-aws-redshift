@@ -208,3 +208,9 @@ variable "allow_version_upgrade" {
   type        = bool
   default     = true
 }
+
+variable "max_concurrency_scaling_clusters" {
+  description = "(Optional) Max concurrency scaling clusters parameter (0 to 10)"
+  type        = string
+  default     = "1"
+}

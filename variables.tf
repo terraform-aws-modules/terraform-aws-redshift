@@ -40,8 +40,9 @@ variable "cluster_master_password" {
 }
 
 variable "cluster_port" {
-  type    = number
-  default = 5439
+  description = "Cluster port"
+  type        = number
+  default     = 5439
 }
 
 # This is for a custom parameter to be passed to the DB

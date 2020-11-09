@@ -10,7 +10,7 @@ These types of resources are supported:
 
 ## Terraform versions
 
-Terraform 0.12. Pin module version to `~> v2.0`. Submit pull-requests to `master` branch.
+Terraform 0.12 or newer. Pin module version to `~> v2.0`. Submit pull-requests to `master` branch.
 
 Terraform 0.11. Pin module version to `~> v1.0`. Submit pull-requests to `terraform011` branch.
 
@@ -49,14 +49,14 @@ module "redshift" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.6, < 0.14 |
-| aws | >= 2.25, < 4.0 |
+| terraform | >= 0.12.6 |
+| aws | >= 2.25 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 2.25, < 4.0 |
+| aws | >= 2.25 |
 
 ## Inputs
 
@@ -72,7 +72,7 @@ module "redshift" {
 | cluster\_node\_type | Node Type of Redshift cluster | `string` | n/a | yes |
 | cluster\_number\_of\_nodes | Number of nodes in the cluster (values greater than 1 will trigger 'cluster\_type' of 'multi-node') | `number` | `3` | no |
 | cluster\_parameter\_group | Parameter group, depends on DB engine used | `string` | `"redshift-1.0"` | no |
-| cluster\_port | n/a | `number` | `5439` | no |
+| cluster\_port | Cluster port | `number` | `5439` | no |
 | cluster\_version | Version of Redshift engine cluster | `string` | `"1.0"` | no |
 | enable\_logging | Enables logging information such as queries and connection attempts, for the specified Amazon Redshift cluster. | `bool` | `false` | no |
 | enable\_user\_activity\_logging | Enable logging of user activity. See https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html | `string` | `"false"` | no |

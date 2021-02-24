@@ -49,7 +49,7 @@ module "redshift" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.6 |
+| terraform | >= 0.12.26 |
 | aws | >= 2.25 |
 
 ## Providers
@@ -57,6 +57,18 @@ module "redshift" {
 | Name | Version |
 |------|---------|
 | aws | >= 2.25 |
+
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_redshift_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster) |
+| [aws_redshift_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) |
+| [aws_redshift_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_subnet_group) |
 
 ## Inputs
 
@@ -125,7 +137,6 @@ module "redshift" {
 | this\_redshift\_cluster\_vpc\_security\_group\_ids | The VPC security group ids associated with the cluster |
 | this\_redshift\_parameter\_group\_id | The ID of Redshift parameter group created by this module |
 | this\_redshift\_subnet\_group\_id | The ID of Redshift subnet group created by this module |
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors

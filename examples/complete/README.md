@@ -31,7 +31,7 @@ No provider.
 | Name | Source | Version |
 |------|--------|---------|
 | redshift | ../../ |  |
-| sg | terraform-aws-modules/security-group/aws/modules/redshift | ~> 3.0 |
+| sg | terraform-aws-modules/security-group/aws//modules/redshift | ~> 3.0 |
 | vpc | terraform-aws-modules/vpc/aws | ~> 2.0 |
 
 ## Resources

@@ -19,20 +19,20 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.26 |
-| aws | >= 2.25 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.26 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.25 |
 
 ## Providers
 
-No provider.
+No providers.
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| redshift | ../../ |  |
-| sg | terraform-aws-modules/security-group/aws//modules/redshift | ~> 3.0 |
-| vpc | terraform-aws-modules/vpc/aws | ~> 2.0 |
+| <a name="module_redshift"></a> [redshift](#module\_redshift) | ../../ |  |
+| <a name="module_sg"></a> [sg](#module\_sg) | terraform-aws-modules/security-group/aws//modules/redshift | ~> 3.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 2.0 |
 
 ## Resources
 
@@ -40,16 +40,16 @@ No resources.
 
 ## Inputs
 
-No input.
+No inputs.
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| this\_redshift\_cluster\_endpoint | Redshift endpoint |
-| this\_redshift\_cluster\_hostname | Redshift hostname |
-| this\_redshift\_cluster\_id | The availability zone of the RDS instance |
-| this\_redshift\_cluster\_port | Redshift port |
-| this\_security\_group\_id | The ID of the security group |
-| vpc\_id | The ID of the VPC |
+| <a name="output_this_redshift_cluster_endpoint"></a> [this\_redshift\_cluster\_endpoint](#output\_this\_redshift\_cluster\_endpoint) | Redshift endpoint |
+| <a name="output_this_redshift_cluster_hostname"></a> [this\_redshift\_cluster\_hostname](#output\_this\_redshift\_cluster\_hostname) | Redshift hostname |
+| <a name="output_this_redshift_cluster_id"></a> [this\_redshift\_cluster\_id](#output\_this\_redshift\_cluster\_id) | The availability zone of the RDS instance |
+| <a name="output_this_redshift_cluster_port"></a> [this\_redshift\_cluster\_port](#output\_this\_redshift\_cluster\_port) | Redshift port |
+| <a name="output_this_security_group_id"></a> [this\_security\_group\_id](#output\_this\_security\_group\_id) | The ID of the security group |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

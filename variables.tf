@@ -210,6 +210,12 @@ variable "allow_version_upgrade" {
   default     = true
 }
 
+variable "enable_case_sensitive_identifier" {
+  description = "(Optional) A configuration value that determines whether name identifiers of databases, tables, and columns are case sensitive."
+  type        = bool
+  default     = false
+}
+
 variable "max_concurrency_scaling_clusters" {
   description = "(Optional) Max concurrency scaling clusters parameter (0 to 10)"
   type        = string

@@ -86,6 +86,7 @@ No modules.
 | <a name="input_cluster_parameter_group"></a> [cluster\_parameter\_group](#input\_cluster\_parameter\_group) | Parameter group, depends on DB engine used | `string` | `"redshift-1.0"` | no |
 | <a name="input_cluster_port"></a> [cluster\_port](#input\_cluster\_port) | Cluster port | `number` | `5439` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Version of Redshift engine cluster | `string` | `"1.0"` | no |
+| <a name="input_enable_case_sensitive_identifier"></a> [enable\_case\_sensitive\_identifier](#input\_enable\_case\_sensitive\_identifier) | (Optional) A configuration value that determines whether name identifiers of databases, tables, and columns are case sensitive. | `bool` | `false` | no |
 | <a name="input_enable_logging"></a> [enable\_logging](#input\_enable\_logging) | Enables logging information such as queries and connection attempts, for the specified Amazon Redshift cluster. | `bool` | `false` | no |
 | <a name="input_enable_user_activity_logging"></a> [enable\_user\_activity\_logging](#input\_enable\_user\_activity\_logging) | Enable logging of user activity. See https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html | `string` | `"false"` | no |
 | <a name="input_encrypted"></a> [encrypted](#input\_encrypted) | (Optional) If true , the data in the cluster is encrypted at rest. | `bool` | `false` | no |

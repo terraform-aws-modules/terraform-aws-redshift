@@ -7,7 +7,7 @@ provider "aws" {
 ######
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   name = "demo-vpc"
 
@@ -22,7 +22,7 @@ module "vpc" {
 ###########################
 module "sg" {
   source  = "terraform-aws-modules/security-group/aws//modules/redshift"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   name   = "demo-redshift"
   vpc_id = module.vpc.vpc_id
@@ -49,7 +49,7 @@ module "redshift" {
   cluster_master_password = "MySecretPassw0rd"
 
   subnets                = module.vpc.redshift_subnets
-  vpc_security_group_ids = [module.sg.this_security_group_id]
+  vpc_security_group_ids = [module.sg.security_group_id]
 
   #  redshift_subnet_group_name = module.vpc.redshift_subnet_group
 }

@@ -10,7 +10,7 @@ These types of resources are supported:
 
 ## Terraform versions
 
-Terraform 0.12 or newer. Pin module version to `~> v2.0`. Submit pull-requests to `master` branch.
+Terraform 0.12 or newer. Pin module version to `~> v2.0` or newer. Submit pull-requests to `master` branch.
 
 Terraform 0.11. Pin module version to `~> v1.0`. Submit pull-requests to `terraform011` branch.
 
@@ -19,7 +19,7 @@ Terraform 0.11. Pin module version to `~> v1.0`. Submit pull-requests to `terraf
 ```hcl
 module "redshift" {
   source  = "terraform-aws-modules/redshift/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   cluster_identifier      = "my-cluster"
   cluster_node_type       = "dc1.large"
@@ -116,28 +116,28 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_this_redshift_cluster_arn"></a> [this\_redshift\_cluster\_arn](#output\_this\_redshift\_cluster\_arn) | The Redshift cluster ARN |
-| <a name="output_this_redshift_cluster_automated_snapshot_retention_period"></a> [this\_redshift\_cluster\_automated\_snapshot\_retention\_period](#output\_this\_redshift\_cluster\_automated\_snapshot\_retention\_period) | The backup retention period |
-| <a name="output_this_redshift_cluster_availability_zone"></a> [this\_redshift\_cluster\_availability\_zone](#output\_this\_redshift\_cluster\_availability\_zone) | The availability zone of the Cluster |
-| <a name="output_this_redshift_cluster_database_name"></a> [this\_redshift\_cluster\_database\_name](#output\_this\_redshift\_cluster\_database\_name) | The name of the default database in the Cluster |
-| <a name="output_this_redshift_cluster_encrypted"></a> [this\_redshift\_cluster\_encrypted](#output\_this\_redshift\_cluster\_encrypted) | Whether the data in the cluster is encrypted |
-| <a name="output_this_redshift_cluster_endpoint"></a> [this\_redshift\_cluster\_endpoint](#output\_this\_redshift\_cluster\_endpoint) | The connection endpoint |
-| <a name="output_this_redshift_cluster_hostname"></a> [this\_redshift\_cluster\_hostname](#output\_this\_redshift\_cluster\_hostname) | The hostname of the Redshift cluster |
-| <a name="output_this_redshift_cluster_id"></a> [this\_redshift\_cluster\_id](#output\_this\_redshift\_cluster\_id) | The Redshift cluster ID |
-| <a name="output_this_redshift_cluster_identifier"></a> [this\_redshift\_cluster\_identifier](#output\_this\_redshift\_cluster\_identifier) | The Redshift cluster identifier |
-| <a name="output_this_redshift_cluster_node_type"></a> [this\_redshift\_cluster\_node\_type](#output\_this\_redshift\_cluster\_node\_type) | The type of nodes in the cluster |
-| <a name="output_this_redshift_cluster_parameter_group_name"></a> [this\_redshift\_cluster\_parameter\_group\_name](#output\_this\_redshift\_cluster\_parameter\_group\_name) | The name of the parameter group to be associated with this cluster |
-| <a name="output_this_redshift_cluster_port"></a> [this\_redshift\_cluster\_port](#output\_this\_redshift\_cluster\_port) | The port the cluster responds on |
-| <a name="output_this_redshift_cluster_preferred_maintenance_window"></a> [this\_redshift\_cluster\_preferred\_maintenance\_window](#output\_this\_redshift\_cluster\_preferred\_maintenance\_window) | The backup window |
-| <a name="output_this_redshift_cluster_public_key"></a> [this\_redshift\_cluster\_public\_key](#output\_this\_redshift\_cluster\_public\_key) | The public key for the cluster |
-| <a name="output_this_redshift_cluster_revision_number"></a> [this\_redshift\_cluster\_revision\_number](#output\_this\_redshift\_cluster\_revision\_number) | The specific revision number of the database in the cluster |
-| <a name="output_this_redshift_cluster_security_groups"></a> [this\_redshift\_cluster\_security\_groups](#output\_this\_redshift\_cluster\_security\_groups) | The security groups associated with the cluster |
-| <a name="output_this_redshift_cluster_subnet_group_name"></a> [this\_redshift\_cluster\_subnet\_group\_name](#output\_this\_redshift\_cluster\_subnet\_group\_name) | The name of a cluster subnet group to be associated with this cluster |
-| <a name="output_this_redshift_cluster_type"></a> [this\_redshift\_cluster\_type](#output\_this\_redshift\_cluster\_type) | The Redshift cluster type |
-| <a name="output_this_redshift_cluster_version"></a> [this\_redshift\_cluster\_version](#output\_this\_redshift\_cluster\_version) | The version of Redshift engine software |
-| <a name="output_this_redshift_cluster_vpc_security_group_ids"></a> [this\_redshift\_cluster\_vpc\_security\_group\_ids](#output\_this\_redshift\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
-| <a name="output_this_redshift_parameter_group_id"></a> [this\_redshift\_parameter\_group\_id](#output\_this\_redshift\_parameter\_group\_id) | The ID of Redshift parameter group created by this module |
-| <a name="output_this_redshift_subnet_group_id"></a> [this\_redshift\_subnet\_group\_id](#output\_this\_redshift\_subnet\_group\_id) | The ID of Redshift subnet group created by this module |
+| <a name="output_redshift_cluster_arn"></a> [redshift\_cluster\_arn](#output\_redshift\_cluster\_arn) | The Redshift cluster ARN |
+| <a name="output_redshift_cluster_automated_snapshot_retention_period"></a> [redshift\_cluster\_automated\_snapshot\_retention\_period](#output\_redshift\_cluster\_automated\_snapshot\_retention\_period) | The backup retention period |
+| <a name="output_redshift_cluster_availability_zone"></a> [redshift\_cluster\_availability\_zone](#output\_redshift\_cluster\_availability\_zone) | The availability zone of the Cluster |
+| <a name="output_redshift_cluster_database_name"></a> [redshift\_cluster\_database\_name](#output\_redshift\_cluster\_database\_name) | The name of the default database in the Cluster |
+| <a name="output_redshift_cluster_encrypted"></a> [redshift\_cluster\_encrypted](#output\_redshift\_cluster\_encrypted) | Whether the data in the cluster is encrypted |
+| <a name="output_redshift_cluster_endpoint"></a> [redshift\_cluster\_endpoint](#output\_redshift\_cluster\_endpoint) | The connection endpoint |
+| <a name="output_redshift_cluster_hostname"></a> [redshift\_cluster\_hostname](#output\_redshift\_cluster\_hostname) | The hostname of the Redshift cluster |
+| <a name="output_redshift_cluster_id"></a> [redshift\_cluster\_id](#output\_redshift\_cluster\_id) | The Redshift cluster ID |
+| <a name="output_redshift_cluster_identifier"></a> [redshift\_cluster\_identifier](#output\_redshift\_cluster\_identifier) | The Redshift cluster identifier |
+| <a name="output_redshift_cluster_node_type"></a> [redshift\_cluster\_node\_type](#output\_redshift\_cluster\_node\_type) | The type of nodes in the cluster |
+| <a name="output_redshift_cluster_parameter_group_name"></a> [redshift\_cluster\_parameter\_group\_name](#output\_redshift\_cluster\_parameter\_group\_name) | The name of the parameter group to be associated with this cluster |
+| <a name="output_redshift_cluster_port"></a> [redshift\_cluster\_port](#output\_redshift\_cluster\_port) | The port the cluster responds on |
+| <a name="output_redshift_cluster_preferred_maintenance_window"></a> [redshift\_cluster\_preferred\_maintenance\_window](#output\_redshift\_cluster\_preferred\_maintenance\_window) | The backup window |
+| <a name="output_redshift_cluster_public_key"></a> [redshift\_cluster\_public\_key](#output\_redshift\_cluster\_public\_key) | The public key for the cluster |
+| <a name="output_redshift_cluster_revision_number"></a> [redshift\_cluster\_revision\_number](#output\_redshift\_cluster\_revision\_number) | The specific revision number of the database in the cluster |
+| <a name="output_redshift_cluster_security_groups"></a> [redshift\_cluster\_security\_groups](#output\_redshift\_cluster\_security\_groups) | The security groups associated with the cluster |
+| <a name="output_redshift_cluster_subnet_group_name"></a> [redshift\_cluster\_subnet\_group\_name](#output\_redshift\_cluster\_subnet\_group\_name) | The name of a cluster subnet group to be associated with this cluster |
+| <a name="output_redshift_cluster_type"></a> [redshift\_cluster\_type](#output\_redshift\_cluster\_type) | The Redshift cluster type |
+| <a name="output_redshift_cluster_version"></a> [redshift\_cluster\_version](#output\_redshift\_cluster\_version) | The version of Redshift engine software |
+| <a name="output_redshift_cluster_vpc_security_group_ids"></a> [redshift\_cluster\_vpc\_security\_group\_ids](#output\_redshift\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
+| <a name="output_redshift_parameter_group_id"></a> [redshift\_parameter\_group\_id](#output\_redshift\_parameter\_group\_id) | The ID of Redshift parameter group created by this module |
+| <a name="output_redshift_subnet_group_id"></a> [redshift\_subnet\_group\_id](#output\_redshift\_subnet\_group\_id) | The ID of Redshift subnet group created by this module |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors

@@ -31,8 +31,8 @@ No providers.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_redshift"></a> [redshift](#module\_redshift) | ../../ |  |
-| <a name="module_sg"></a> [sg](#module\_sg) | terraform-aws-modules/security-group/aws//modules/redshift | ~> 3.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 2.0 |
+| <a name="module_sg"></a> [sg](#module\_sg) | terraform-aws-modules/security-group/aws//modules/redshift | ~> 4.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 
 ## Resources
 
@@ -46,10 +46,10 @@ No inputs.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_this_redshift_cluster_endpoint"></a> [this\_redshift\_cluster\_endpoint](#output\_this\_redshift\_cluster\_endpoint) | Redshift endpoint |
-| <a name="output_this_redshift_cluster_hostname"></a> [this\_redshift\_cluster\_hostname](#output\_this\_redshift\_cluster\_hostname) | Redshift hostname |
-| <a name="output_this_redshift_cluster_id"></a> [this\_redshift\_cluster\_id](#output\_this\_redshift\_cluster\_id) | The availability zone of the RDS instance |
-| <a name="output_this_redshift_cluster_port"></a> [this\_redshift\_cluster\_port](#output\_this\_redshift\_cluster\_port) | Redshift port |
-| <a name="output_this_security_group_id"></a> [this\_security\_group\_id](#output\_this\_security\_group\_id) | The ID of the security group |
+| <a name="output_redshift_cluster_endpoint"></a> [redshift\_cluster\_endpoint](#output\_redshift\_cluster\_endpoint) | Redshift endpoint |
+| <a name="output_redshift_cluster_hostname"></a> [redshift\_cluster\_hostname](#output\_redshift\_cluster\_hostname) | Redshift hostname |
+| <a name="output_redshift_cluster_id"></a> [redshift\_cluster\_id](#output\_redshift\_cluster\_id) | The availability zone of the RDS instance |
+| <a name="output_redshift_cluster_port"></a> [redshift\_cluster\_port](#output\_redshift\_cluster\_port) | Redshift port |
+| <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | The ID of the security group |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

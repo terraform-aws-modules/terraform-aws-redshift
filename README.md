@@ -2,18 +2,6 @@
 
 Terraform module which creates Redshift resources on AWS.
 
-These types of resources are supported:
-
-* [Redshift Cluster](https://www.terraform.io/docs/providers/aws/r/redshift_cluster.html)
-* [Redshift parameter group](https://www.terraform.io/docs/providers/aws/r/redshift_parameter_group.html)
-* [Redshift subnet group](https://www.terraform.io/docs/providers/aws/r/redshift_subnet_group.html)
-
-## Terraform versions
-
-Terraform 0.12 or newer. Pin module version to `~> v2.0` or newer. Submit pull-requests to `master` branch.
-
-Terraform 0.11. Pin module version to `~> v1.0`. Submit pull-requests to `terraform011` branch.
-
 ## Usage
 
 ```hcl
@@ -42,7 +30,7 @@ module "redshift" {
 
 ## Examples
 
-* [Complete Redshift example](https://github.com/terraform-aws-modules/terraform-aws-redshift/tree/master/examples/complete) creates VPC with Redshift subnet, VPC security group and Redshift cluster itself.
+- [Complete Redshift example](https://github.com/terraform-aws-modules/terraform-aws-redshift/tree/master/examples/complete) creates VPC with Redshift subnet, VPC security group and Redshift cluster itself.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -142,9 +130,8 @@ No modules.
 
 ## Authors
 
-Migrated from `terraform-community-modules/tf_aws_redshift`, where it was originally created by [Quentin Rousseau](https://github.com/kwent) and maintained by [these awesome contributors](https://github.com/terraform-community-modules/tf_aws_redshift/graphs/contributors).
-Module managed by [Anton Babenko](https://github.com/antonbabenko).
+Module is maintained by [Anton Babenko](https://github.com/antonbabenko) with help from [these awesome contributors](https://github.com/terraform-aws-modules/terraform-aws-redshift/graphs/contributors).
 
 ## License
 
-Apache 2 Licensed. See LICENSE for full details.
+Apache 2 Licensed. See [LICENSE](https://github.com/terraform-aws-modules/terraform-aws-redshift/tree/master/LICENSE) for full details.

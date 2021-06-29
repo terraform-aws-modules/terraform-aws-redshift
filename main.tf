@@ -49,6 +49,7 @@ resource "aws_redshift_cluster" "this" {
     content {
       destination_region = var.snapshot_copy_destination_region
       retention_period   = var.automated_snapshot_retention_period
+      grant_name         = var.snapshot_copy_grant_name
     }
   }
 

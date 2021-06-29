@@ -162,6 +162,12 @@ variable "snapshot_copy_destination_region" {
   default     = null
 }
 
+variable "snapshot_copy_grant_name" {
+  description = "(Optional) The name of the grant in the destination region. Required if you have a KMS encrypted cluster."
+  type        = string
+  default     = null
+}
+
 variable "owner_account" {
   description = "(Optional) The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot."
   type        = string

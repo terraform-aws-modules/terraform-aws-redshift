@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v3.1.0"></a>
+## [v3.1.0] - 2021-06-29
+
+- fix: Allow final_snapshot_identifier to be omitted ([#44](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/44))
+- chore: update CI/CD to use stable `terraform-docs` release artifact and discoverable Apache2.0 license ([#54](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/54))
+
+
 <a name="v3.0.0"></a>
 ## [v3.0.0] - 2021-04-27
 
@@ -41,18 +48,6 @@ All notable changes to this project will be documented in this file.
 ## [v2.5.0] - 2020-04-27
 
 - fix: final_snapshot_identifier should be string, not bool ([#35](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/35))
-- Merge pull request [#34](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/34) from terraform-aws-modules/terraform-provider-githubfile-1584635320458990000
-- [ci skip] Create ".chglog/CHANGELOG.tpl.md".
-- Merge pull request [#33](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/33) from terraform-aws-modules/terraform-provider-githubfile-1584537258149750000
-- [ci skip] Create ".editorconfig".
-- Merge pull request [#32](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/32) from terraform-aws-modules/terraform-provider-githubfile-1584537225700286000
-- Merge pull request [#30](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/30) from terraform-aws-modules/terraform-provider-githubfile-1584537225700264000
-- Merge pull request [#29](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/29) from terraform-aws-modules/terraform-provider-githubfile-1584537225700246000
-- Merge pull request [#28](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/28) from terraform-aws-modules/terraform-provider-githubfile-1584537225700283000
-- [ci skip] Create ".pre-commit-config.yaml".
-- [ci skip] Create "Makefile".
-- [ci skip] Create ".gitignore".
-- [ci skip] Create "LICENSE".
 
 
 <a name="v2.4.0"></a>
@@ -97,7 +92,6 @@ All notable changes to this project will be documented in this file.
 ## [v1.6.0] - 2019-01-30
 
 - Run pre-commit hook
-- Merge pull request [#9](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/9) from gpanula/expanded_parameters
 - add some useful descriptions to the variables
 - add bits back in to allow for providing existing subnet and/or parameter groups
 - only lowercase alphanumeric characters and hyphens allowed in parameter group name
@@ -108,7 +102,6 @@ All notable changes to this project will be documented in this file.
 <a name="v1.5.0"></a>
 ## [v1.5.0] - 2019-01-30
 
-- Merge pull request [#13](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/13) from firstlookmedia/master
 - ignore git master_password changes
 - add support for passing ignored_changes
 
@@ -122,7 +115,6 @@ All notable changes to this project will be documented in this file.
 <a name="v1.3.0"></a>
 ## [v1.3.0] - 2018-08-18
 
-- Merge pull request [#8](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/8) from terraform-aws-modules/remove_lifecycle_to_destroy
 - Removed lifecycle to allow to destroy the cluster
 
 
@@ -135,7 +127,6 @@ All notable changes to this project will be documented in this file.
 <a name="v1.1.0"></a>
 ## [v1.1.0] - 2018-04-27
 
-- Merge pull request [#5](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/5) from sc250024/enhanced-redshift-functionality
 - Restored some of the logic of `enable_create_redshift_*` locals
 - Moving tags and lifecycle to the end
 - Removing duplicate types
@@ -173,7 +164,8 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.1.0...HEAD
+[v3.1.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.0.0...v3.1.0
 [v3.0.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.8.0...v3.0.0
 [v2.8.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.7.0...v2.8.0
 [v2.7.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.6.0...v2.7.0

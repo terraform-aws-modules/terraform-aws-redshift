@@ -37,7 +37,7 @@ resource "aws_redshift_cluster" "this" {
   owner_account               = var.owner_account
 
   # Snapshots and backups
-  final_snapshot_identifier           = var.final_snapshot_identifier
+  final_snapshot_identifier           = var.skip_final_snapshot ? null : var.final_snapshot_identifier
   skip_final_snapshot                 = var.skip_final_snapshot
   automated_snapshot_retention_period = var.automated_snapshot_retention_period
   preferred_maintenance_window        = var.preferred_maintenance_window

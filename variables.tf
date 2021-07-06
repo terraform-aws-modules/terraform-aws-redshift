@@ -221,3 +221,9 @@ variable "max_concurrency_scaling_clusters" {
   type        = string
   default     = "1"
 }
+
+variable "elastic_ip" {
+  description = "(Optional) The Elastic IP (EIP) address for the cluster."
+  type        = string
+  default     = null
+}

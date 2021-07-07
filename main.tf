@@ -30,6 +30,7 @@ resource "aws_redshift_cluster" "this" {
   cluster_parameter_group_name = local.parameter_group_name
 
   publicly_accessible = var.publicly_accessible
+  elastic_ip          = var.elastic_ip
 
   # Restore from snapshot
   snapshot_identifier         = var.snapshot_identifier

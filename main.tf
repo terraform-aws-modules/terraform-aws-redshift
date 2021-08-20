@@ -30,6 +30,7 @@ resource "aws_redshift_cluster" "this" {
   cluster_parameter_group_name = local.parameter_group_name
 
   publicly_accessible = var.publicly_accessible
+  elastic_ip          = var.elastic_ip
 
   # Restore from snapshot
   snapshot_identifier         = var.snapshot_identifier
@@ -37,7 +38,7 @@ resource "aws_redshift_cluster" "this" {
   owner_account               = var.owner_account
 
   # Snapshots and backups
-  final_snapshot_identifier           = var.final_snapshot_identifier
+  final_snapshot_identifier           = var.skip_final_snapshot ? null : var.final_snapshot_identifier
   skip_final_snapshot                 = var.skip_final_snapshot
   automated_snapshot_retention_period = var.automated_snapshot_retention_period
   preferred_maintenance_window        = var.preferred_maintenance_window
@@ -103,6 +104,18 @@ resource "aws_redshift_parameter_group" "this" {
     # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html
     name  = "enable_user_activity_logging"
     value = var.enable_user_activity_logging
+  }
+
+  parameter {
+    # ref: https://docs.aws.amazon.com/redshift/latest/dg/concurrency-scaling.html
+    name  = "max_concurrency_scaling_clusters"
+    value = var.max_concurrency_scaling_clusters
+  }
+
+  parameter {
+    # ref: https://docs.aws.amazon.com/redshift/latest/dg/r_enable_case_sensitive_identifier.html
+    name  = "enable_case_sensitive_identifier"
+    value = var.enable_case_sensitive_identifier
   }
 
   tags = var.tags

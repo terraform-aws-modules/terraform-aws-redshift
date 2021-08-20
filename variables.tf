@@ -14,7 +14,7 @@ variable "cluster_version" {
 variable "cluster_node_type" {
   description = "Node Type of Redshift cluster"
   type        = string
-  # Valid Values: dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge | ds2.xlarge | ds2.8xlarge.
+  # Valid Values: dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge | ds2.xlarge | ds2.8xlarge | ra3.xlplus | ra3.4xlarge | ra3.16xlarge.
   # http://docs.aws.amazon.com/cli/latest/reference/redshift/create-cluster.html
 }
 
@@ -40,8 +40,9 @@ variable "cluster_master_password" {
 }
 
 variable "cluster_port" {
-  type    = number
-  default = 5439
+  description = "Cluster port"
+  type        = number
+  default     = 5439
 }
 
 # This is for a custom parameter to be passed to the DB
@@ -213,4 +214,22 @@ variable "allow_version_upgrade" {
   description = "(Optional) If true, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster."
   type        = bool
   default     = true
+}
+
+variable "enable_case_sensitive_identifier" {
+  description = "(Optional) A configuration value that determines whether name identifiers of databases, tables, and columns are case sensitive."
+  type        = bool
+  default     = false
+}
+
+variable "max_concurrency_scaling_clusters" {
+  description = "(Optional) Max concurrency scaling clusters parameter (0 to 10)"
+  type        = string
+  default     = "1"
+}
+
+variable "elastic_ip" {
+  description = "(Optional) The Elastic IP (EIP) address for the cluster."
+  type        = string
+  default     = null
 }

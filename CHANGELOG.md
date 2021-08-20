@@ -7,6 +7,50 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v3.2.0"></a>
+## [v3.2.0] - 2021-07-07
+
+- docs: Fixed docs
+- feat: add elastic_ip parameter ([#55](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/55))
+
+
+<a name="v3.1.0"></a>
+## [v3.1.0] - 2021-06-29
+
+- fix: Allow final_snapshot_identifier to be omitted ([#44](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/44))
+- chore: update CI/CD to use stable `terraform-docs` release artifact and discoverable Apache2.0 license ([#54](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/54))
+
+
+<a name="v3.0.0"></a>
+## [v3.0.0] - 2021-04-27
+
+- feat: Shorten outputs (removing this_) ([#53](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/53))
+
+
+<a name="v2.8.0"></a>
+## [v2.8.0] - 2021-04-23
+
+- feat: Add enable_case_sensitive_identifier parameter ([#52](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/52))
+- chore: update documentation and pin `terraform_docs` version to avoid future changes ([#50](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/50))
+- chore: align ci-cd static checks to use individual minimum Terraform versions ([#49](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/49))
+- chore: Fixed module source in example
+- chore: add ci-cd workflow for pre-commit checks ([#48](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/48))
+
+
+<a name="v2.7.0"></a>
+## [v2.7.0] - 2020-11-09
+
+- Updated README
+- chore: Updated pre-commit
+- feat: make max concurrency scaling configurable ([#46](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/46))
+
+
+<a name="v2.6.0"></a>
+## [v2.6.0] - 2020-08-13
+
+- feat: allow AWS provider 3.0 and Terraform 0.13 ([#43](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/43))
+
+
 <a name="v2.5.0"></a>
 ## [v2.5.0] - 2020-04-27
 
@@ -127,7 +171,13 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.5.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.2.0...HEAD
+[v3.2.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.1.0...v3.2.0
+[v3.1.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.0.0...v3.1.0
+[v3.0.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.8.0...v3.0.0
+[v2.8.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.7.0...v2.8.0
+[v2.7.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.6.0...v2.7.0
+[v2.6.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.5.0...v2.6.0
 [v2.5.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.4.0...v2.5.0
 [v2.4.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.3.0...v2.4.0
 [v2.3.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.2.0...v2.3.0

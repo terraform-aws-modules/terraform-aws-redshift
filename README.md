@@ -94,6 +94,7 @@ No modules.
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | If true (default), no snapshot will be made before deleting DB | `bool` | `true` | no |
 | <a name="input_snapshot_cluster_identifier"></a> [snapshot\_cluster\_identifier](#input\_snapshot\_cluster\_identifier) | (Optional) The name of the cluster the source snapshot was created from. | `string` | `null` | no |
 | <a name="input_snapshot_copy_destination_region"></a> [snapshot\_copy\_destination\_region](#input\_snapshot\_copy\_destination\_region) | (Optional) The name of the region where the snapshot will be copied. | `string` | `null` | no |
+| <a name="input_snapshot_copy_grant_name"></a> [snapshot\_copy\_grant\_name](#input\_snapshot\_copy\_grant\_name) | (Optional) The name of the grant in the destination region. Required if you have a KMS encrypted cluster. | `string` | `null` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | (Optional) The name of the snapshot from which to create the new cluster. | `string` | `null` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets DB should be available at. It might be one subnet. | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to all resources | `map(string)` | `{}` | no |

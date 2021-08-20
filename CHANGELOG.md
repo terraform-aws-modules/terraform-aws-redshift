@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v3.3.0"></a>
+## [v3.3.0] - 2021-08-20
+
+- fix: Add required argument to enable cross-region snapshot copy of KMS encrypted clusters ([#37](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/37))
+- docs: Add ra3 node options to cluster_node_type valid values ([#56](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/56))
+
+
 <a name="v3.2.0"></a>
 ## [v3.2.0] - 2021-07-07
 
@@ -171,7 +178,8 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.3.0...HEAD
+[v3.3.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.2.0...v3.3.0
 [v3.2.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.1.0...v3.2.0
 [v3.1.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.0.0...v3.1.0
 [v3.0.0]: https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v2.8.0...v3.0.0

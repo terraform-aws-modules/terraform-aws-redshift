@@ -38,13 +38,13 @@ module "redshift" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.31 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.25 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.57.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2.25 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.57.0 |
 
 ## Modules
 
@@ -116,6 +116,7 @@ No modules.
 | <a name="output_redshift_cluster_id"></a> [redshift\_cluster\_id](#output\_redshift\_cluster\_id) | The Redshift cluster ID |
 | <a name="output_redshift_cluster_identifier"></a> [redshift\_cluster\_identifier](#output\_redshift\_cluster\_identifier) | The Redshift cluster identifier |
 | <a name="output_redshift_cluster_node_type"></a> [redshift\_cluster\_node\_type](#output\_redshift\_cluster\_node\_type) | The type of nodes in the cluster |
+| <a name="output_redshift_cluster_nodes"></a> [redshift\_cluster\_nodes](#output\_redshift\_cluster\_nodes) | Cluster nodes in the Redshift cluster |
 | <a name="output_redshift_cluster_parameter_group_name"></a> [redshift\_cluster\_parameter\_group\_name](#output\_redshift\_cluster\_parameter\_group\_name) | The name of the parameter group to be associated with this cluster |
 | <a name="output_redshift_cluster_port"></a> [redshift\_cluster\_port](#output\_redshift\_cluster\_port) | The port the cluster responds on |
 | <a name="output_redshift_cluster_preferred_maintenance_window"></a> [redshift\_cluster\_preferred\_maintenance\_window](#output\_redshift\_cluster\_preferred\_maintenance\_window) | The backup window |

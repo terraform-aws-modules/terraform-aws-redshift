@@ -111,3 +111,8 @@ output "redshift_parameter_group_id" {
   description = "The ID of Redshift parameter group created by this module"
   value       = element(concat(aws_redshift_parameter_group.this.*.id, [""]), 0)
 }
+
+output "redshift_cluster_nodes" {
+  description = "Cluster nodes in the Redshift cluster"
+  value       = aws_redshift_cluster.this.cluster_nodes
+}

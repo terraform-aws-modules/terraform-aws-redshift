@@ -124,6 +124,7 @@ No modules.
 | <a name="output_redshift_cluster_security_groups"></a> [redshift\_cluster\_security\_groups](#output\_redshift\_cluster\_security\_groups) | The security groups associated with the cluster |
 | <a name="output_redshift_cluster_subnet_group_name"></a> [redshift\_cluster\_subnet\_group\_name](#output\_redshift\_cluster\_subnet\_group\_name) | The name of a cluster subnet group to be associated with this cluster |
 | <a name="output_redshift_cluster_type"></a> [redshift\_cluster\_type](#output\_redshift\_cluster\_type) | The Redshift cluster type |
+| <a name="output_redshift_cluster_nodes"></a> [redshift\_cluster\_nodes](#output\_redshift\_cluster\_nodes) | Cluster nodes details |
 | <a name="output_redshift_cluster_version"></a> [redshift\_cluster\_version](#output\_redshift\_cluster\_version) | The version of Redshift engine software |
 | <a name="output_redshift_cluster_vpc_security_group_ids"></a> [redshift\_cluster\_vpc\_security\_group\_ids](#output\_redshift\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
 | <a name="output_redshift_parameter_group_id"></a> [redshift\_parameter\_group\_id](#output\_redshift\_parameter\_group\_id) | The ID of Redshift parameter group created by this module |

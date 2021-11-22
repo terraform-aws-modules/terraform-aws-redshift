@@ -30,7 +30,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_redshift"></a> [redshift](#module\_redshift) | ../../ |  |
+| <a name="module_redshift"></a> [redshift](#module\_redshift) | ../../ | n/a |
 | <a name="module_sg"></a> [sg](#module\_sg) | terraform-aws-modules/security-group/aws//modules/redshift | ~> 4.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 

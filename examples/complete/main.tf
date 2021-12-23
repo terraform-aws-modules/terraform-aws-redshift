@@ -1,55 +1,213 @@
 provider "aws" {
-  region = "eu-west-1"
+  region = local.region
 }
 
-######
-# VPC
-######
+locals {
+  name   = "ex-redshift"
+  region = "eu-west-1"
+
+  s3_prefix = "redshift/${local.name}"
+
+  tags = {
+    Owner       = "user"
+    Environment = "dev"
+  }
+}
+
+################################################################################
+# Supporting Resources
+################################################################################
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
-  name = "demo-vpc"
+  name = local.name
+  cidr = "10.99.0.0/18"
 
-  cidr = "10.10.0.0/16"
+  azs              = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  redshift_subnets = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
 
-  azs              = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  redshift_subnets = ["10.10.41.0/24", "10.10.42.0/24", "10.10.43.0/24"]
+  # Disabling here since module creates one by default, named the same which conflicts
+  create_redshift_subnet_group = false
+
+  tags = local.tags
 }
 
-###########################
-# Security group
-###########################
 module "sg" {
   source  = "terraform-aws-modules/security-group/aws//modules/redshift"
   version = "~> 4.0"
 
-  name   = "demo-redshift"
-  vpc_id = module.vpc.vpc_id
+  name        = local.name
+  description = "A security group"
+  vpc_id      = module.vpc.vpc_id
 
   # Allow ingress rules to be accessed only within current VPC
   ingress_cidr_blocks = [module.vpc.vpc_cidr_block]
 
   # Allow all rules for all protocols
   egress_rules = ["all-all"]
+
+  tags = local.tags
 }
 
-###########
-# Redshift
-###########
+data "aws_redshift_service_account" "this" {}
+
+data "aws_iam_policy_document" "s3_redshift" {
+  statement {
+    sid       = "RedshiftAcl"
+    actions   = ["s3:GetBucketAcl"]
+    resources = [module.s3_logs.s3_bucket_arn]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_redshift_service_account.this.arn]
+    }
+  }
+
+  statement {
+    sid       = "RedshiftWrite"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.s3_logs.s3_bucket_arn}/${local.s3_prefix}"]
+    condition {
+      test     = "StringEquals"
+      values   = ["bucket-owner-full-control"]
+      variable = "s3:x-amz-acl"
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_redshift_service_account.this.arn]
+    }
+  }
+}
+
+resource "random_pet" "s3_bucket" {
+  length = 2
+}
+
+module "s3_logs" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 2.0"
+
+  bucket = "${local.name}-${random_pet.s3_bucket.id}"
+  acl    = "log-delivery-write"
+
+  attach_policy = true
+  policy        = data.aws_iam_policy_document.s3_redshift.json
+
+  attach_deny_insecure_transport_policy = true
+  force_destroy                         = true
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+  tags = local.tags
+}
+
+################################################################################
+# Disabled
+################################################################################
+
+module "disabled" {
+  source = "../../"
+
+  create = false
+
+  cluster_identifier = local.name
+}
+
+################################################################################
+# Default
+################################################################################
+
+module "default" {
+  source = "../../"
+
+  cluster_identifier = local.name
+
+  vpc_security_group_ids = [module.sg.security_group_id]
+  subnet_ids             = module.vpc.redshift_subnets
+
+  tags = local.tags
+}
+
+################################################################################
+# Complete
+################################################################################
+
 module "redshift" {
   source = "../../"
 
-  cluster_identifier      = "my-cluster"
-  cluster_node_type       = "dc1.large"
-  cluster_number_of_nodes = 1
+  cluster_identifier    = "${local.name}-complete"
+  allow_version_upgrade = true
+  node_type             = "ds2.xlarge"
+  number_of_nodes       = 3
 
-  cluster_database_name   = "mydb"
-  cluster_master_username = "mydbuser"
-  cluster_master_password = "MySecretPassw0rd"
+  database_name          = "mydb"
+  master_username        = "mydbuser"
+  create_random_password = false
+  master_password        = "MySecretPassw0rd1!" # Do better!
 
-  subnets                = module.vpc.redshift_subnets
+  encrypted = true
+
+  enhanced_vpc_routing   = true
   vpc_security_group_ids = [module.sg.security_group_id]
+  subnet_ids             = module.vpc.redshift_subnets
 
-  #  redshift_subnet_group_name = module.vpc.redshift_subnet_group
+  # TODO
+  # snapshot_copy = {
+  #   destination_region = "us-east-1"
+  #   grant_name         = local.name
+  # }
+
+  logging = {
+    enabled       = true
+    bucket_name   = module.s3_logs.s3_bucket_id
+    s3_key_prefix = local.s3_prefix
+  }
+
+  # Parameter group
+  parameter_group_name        = "${local.name}-custom"
+  parameter_group_description = "Custom parameter group for ${local.name} cluster"
+  parameter_group_parameters = {
+    wlm_json_configuration = {
+      name  = "wlm_json_configuration"
+      value = "[{\"query_concurrency\": 15}]"
+    }
+    require_ssl = {
+      name  = "require_ssl"
+      value = true
+    }
+    use_fips_ssl = {
+      name  = "use_fips_ssl"
+      value = false
+    }
+    enable_user_activity_logging = {
+      name  = "enable_user_activity_logging"
+      value = true
+    }
+    max_concurrency_scaling_clusters = {
+      name  = "max_concurrency_scaling_clusters"
+      value = 3
+    }
+    enable_case_sensitive_identifier = {
+      name  = "enable_case_sensitive_identifier"
+      value = true
+    }
+  }
+  parameter_group_tags = {
+    Additional = "CustomParameterGroup"
+  }
+
+  # Subnet group
+  subnet_group_name        = "${local.name}-custom"
+  subnet_group_description = "Custom subnet group for ${local.name} cluster"
+  subnet_group_tags = {
+    Additional = "CustomSubnetGroup"
+  }
+
+  tags = local.tags
 }

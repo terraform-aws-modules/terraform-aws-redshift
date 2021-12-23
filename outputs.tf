@@ -1,118 +1,140 @@
-output "redshift_cluster_arn" {
+################################################################################
+# Cluster
+################################################################################
+
+output "cluster_arn" {
   description = "The Redshift cluster ARN"
-  value       = aws_redshift_cluster.this.arn
+  value       = try(aws_redshift_cluster.this[0].arn, "")
 }
 
-output "redshift_cluster_id" {
+output "cluster_id" {
   description = "The Redshift cluster ID"
-  value       = aws_redshift_cluster.this.id
+  value       = try(aws_redshift_cluster.this[0].id, "")
 }
 
-output "redshift_cluster_identifier" {
+output "cluster_identifier" {
   description = "The Redshift cluster identifier"
-  value       = aws_redshift_cluster.this.cluster_identifier
+  value       = try(aws_redshift_cluster.this[0].cluster_identifier, "")
 }
 
-output "redshift_cluster_type" {
+output "cluster_type" {
   description = "The Redshift cluster type"
-  value       = aws_redshift_cluster.this.cluster_type
+  value       = try(aws_redshift_cluster.this[0].cluster_type, "")
 }
 
-output "redshift_cluster_node_type" {
+output "cluster_node_type" {
   description = "The type of nodes in the cluster"
-  value       = aws_redshift_cluster.this.node_type
+  value       = try(aws_redshift_cluster.this[0].node_type, "")
 }
 
-output "redshift_cluster_database_name" {
+output "cluster_database_name" {
   description = "The name of the default database in the Cluster"
-  value       = aws_redshift_cluster.this.database_name
+  value       = try(aws_redshift_cluster.this[0].database_name, "")
 }
 
-output "redshift_cluster_availability_zone" {
+output "cluster_availability_zone" {
   description = "The availability zone of the Cluster"
-  value       = aws_redshift_cluster.this.availability_zone
+  value       = try(aws_redshift_cluster.this[0].availability_zone, "")
 }
 
-output "redshift_cluster_automated_snapshot_retention_period" {
+output "cluster_automated_snapshot_retention_period" {
   description = "The backup retention period"
-  value       = aws_redshift_cluster.this.automated_snapshot_retention_period
+  value       = try(aws_redshift_cluster.this[0].automated_snapshot_retention_period, "")
 }
 
-output "redshift_cluster_preferred_maintenance_window" {
+output "cluster_preferred_maintenance_window" {
   description = "The backup window"
-  value       = aws_redshift_cluster.this.preferred_maintenance_window
+  value       = try(aws_redshift_cluster.this[0].preferred_maintenance_window, "")
 }
 
-output "redshift_cluster_endpoint" {
+output "cluster_endpoint" {
   description = "The connection endpoint"
-  value       = aws_redshift_cluster.this.endpoint
+  value       = try(aws_redshift_cluster.this[0].endpoint, "")
 }
 
-output "redshift_cluster_hostname" {
+output "cluster_hostname" {
   description = "The hostname of the Redshift cluster"
   value = replace(
-    aws_redshift_cluster.this.endpoint,
-    format(":%s", aws_redshift_cluster.this.port),
+    try(aws_redshift_cluster.this[0].endpoint, ""),
+    format(":%s", try(aws_redshift_cluster.this[0].port, "")),
     "",
   )
 }
 
-output "redshift_cluster_encrypted" {
+output "cluster_encrypted" {
   description = "Whether the data in the cluster is encrypted"
-  value       = aws_redshift_cluster.this.encrypted
+  value       = try(aws_redshift_cluster.this[0].encrypted, "")
 }
 
-output "redshift_cluster_security_groups" {
+output "cluster_security_groups" {
   description = "The security groups associated with the cluster"
-  value       = aws_redshift_cluster.this.cluster_security_groups
+  value       = try(aws_redshift_cluster.this[0].cluster_security_groups, [])
 }
 
-output "redshift_cluster_vpc_security_group_ids" {
+output "cluster_vpc_security_group_ids" {
   description = "The VPC security group ids associated with the cluster"
-  value       = aws_redshift_cluster.this.vpc_security_group_ids
+  value       = try(aws_redshift_cluster.this[0].vpc_security_group_ids, [])
 }
 
-output "redshift_cluster_port" {
+output "cluster_port" {
   description = "The port the cluster responds on"
-  value       = aws_redshift_cluster.this.port
+  value       = try(aws_redshift_cluster.this[0].port, "")
 }
 
-output "redshift_cluster_version" {
+output "cluster_version" {
   description = "The version of Redshift engine software"
-  value       = aws_redshift_cluster.this.cluster_version
+  value       = try(aws_redshift_cluster.this[0].cluster_version, "")
 }
 
-output "redshift_cluster_parameter_group_name" {
+output "cluster_parameter_group_name" {
   description = "The name of the parameter group to be associated with this cluster"
-  value       = aws_redshift_cluster.this.cluster_parameter_group_name
+  value       = try(aws_redshift_cluster.this[0].cluster_parameter_group_name, "")
 }
 
-output "redshift_cluster_subnet_group_name" {
+output "cluster_subnet_group_name" {
   description = "The name of a cluster subnet group to be associated with this cluster"
-  value       = aws_redshift_cluster.this.cluster_subnet_group_name
+  value       = try(aws_redshift_cluster.this[0].cluster_subnet_group_name, "")
 }
 
-output "redshift_cluster_public_key" {
+output "cluster_public_key" {
   description = "The public key for the cluster"
-  value       = aws_redshift_cluster.this.cluster_public_key
+  value       = try(aws_redshift_cluster.this[0].cluster_public_key, "")
 }
 
-output "redshift_cluster_revision_number" {
+output "cluster_revision_number" {
   description = "The specific revision number of the database in the cluster"
-  value       = aws_redshift_cluster.this.cluster_revision_number
+  value       = try(aws_redshift_cluster.this[0].cluster_revision_number, "")
 }
 
-output "redshift_subnet_group_id" {
-  description = "The ID of Redshift subnet group created by this module"
-  value       = element(concat(aws_redshift_subnet_group.this.*.id, [""]), 0)
+output "cluster_nodes" {
+  description = "The nodes in the cluster. Each node is a map of the following attributes: `node_role`, `private_ip_address`, and `public_ip_address`"
+  value       = try(aws_redshift_cluster.this[0].cluster_nodes, {})
 }
 
-output "redshift_parameter_group_id" {
-  description = "The ID of Redshift parameter group created by this module"
-  value       = element(concat(aws_redshift_parameter_group.this.*.id, [""]), 0)
+################################################################################
+# Paramter Group
+################################################################################
+
+output "parameter_group_arn" {
+  description = "Amazon Resource Name (ARN) of the parameter group created"
+  value       = try(aws_redshift_parameter_group.this[0].arn, "")
 }
 
-output "redshift_cluster_nodes" {
-  description = "Cluster nodes in the Redshift cluster"
-  value       = aws_redshift_cluster.this.cluster_nodes
+output "parameter_group_id" {
+  description = "The name of the Redshift parameter group created"
+  value       = try(aws_redshift_parameter_group.this[0].id, "")
+}
+
+################################################################################
+# Paramter Group
+################################################################################
+
+output "subnet_group_arn" {
+  description = "Amazon Resource Name (ARN) of the Redshift subnet group created"
+  value       = try(aws_redshift_subnet_group.this[0].arn, "")
+}
+
+output "subnet_group_id" {
+  description = "The ID of Redshift Subnet group created"
+  value       = try(aws_redshift_subnet_group.this[0].id, "")
 }

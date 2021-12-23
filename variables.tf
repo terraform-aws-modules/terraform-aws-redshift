@@ -1,235 +1,272 @@
-variable "cluster_identifier" {
-  description = "Custom name of the cluster"
-  type        = string
-}
-
-variable "cluster_version" {
-  description = "Version of Redshift engine cluster"
-  type        = string
-  default     = "1.0"
-  # Constraints: Only version 1.0 is currently available.
-  # http://docs.aws.amazon.com/cli/latest/reference/redshift/create-cluster.html
-}
-
-variable "cluster_node_type" {
-  description = "Node Type of Redshift cluster"
-  type        = string
-  # Valid Values: dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge | ds2.xlarge | ds2.8xlarge | ra3.xlplus | ra3.4xlarge | ra3.16xlarge.
-  # http://docs.aws.amazon.com/cli/latest/reference/redshift/create-cluster.html
-}
-
-variable "cluster_number_of_nodes" {
-  description = "Number of nodes in the cluster (values greater than 1 will trigger 'cluster_type' of 'multi-node')"
-  type        = number
-  default     = 3
-}
-
-variable "cluster_database_name" {
-  description = "The name of the database to create"
-  type        = string
-}
-
-variable "cluster_master_username" {
-  description = "Master username"
-  type        = string
-}
-
-variable "cluster_master_password" {
-  description = "Password for master user"
-  type        = string
-}
-
-variable "cluster_port" {
-  description = "Cluster port"
-  type        = number
-  default     = 5439
-}
-
-# This is for a custom parameter to be passed to the DB
-# We're "cloning" default ones, but we need to specify which should be copied
-variable "cluster_parameter_group" {
-  description = "Parameter group, depends on DB engine used"
-  type        = string
-  default     = "redshift-1.0"
-}
-
-variable "cluster_iam_roles" {
-  description = "A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time."
-  type        = list(string)
-  default     = []
-}
-
-variable "publicly_accessible" {
-  description = "Determines if Cluster can be publicly available (NOT recommended)"
-  type        = bool
-  default     = false
-}
-
-variable "redshift_subnet_group_name" {
-  description = "The name of a cluster subnet group to be associated with this cluster. If not specified, new subnet will be created."
-  type        = string
-  default     = ""
-}
-
-variable "parameter_group_name" {
-  description = "The name of the parameter group to be associated with this cluster. If not specified new parameter group will be created."
-  type        = string
-  default     = ""
-}
-
-variable "subnets" {
-  description = "List of subnets DB should be available at. It might be one subnet."
-  type        = list(string)
-  default     = []
-}
-
-variable "vpc_security_group_ids" {
-  description = "A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster."
-  type        = list(string)
-}
-
-variable "final_snapshot_identifier" {
-  description = "(Optional) The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, 'skip_final_snapshot' must be false."
-  type        = string
-  default     = ""
-}
-
-variable "skip_final_snapshot" {
-  description = "If true (default), no snapshot will be made before deleting DB"
+variable "create" {
+  description = "Determines whether to create Redshift cluster and resources (affects all resources)"
   type        = bool
   default     = true
 }
 
-variable "preferred_maintenance_window" {
-  description = "When AWS can run snapshot, can't overlap with maintenance window"
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Cluster
+################################################################################
+
+variable "cluster_identifier" {
+  description = "The Cluster Identifier. Must be a lower case string"
   type        = string
-  default     = "sat:10:00-sat:10:30"
+  default     = ""
 }
 
-variable "automated_snapshot_retention_period" {
-  description = "How long will we retain backups"
+variable "cluster_version" {
+  description = "The version of the Amazon Redshift engine software that you want to deploy on the cluster. The version selected runs on all the nodes in the cluster"
+  type        = string
+  default     = null
+}
+
+variable "allow_version_upgrade" {
+  description = "If true , major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster. Default is `true`"
+  type        = bool
+  default     = null
+}
+
+variable "node_type" {
+  description = "The node type to be provisioned for the cluster"
+  type        = string
+  default     = "dc2.large"
+  # Valid Values: ds2.xlarge | ds2.8xlarge | dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge | ra3.xlplus | ra3.4xlarge | ra3.16xlarge
+  # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/redshift/create-cluster.html
+}
+
+variable "number_of_nodes" {
+  description = "Number of nodes in the cluster. Defaults to 1. Note: values greater than 1 will trigger `cluster_type` to switch to `multi-node`"
   type        = number
-  default     = 0
+  default     = 1
 }
 
-variable "enable_logging" {
-  description = "Enables logging information such as queries and connection attempts, for the specified Amazon Redshift cluster."
+variable "port" {
+  description = "The port number on which the cluster accepts incoming connections. Default port is 5439"
+  type        = number
+  default     = null
+}
+
+variable "database_name" {
+  description = "The name of the first database to be created when the cluster is created. If you do not provide a name, Amazon Redshift will create a default database called `dev`"
+  type        = string
+  default     = null
+}
+
+variable "master_username" {
+  description = "Username for the master DB user (Required unless a `snapshot_identifier` is provided). Defaults to `awsuser`"
+  type        = string
+  default     = "awsuser"
+}
+
+variable "create_random_password" {
+  description = "Determines whether to create random password for RDS primary cluster"
+  type        = bool
+  default     = true
+}
+
+variable "random_password_length" {
+  description = "Length of random password to create. Defaults to `16`"
+  type        = number
+  default     = 16
+}
+
+variable "master_password" {
+  description = "Password for the master DB user. (Required unless a `snapshot_identifier` is provided). Must contain at least 8 chars, one uppercase letter, one lowercase letter, and one number"
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "iam_roles" {
+  description = "A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time"
+  type        = list(string)
+  default     = []
+}
+
+variable "encrypted" {
+  description = "If true, the data in the cluster is encrypted at rest"
+  type        = bool
+  default     = null
+}
+
+variable "kms_key_id" {
+  description = "The ARN for the KMS encryption key. When specifying `kms_key_id`, `encrypted` needs to be set to `true`"
+  type        = string
+  default     = null
+}
+
+variable "enhanced_vpc_routing" {
+  description = "If `true`, enhanced VPC routing is enabled"
+  type        = bool
+  default     = null
+}
+
+variable "cluster_security_groups" {
+  description = "A list of security groups to be associated with this cluster"
+  type        = list(string)
+  default     = null
+}
+
+variable "vpc_security_group_ids" {
+  description = "A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster"
+  type        = list(string)
+  default     = null
+}
+
+variable "publicly_accessible" {
+  description = "If true, the cluster can be accessed from a public network"
   type        = bool
   default     = false
 }
 
-variable "logging_bucket_name" {
-  description = "(Optional, required when enable_logging is true) The name of an existing S3 bucket where the log files are to be stored. Must be in the same region as the cluster and the cluster must have read bucket and put object permissions."
+variable "elastic_ip" {
+  description = "The Elastic IP (EIP) address for the cluster"
   type        = string
   default     = null
 }
 
-variable "logging_s3_key_prefix" {
-  description = "(Optional) The prefix applied to the log file names."
-  type        = string
-  default     = null
-}
-
-# parameter group config bits
-# ref: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html
-variable "enable_user_activity_logging" {
-  description = "Enable logging of user activity. See https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html"
-  type        = string
-  default     = "false"
-}
-
-variable "require_ssl" {
-  description = "Require SSL to connect to this cluster"
-  type        = string
-  default     = "false"
-}
-
-variable "snapshot_identifier" {
-  description = "(Optional) The name of the snapshot from which to create the new cluster."
-  type        = string
-  default     = null
-}
-
-variable "snapshot_cluster_identifier" {
-  description = "(Optional) The name of the cluster the source snapshot was created from."
-  type        = string
-  default     = null
-}
-
-variable "snapshot_copy_destination_region" {
-  description = "(Optional) The name of the region where the snapshot will be copied."
-  type        = string
-  default     = null
-}
-
-variable "snapshot_copy_grant_name" {
-  description = "(Optional) The name of the grant in the destination region. Required if you have a KMS encrypted cluster."
+variable "availability_zone" {
+  description = "The EC2 Availability Zone (AZ) in which you want Amazon Redshift to provision the cluster"
   type        = string
   default     = null
 }
 
 variable "owner_account" {
-  description = "(Optional) The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot."
+  description = "The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot"
   type        = string
   default     = null
 }
 
-variable "use_fips_ssl" {
-  description = "Enable FIPS-compliant SSL mode only if your system is required to be FIPS compliant."
+variable "snapshot_identifier" {
+  description = "The name of the snapshot from which to create the new cluster"
   type        = string
-  default     = "false"
+  default     = null
 }
 
-variable "wlm_json_configuration" {
-  description = "Configuration bits for WLM json. see https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html"
+variable "snapshot_cluster_identifier" {
+  description = "The name of the cluster the source snapshot was created from"
   type        = string
-  default     = "[{\"query_concurrency\": 5}]"
+  default     = null
 }
 
-variable "tags" {
-  description = "A mapping of tags to assign to all resources"
-  type        = map(string)
-  default     = {}
-}
-
-variable "encrypted" {
-  description = "(Optional) If true , the data in the cluster is encrypted at rest."
-  type        = bool
-  default     = false
-}
-
-variable "kms_key_id" {
-  description = "(Optional) The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true."
+variable "final_snapshot_identifier" {
+  description = "The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false`"
   type        = string
-  default     = ""
+  default     = null
 }
 
-variable "enhanced_vpc_routing" {
-  description = "(Optional) If true, enhanced VPC routing is enabled."
-  type        = bool
-  default     = false
-}
-
-variable "allow_version_upgrade" {
-  description = "(Optional) If true, major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster."
+variable "skip_final_snapshot" {
+  description = "Determines whether a final snapshot of the cluster is created before Redshift deletes the cluster. If true, a final cluster snapshot is not created. If false , a final cluster snapshot is created before the cluster is deleted"
   type        = bool
   default     = true
 }
 
-variable "enable_case_sensitive_identifier" {
-  description = "(Optional) A configuration value that determines whether name identifiers of databases, tables, and columns are case sensitive."
-  type        = bool
-  default     = false
+variable "automated_snapshot_retention_period" {
+  description = "The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with create-cluster-snapshot. Default is 1"
+  type        = number
+  default     = null
 }
 
-variable "max_concurrency_scaling_clusters" {
-  description = "(Optional) Max concurrency scaling clusters parameter (0 to 10)"
+variable "preferred_maintenance_window" {
+  description = "The weekly time range (in UTC) during which automated cluster maintenance can occur. Format: `ddd:hh24:mi-ddd:hh24:mi`"
   type        = string
-  default     = "1"
+  default     = "sat:10:00-sat:10:30"
 }
 
-variable "elastic_ip" {
-  description = "(Optional) The Elastic IP (EIP) address for the cluster."
+variable "snapshot_copy" {
+  description = "Configuration of automatic copy of snapshots from one region to another"
+  type        = map(string)
+  default     = {}
+}
+
+variable "logging" {
+  description = "Logging configuration for the cluster"
+  type        = map(string)
+  default     = {}
+}
+
+variable "cluster_timeouts" {
+  description = "Create, update, and delete timeout configurations for the cluster"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Paramter Group
+################################################################################
+
+variable "create_parameter_group" {
+  description = "Determines whether to create a parameter group or use existing"
+  type        = bool
+  default     = true
+}
+
+variable "parameter_group_name" {
+  description = "The name of the Redshift parameter group, existing or to be created"
   type        = string
   default     = null
+}
+
+variable "parameter_group_description" {
+  description = "The description of the Redshift parameter group. Defaults to `Managed by Terraform`"
+  type        = string
+  default     = null
+}
+
+variable "parameter_group_family" {
+  description = "The family of the Redshift parameter group"
+  type        = string
+  default     = "redshift-1.0"
+}
+
+variable "parameter_group_parameters" {
+  description = "value"
+  type        = map(any)
+  default     = {}
+}
+
+variable "parameter_group_tags" {
+  description = "Additional tags to add to the parameter group"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Subnet Group
+################################################################################
+
+variable "create_subnet_group" {
+  description = "Determines whether to create a subnet group or use existing"
+  type        = bool
+  default     = true
+}
+
+variable "subnet_group_name" {
+  description = "The name of the Redshift subnet group, existing or to be created"
+  type        = string
+  default     = null
+}
+
+variable "subnet_group_description" {
+  description = "The description of the Redshift Subnet group. Defaults to `Managed by Terraform`"
+  type        = string
+  default     = null
+}
+
+variable "subnet_ids" {
+  description = "An array of VPC subnet IDs to use in the subnet group"
+  type        = list(string)
+  default     = []
+}
+
+variable "subnet_group_tags" {
+  description = "Additional tags to add to the subnet group"
+  type        = map(string)
+  default     = {}
 }

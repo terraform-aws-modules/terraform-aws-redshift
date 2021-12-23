@@ -1,74 +1,85 @@
-locals {
-  # if passed a value for redshift_subnet_group_name, we'll use that instead of creating a subnet group
-  redshift_subnet_group_name = coalesce(
-    var.redshift_subnet_group_name,
-    element(concat(aws_redshift_subnet_group.this.*.name, [""]), 0),
-  )
 
-  # if we were passed a value for parameter_group_name, we'll use that instead of creating a parameter group name
-  parameter_group_name = coalesce(
-    var.parameter_group_name,
-    element(concat(aws_redshift_parameter_group.this.*.id, [""]), 0),
-  )
+resource "random_password" "master_password" {
+  count = var.create && var.create_random_password ? 1 : 0
+
+  length      = var.random_password_length
+  min_lower   = 1
+  min_numeric = 1
+  min_special = 1
+  min_upper   = 1
+  special     = false
+}
+
+################################################################################
+# Cluster
+################################################################################
+
+locals {
+  subnet_group_name    = var.create && var.create_subnet_group ? aws_redshift_subnet_group.this[0].name : var.subnet_group_name
+  parameter_group_name = var.create && var.create_parameter_group ? aws_redshift_parameter_group.this[0].id : var.parameter_group_name
+
+  master_password = var.create && var.create_random_password ? random_password.master_password[0].result : var.master_password
 }
 
 resource "aws_redshift_cluster" "this" {
-  cluster_identifier = var.cluster_identifier
-  cluster_version    = var.cluster_version
-  node_type          = var.cluster_node_type
-  number_of_nodes    = var.cluster_number_of_nodes
-  cluster_type       = var.cluster_number_of_nodes > 1 ? "multi-node" : "single-node"
-  database_name      = var.cluster_database_name
-  master_username    = var.cluster_master_username
-  master_password    = var.cluster_master_password
+  count = var.create ? 1 : 0
 
-  port = var.cluster_port
-
-  vpc_security_group_ids = var.vpc_security_group_ids
-
-  cluster_subnet_group_name    = local.redshift_subnet_group_name
+  cluster_identifier           = var.cluster_identifier
+  cluster_version              = var.cluster_version
+  allow_version_upgrade        = var.allow_version_upgrade
+  cluster_type                 = var.number_of_nodes > 1 ? "multi-node" : "single-node"
+  cluster_subnet_group_name    = local.subnet_group_name
   cluster_parameter_group_name = local.parameter_group_name
 
-  publicly_accessible = var.publicly_accessible
-  elastic_ip          = var.elastic_ip
+  node_type       = var.node_type
+  number_of_nodes = var.number_of_nodes
+  port            = var.port
 
-  # Restore from snapshot
-  snapshot_identifier         = var.snapshot_identifier
-  snapshot_cluster_identifier = var.snapshot_cluster_identifier
-  owner_account               = var.owner_account
+  database_name   = var.database_name
+  master_username = var.snapshot_identifier != null ? null : var.master_username
+  master_password = var.snapshot_identifier != null ? null : local.master_password
 
-  # Snapshots and backups
+  iam_roles  = var.iam_roles
+  encrypted  = var.encrypted
+  kms_key_id = var.kms_key_id
+
+  enhanced_vpc_routing    = var.enhanced_vpc_routing
+  cluster_security_groups = var.cluster_security_groups
+  vpc_security_group_ids  = var.vpc_security_group_ids
+  publicly_accessible     = var.publicly_accessible
+  elastic_ip              = var.elastic_ip
+  availability_zone       = var.availability_zone
+
+  owner_account                       = var.owner_account
+  snapshot_identifier                 = var.snapshot_identifier
+  snapshot_cluster_identifier         = var.snapshot_cluster_identifier
   final_snapshot_identifier           = var.skip_final_snapshot ? null : var.final_snapshot_identifier
   skip_final_snapshot                 = var.skip_final_snapshot
   automated_snapshot_retention_period = var.automated_snapshot_retention_period
   preferred_maintenance_window        = var.preferred_maintenance_window
-  allow_version_upgrade               = var.allow_version_upgrade
 
-  # Snapshots copy to another region
   dynamic "snapshot_copy" {
-    for_each = compact([var.snapshot_copy_destination_region])
+    for_each = can(var.snapshot_copy.destination_region) ? [var.snapshot_copy] : []
     content {
-      destination_region = var.snapshot_copy_destination_region
-      retention_period   = var.automated_snapshot_retention_period
-      grant_name         = var.snapshot_copy_grant_name
+      destination_region = snapshot_copy.value.destination_region
+      retention_period   = lookup(snapshot_copy.value, "retention_period", null)
+      grant_name         = lookup(snapshot_copy.value, "grant_name", null)
     }
   }
 
-  # IAM Roles
-  iam_roles = var.cluster_iam_roles
+  dynamic "logging" {
+    for_each = can(var.logging.enable) ? [var.logging] : []
+    content {
+      enable        = logging.value.enable
+      bucket_name   = logging.value.bucket_name
+      s3_key_prefix = lookup(logging.value, "s3_key_prefix", null)
+    }
+  }
 
-  # Encryption
-  encrypted  = var.encrypted
-  kms_key_id = var.kms_key_id
-
-  # Enhanced VPC routing
-  enhanced_vpc_routing = var.enhanced_vpc_routing
-
-  # Logging
-  logging {
-    enable        = var.enable_logging
-    bucket_name   = var.logging_bucket_name
-    s3_key_prefix = var.logging_s3_key_prefix
+  timeouts {
+    create = lookup(var.cluster_timeouts, "create", null)
+    update = lookup(var.cluster_timeouts, "update", null)
+    delete = lookup(var.cluster_timeouts, "delete", null)
   }
 
   tags = var.tags
@@ -78,55 +89,38 @@ resource "aws_redshift_cluster" "this" {
   }
 }
 
+################################################################################
+# Paramter Group
+################################################################################
+
 resource "aws_redshift_parameter_group" "this" {
-  # if we were passed a value for parameter_group_name, don't bother creating a parameter group
-  count  = length(var.parameter_group_name) > 0 ? 0 : 1
-  name   = "${var.cluster_identifier}-${replace(var.cluster_parameter_group, ".", "-")}-custom-params"
-  family = var.cluster_parameter_group
+  count = var.create && var.create_parameter_group ? 1 : 0
 
-  parameter {
-    name  = "wlm_json_configuration"
-    value = var.wlm_json_configuration
+  name        = coalesce(var.parameter_group_name, replace(var.cluster_identifier, ".", "-"))
+  description = var.parameter_group_description
+  family      = var.parameter_group_family
+
+  dynamic "parameter" {
+    for_each = var.parameter_group_parameters
+    content {
+      name  = parameter.value.name
+      value = parameter.value.value
+    }
   }
 
-  parameter {
-    # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-ssl-support.html
-    name  = "require_ssl"
-    value = var.require_ssl
-  }
-
-  parameter {
-    name  = "use_fips_ssl"
-    value = var.use_fips_ssl
-  }
-
-  parameter {
-    # ref: https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html
-    name  = "enable_user_activity_logging"
-    value = var.enable_user_activity_logging
-  }
-
-  parameter {
-    # ref: https://docs.aws.amazon.com/redshift/latest/dg/concurrency-scaling.html
-    name  = "max_concurrency_scaling_clusters"
-    value = var.max_concurrency_scaling_clusters
-  }
-
-  parameter {
-    # ref: https://docs.aws.amazon.com/redshift/latest/dg/r_enable_case_sensitive_identifier.html
-    name  = "enable_case_sensitive_identifier"
-    value = var.enable_case_sensitive_identifier
-  }
-
-  tags = var.tags
+  tags = merge(var.tags, var.parameter_group_tags)
 }
 
+################################################################################
+# Subnet Group
+################################################################################
+
 resource "aws_redshift_subnet_group" "this" {
-  count = var.redshift_subnet_group_name == "" ? 1 : 0
+  count = var.create && var.create_subnet_group ? 1 : 0
 
-  name        = var.cluster_identifier
-  description = "Redshift subnet group of ${var.cluster_identifier}"
-  subnet_ids  = var.subnets
+  name        = coalesce(var.subnet_group_name, var.cluster_identifier)
+  description = var.subnet_group_description
+  subnet_ids  = var.subnet_ids
 
-  tags = var.tags
+  tags = merge(var.tags, var.subnet_group_tags)
 }

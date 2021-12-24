@@ -95,7 +95,7 @@ variable "encrypted" {
   default     = null
 }
 
-variable "kms_key_id" {
+variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key. When specifying `kms_key_id`, `encrypted` needs to be set to `true`"
   type        = string
   default     = null
@@ -181,7 +181,7 @@ variable "preferred_maintenance_window" {
 
 variable "snapshot_copy" {
   description = "Configuration of automatic copy of snapshots from one region to another"
-  type        = map(string)
+  type        = any
   default     = {}
 }
 
@@ -267,6 +267,98 @@ variable "subnet_ids" {
 
 variable "subnet_group_tags" {
   description = "Additional tags to add to the subnet group"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Snapshot Schedule
+################################################################################
+
+variable "create_snapshot_schedule" {
+  description = "Determines whether to create a snapshot schedule"
+  type        = bool
+  default     = false
+}
+
+variable "snapshot_schedule_identifier" {
+  description = "The snapshot schedule identifier"
+  type        = string
+  default     = null
+}
+
+variable "use_snapshot_identifier_prefix" {
+  description = "Determines whether the identifier (`snapshot_schedule_identifier`) is used as a prefix"
+  type        = bool
+  default     = true
+}
+
+variable "snapshot_schedule_description" {
+  description = "The description of the snapshot schedule"
+  type        = string
+  default     = null
+}
+
+variable "snapshot_schedule_definitions" {
+  description = "The definition of the snapshot schedule. The definition is made up of schedule expressions, for example `cron(30 12 *)` or `rate(12 hours)`"
+  type        = list(string)
+  default     = []
+}
+
+variable "snapshot_schedule_force_destroy" {
+  description = "Whether to destroy all associated clusters with this snapshot schedule on deletion. Must be enabled and applied before attempting deletion"
+  type        = bool
+  default     = null
+}
+
+################################################################################
+# Scheduled Action
+################################################################################
+
+variable "scheduled_actions" {
+  description = "Map of maps containing scheduled action defintions"
+  type        = any
+  default     = {}
+}
+
+variable "create_scheduled_action_iam_role" {
+  description = "Determines whether a scheduled action IAM role is created"
+  type        = bool
+  default     = false
+}
+
+variable "iam_role_name" {
+  description = "Name to use on scheduled action IAM role created"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_use_name_prefix" {
+  description = "Determines whether scheduled action the IAM role name (`iam_role_name`) is used as a prefix"
+  type        = string
+  default     = true
+}
+
+variable "iam_role_path" {
+  description = "Scheduled action IAM role path"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_description" {
+  description = "Description of the scheduled action IAM role"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_permissions_boundary" {
+  description = "ARN of the policy that is used to set the permissions boundary for the scheduled action IAM role"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_tags" {
+  description = "A map of additional tags to add to the scheduled action IAM role created"
   type        = map(string)
   default     = {}
 }

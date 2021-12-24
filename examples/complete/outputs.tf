@@ -134,3 +134,37 @@ output "subnet_group_id" {
   description = "The ID of Redshift Subnet group created"
   value       = module.redshift.subnet_group_id
 }
+
+################################################################################
+# Snapshot Schedule
+################################################################################
+
+output "snapshot_schedule_arn" {
+  description = "Amazon Resource Name (ARN) of the Redshift Snapshot Schedule"
+  value       = module.redshift.snapshot_schedule_arn
+}
+
+################################################################################
+# Scheduled Action
+################################################################################
+
+output "scheduled_actions" {
+  description = "A map of maps containing scheduled action details"
+  value       = module.redshift.scheduled_actions
+}
+
+
+output "scheduled_action_iam_role_name" {
+  description = "Scheduled actions IAM role name"
+  value       = module.redshift.scheduled_action_iam_role_name
+}
+
+output "scheduled_action_iam_role_arn" {
+  description = "Scheduled actions IAM role ARN"
+  value       = module.redshift.scheduled_action_iam_role_arn
+}
+
+output "scheduled_action_iam_role_unique_id" {
+  description = "Stable and unique string identifying the scheduled action IAM role"
+  value       = module.redshift.scheduled_action_iam_role_unique_id
+}

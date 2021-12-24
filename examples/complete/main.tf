@@ -2,11 +2,16 @@ provider "aws" {
   region = local.region
 }
 
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
+
 locals {
   name   = "ex-redshift"
   region = "eu-west-1"
 
-  s3_prefix = "redshift/${local.name}"
+  s3_prefix = "redshift/${local.name}/"
 
   tags = {
     Owner       = "user"
@@ -51,6 +56,24 @@ module "sg" {
   tags = local.tags
 }
 
+resource "aws_kms_key" "redshift" {
+  description             = "Customer managed key for encrypting Redshift cluster"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  tags = local.tags
+}
+
+resource "aws_kms_key" "redshift_us_east_1" {
+  provider = aws.us_east_1
+
+  description             = "Customer managed key for encrypting Redshift snapshot cross-region"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  tags = local.tags
+}
+
 data "aws_redshift_service_account" "this" {}
 
 data "aws_iam_policy_document" "s3_redshift" {
@@ -68,7 +91,7 @@ data "aws_iam_policy_document" "s3_redshift" {
   statement {
     sid       = "RedshiftWrite"
     actions   = ["s3:PutObject"]
-    resources = ["${module.s3_logs.s3_bucket_arn}/${local.s3_prefix}"]
+    resources = ["${module.s3_logs.s3_bucket_arn}/${local.s3_prefix}*"]
     condition {
       test     = "StringEquals"
       values   = ["bucket-owner-full-control"]
@@ -138,6 +161,17 @@ module "default" {
 # Complete
 ################################################################################
 
+resource "aws_redshift_snapshot_copy_grant" "useast1" {
+  # Grants are declared outside of module because they are generally performed
+  # in the destination region and we do not embed multiple providers in the root module
+  provider = aws.us_east_1
+
+  snapshot_copy_grant_name = "${local.name}-us-east-1"
+  kms_key_id               = aws_kms_key.redshift_us_east_1.arn
+
+  tags = local.tags
+}
+
 module "redshift" {
   source = "../../"
 
@@ -151,20 +185,22 @@ module "redshift" {
   create_random_password = false
   master_password        = "MySecretPassw0rd1!" # Do better!
 
-  encrypted = true
+  encrypted   = true
+  kms_key_arn = aws_kms_key.redshift.arn
 
   enhanced_vpc_routing   = true
   vpc_security_group_ids = [module.sg.security_group_id]
   subnet_ids             = module.vpc.redshift_subnets
 
-  # TODO
-  # snapshot_copy = {
-  #   destination_region = "us-east-1"
-  #   grant_name         = local.name
-  # }
+  snapshot_copy = {
+    useast1 = {
+      destination_region = "us-east-1"
+      grant_name         = aws_redshift_snapshot_copy_grant.useast1.snapshot_copy_grant_name
+    }
+  }
 
   logging = {
-    enabled       = true
+    enable        = true
     bucket_name   = module.s3_logs.s3_bucket_id
     s3_key_prefix = local.s3_prefix
   }
@@ -174,8 +210,12 @@ module "redshift" {
   parameter_group_description = "Custom parameter group for ${local.name} cluster"
   parameter_group_parameters = {
     wlm_json_configuration = {
-      name  = "wlm_json_configuration"
-      value = "[{\"query_concurrency\": 15}]"
+      name = "wlm_json_configuration"
+      value = jsonencode([
+        {
+          query_concurrency = 15
+        }
+      ])
     }
     require_ssl = {
       name  = "require_ssl"
@@ -207,6 +247,40 @@ module "redshift" {
   subnet_group_description = "Custom subnet group for ${local.name} cluster"
   subnet_group_tags = {
     Additional = "CustomSubnetGroup"
+  }
+
+  # Snapshot schedule
+  create_snapshot_schedule        = true
+  snapshot_schedule_identifier    = local.name
+  use_snapshot_identifier_prefix  = true
+  snapshot_schedule_description   = "Example snapshot schedule"
+  snapshot_schedule_definitions   = ["rate(12 hours)"]
+  snapshot_schedule_force_destroy = true
+
+  # Scheduled actions
+  create_scheduled_action_iam_role = true
+  scheduled_actions = {
+    pause = {
+      name          = "${local.name}-pause"
+      description   = "Pause cluster every night"
+      schedule      = "cron(0 22 * * ? *)"
+      pause_cluster = true
+    }
+    resize = {
+      name        = "${local.name}-resize"
+      description = "Resize cluster (demo only)"
+      schedule    = "cron(00 13 * * ? *)"
+      resize_cluster = {
+        node_type       = "ds2.xlarge"
+        number_of_nodes = 5
+      }
+    }
+    resume = {
+      name           = "${local.name}-resume"
+      description    = "Resume cluster every morning"
+      schedule       = "cron(0 12 * * ? *)"
+      resume_cluster = true
+    }
   }
 
   tags = local.tags

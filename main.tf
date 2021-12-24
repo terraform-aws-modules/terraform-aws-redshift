@@ -41,7 +41,7 @@ resource "aws_redshift_cluster" "this" {
 
   iam_roles  = var.iam_roles
   encrypted  = var.encrypted
-  kms_key_id = var.kms_key_id
+  kms_key_id = var.kms_key_arn
 
   enhanced_vpc_routing    = var.enhanced_vpc_routing
   cluster_security_groups = var.cluster_security_groups
@@ -59,7 +59,7 @@ resource "aws_redshift_cluster" "this" {
   preferred_maintenance_window        = var.preferred_maintenance_window
 
   dynamic "snapshot_copy" {
-    for_each = can(var.snapshot_copy.destination_region) ? [var.snapshot_copy] : []
+    for_each = var.snapshot_copy
     content {
       destination_region = snapshot_copy.value.destination_region
       retention_period   = lookup(snapshot_copy.value, "retention_period", null)
@@ -123,4 +123,117 @@ resource "aws_redshift_subnet_group" "this" {
   subnet_ids  = var.subnet_ids
 
   tags = merge(var.tags, var.subnet_group_tags)
+}
+
+################################################################################
+# Snapshot Schedule
+################################################################################
+
+resource "aws_redshift_snapshot_schedule" "this" {
+  count = var.create && var.create_snapshot_schedule ? 1 : 0
+
+  identifier        = var.use_snapshot_identifier_prefix ? null : var.snapshot_schedule_identifier
+  identifier_prefix = var.use_snapshot_identifier_prefix ? "${var.snapshot_schedule_identifier}-" : null
+  description       = var.snapshot_schedule_description
+  definitions       = var.snapshot_schedule_definitions
+  force_destroy     = var.snapshot_schedule_force_destroy
+
+  tags = var.tags
+}
+
+resource "aws_redshift_snapshot_schedule_association" "this" {
+  count = var.create && var.create_snapshot_schedule ? 1 : 0
+
+  cluster_identifier  = aws_redshift_cluster.this[0].id
+  schedule_identifier = aws_redshift_snapshot_schedule.this[0].id
+}
+
+################################################################################
+# Scheduled Action
+################################################################################
+
+locals {
+  iam_role_name = coalesce(var.iam_role_name, "${var.cluster_identifier}-scheduled-action")
+}
+
+resource "aws_redshift_scheduled_action" "this" {
+  for_each = { for k, v in var.scheduled_actions : k => v if var.create }
+
+  name        = each.value.name
+  description = lookup(each.value, "description", null)
+  enable      = lookup(each.value, "enable", null)
+  start_time  = lookup(each.value, "start_time", null)
+  end_time    = lookup(each.value, "end_time", null)
+  schedule    = each.value.schedule
+  iam_role    = try(aws_iam_role.scheduled_action[0].arn, each.value.iam_role)
+
+  target_action {
+    dynamic "pause_cluster" {
+      for_each = can(each.value.pause_cluster) ? [each.value.pause_cluster] : []
+      content {
+        cluster_identifier = aws_redshift_cluster.this[0].id
+      }
+    }
+
+    dynamic "resize_cluster" {
+      for_each = can(each.value.resize_cluster) ? [each.value.resize_cluster] : []
+      content {
+        cluster_identifier = aws_redshift_cluster.this[0].id
+        classic            = lookup(resize_cluster.value, "classic", null)
+        cluster_type       = lookup(resize_cluster.value, "cluster_type", null)
+        node_type          = lookup(resize_cluster.value, "node_type", null)
+        number_of_nodes    = lookup(resize_cluster.value, "number_of_nodes", null)
+      }
+    }
+
+    dynamic "resume_cluster" {
+      for_each = can(each.value.resume_cluster) ? [each.value.resume_cluster] : []
+      content {
+        cluster_identifier = aws_redshift_cluster.this[0].id
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "scheduled_action" {
+  count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
+
+  name        = var.iam_role_use_name_prefix ? null : local.iam_role_name
+  name_prefix = var.iam_role_use_name_prefix ? "${local.iam_role_name}-" : null
+  path        = var.iam_role_path
+  description = var.iam_role_description
+
+  permissions_boundary  = var.iam_role_permissions_boundary
+  force_detach_policies = true
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Sid    = "ScheduleActionAssume"
+      Effect = "Allow"
+      Action = "sts:AssumeRole"
+      Principal = {
+        Service = ["scheduler.redshift.amazonaws.com"]
+      }
+    }]
+  })
+
+  inline_policy {
+    name = var.iam_role_name
+    policy = jsonencode({
+      Version = "2012-10-17",
+      Statement = [{
+        Sid    = "ModifyCluster"
+        Effect = "Allow"
+        Action = [
+          "redshift:PauseCluster",
+          "redshift:ResumeCluster",
+          "redshift:ResizeCluster"
+        ],
+        Resource = aws_redshift_cluster.this[0].arn
+      }]
+    })
+  }
+
+  tags = merge(var.tags, var.iam_role_tags)
 }

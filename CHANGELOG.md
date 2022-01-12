@@ -1,3 +1,14 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+### [3.4.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.4.0...v3.4.1) (2022-01-10)
+
+
+### Bug Fixes
+
+* update CI/CD process to enable auto-release workflow ([#60](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/60)) ([1bc386f](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/1bc386f275c83d35359a41e9e25644d02920c857))
+
 <a name="v3.4.0"></a>
 ## [v3.4.0] - 2021-09-03
 

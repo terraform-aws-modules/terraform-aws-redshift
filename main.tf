@@ -33,7 +33,6 @@ resource "aws_redshift_cluster" "this" {
   availability_zone_relocation_enabled = var.availability_zone_relocation_enabled
   cluster_identifier                   = var.cluster_identifier
   cluster_parameter_group_name         = local.parameter_group_name
-  cluster_security_groups              = var.cluster_security_groups
   cluster_subnet_group_name            = local.subnet_group_name
   cluster_type                         = var.number_of_nodes > 1 ? "multi-node" : "single-node"
   cluster_version                      = var.cluster_version

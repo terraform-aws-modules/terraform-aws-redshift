@@ -57,13 +57,6 @@ variable "cluster_identifier" {
 }
 
 # cluster_parameter_group_name -> see parameter group section
-
-variable "cluster_security_groups" {
-  description = "A list of security groups to be associated with the cluster"
-  type        = list(string)
-  default     = null
-}
-
 # cluster_subnet_group_name -> see subnet group section
 
 variable "cluster_version" {

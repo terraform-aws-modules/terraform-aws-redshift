@@ -73,7 +73,7 @@ resource "aws_redshift_cluster" "this" {
 }
 
 ################################################################################
-# Paramter Group
+# Parameter Group
 ################################################################################
 
 resource "aws_redshift_parameter_group" "this" {

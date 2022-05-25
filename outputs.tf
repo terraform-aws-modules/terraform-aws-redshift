@@ -76,6 +76,11 @@ output "cluster_vpc_security_group_ids" {
   value       = try(aws_redshift_cluster.this[0].vpc_security_group_ids, [])
 }
 
+output "cluster_dns_name" {
+  description = "The DNS name of the cluster"
+  value       = try(aws_redshift_cluster.this[0].dns_name, "")
+}
+
 output "cluster_port" {
   description = "The port the cluster responds on"
   value       = try(aws_redshift_cluster.this[0].port, "")
@@ -112,7 +117,7 @@ output "cluster_nodes" {
 }
 
 ################################################################################
-# Paramter Group
+# Parameter Group
 ################################################################################
 
 output "parameter_group_arn" {
@@ -126,7 +131,7 @@ output "parameter_group_id" {
 }
 
 ################################################################################
-# Paramter Group
+# Subnet Group
 ################################################################################
 
 output "subnet_group_arn" {

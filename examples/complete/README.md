@@ -1,6 +1,10 @@
 # Complete Redshift example
 
-Configuration in this directory creates VPC with Redshift subnet, security group and Redshift cluster itself.
+Configuration in this directory creates AWS Redshift clusters with demonstrating the various methods of configuring/customizing:
+
+- A disabled cluster
+- A default, "out of the box" Redshift cluster
+- A "complete" cluster demonstrating the broad array of configurations including the use of snapshot copy grants. NOTE: the term "complete" here is used to denote the "compete array of configurations offered" and is not representative of recommended/best practices for provisioning a Redshift cluster. Users should refer to the AWS documenation for recommended practices for provisioning a Redshift cluster.
 
 ## Usage
 
@@ -66,6 +70,7 @@ No inputs.
 | <a name="output_cluster_automated_snapshot_retention_period"></a> [cluster\_automated\_snapshot\_retention\_period](#output\_cluster\_automated\_snapshot\_retention\_period) | The backup retention period |
 | <a name="output_cluster_availability_zone"></a> [cluster\_availability\_zone](#output\_cluster\_availability\_zone) | The availability zone of the Cluster |
 | <a name="output_cluster_database_name"></a> [cluster\_database\_name](#output\_cluster\_database\_name) | The name of the default database in the Cluster |
+| <a name="output_cluster_dns_name"></a> [cluster\_dns\_name](#output\_cluster\_dns\_name) | The DNS name of the cluster |
 | <a name="output_cluster_encrypted"></a> [cluster\_encrypted](#output\_cluster\_encrypted) | Whether the data in the cluster is encrypted |
 | <a name="output_cluster_endpoint"></a> [cluster\_endpoint](#output\_cluster\_endpoint) | The connection endpoint |
 | <a name="output_cluster_hostname"></a> [cluster\_hostname](#output\_cluster\_hostname) | The hostname of the Redshift cluster |

@@ -8,126 +8,16 @@ provider "aws" {
 }
 
 locals {
-  name   = "ex-redshift"
+  name   = "ex-${replace(basename(path.cwd), "_", "-")}"
   region = "eu-west-1"
 
   s3_prefix = "redshift/${local.name}/"
 
   tags = {
-    Owner       = "user"
-    Environment = "dev"
+    Example    = local.name
+    GithubRepo = "terraform-aws-redshift"
+    GithubOrg  = "terraform-aws-modules"
   }
-}
-
-################################################################################
-# Supporting Resources
-################################################################################
-
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.name
-  cidr = "10.99.0.0/18"
-
-  azs              = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  redshift_subnets = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
-
-  # Disabling here since module creates one by default, named the same which conflicts
-  create_redshift_subnet_group = false
-
-  tags = local.tags
-}
-
-module "sg" {
-  source  = "terraform-aws-modules/security-group/aws//modules/redshift"
-  version = "~> 4.0"
-
-  name        = local.name
-  description = "A security group"
-  vpc_id      = module.vpc.vpc_id
-
-  # Allow ingress rules to be accessed only within current VPC
-  ingress_cidr_blocks = [module.vpc.vpc_cidr_block]
-
-  # Allow all rules for all protocols
-  egress_rules = ["all-all"]
-
-  tags = local.tags
-}
-
-resource "aws_kms_key" "redshift" {
-  description             = "Customer managed key for encrypting Redshift cluster"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  tags = local.tags
-}
-
-resource "aws_kms_key" "redshift_us_east_1" {
-  provider = aws.us_east_1
-
-  description             = "Customer managed key for encrypting Redshift snapshot cross-region"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  tags = local.tags
-}
-
-data "aws_redshift_service_account" "this" {}
-
-data "aws_iam_policy_document" "s3_redshift" {
-  statement {
-    sid       = "RedshiftAcl"
-    actions   = ["s3:GetBucketAcl"]
-    resources = [module.s3_logs.s3_bucket_arn]
-
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_redshift_service_account.this.arn]
-    }
-  }
-
-  statement {
-    sid       = "RedshiftWrite"
-    actions   = ["s3:PutObject"]
-    resources = ["${module.s3_logs.s3_bucket_arn}/${local.s3_prefix}*"]
-    condition {
-      test     = "StringEquals"
-      values   = ["bucket-owner-full-control"]
-      variable = "s3:x-amz-acl"
-    }
-
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_redshift_service_account.this.arn]
-    }
-  }
-}
-
-resource "random_pet" "s3_bucket" {
-  length = 2
-}
-
-module "s3_logs" {
-  source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
-
-  bucket = "${local.name}-${random_pet.s3_bucket.id}"
-  acl    = "log-delivery-write"
-
-  attach_policy = true
-  policy        = data.aws_iam_policy_document.s3_redshift.json
-
-  attach_deny_insecure_transport_policy = true
-  force_destroy                         = true
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-
-  tags = local.tags
 }
 
 ################################################################################
@@ -282,6 +172,117 @@ module "redshift" {
       resume_cluster = true
     }
   }
+
+  tags = local.tags
+}
+
+################################################################################
+# Supporting Resources
+################################################################################
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = "10.99.0.0/18"
+
+  azs              = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  redshift_subnets = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
+
+  # Disabling here since module creates one by default, named the same which conflicts
+  create_redshift_subnet_group = false
+
+  tags = local.tags
+}
+
+module "sg" {
+  source  = "terraform-aws-modules/security-group/aws//modules/redshift"
+  version = "~> 4.0"
+
+  name        = local.name
+  description = "A security group"
+  vpc_id      = module.vpc.vpc_id
+
+  # Allow ingress rules to be accessed only within current VPC
+  ingress_cidr_blocks = [module.vpc.vpc_cidr_block]
+
+  # Allow all rules for all protocols
+  egress_rules = ["all-all"]
+
+  tags = local.tags
+}
+
+resource "aws_kms_key" "redshift" {
+  description             = "Customer managed key for encrypting Redshift cluster"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  tags = local.tags
+}
+
+resource "aws_kms_key" "redshift_us_east_1" {
+  provider = aws.us_east_1
+
+  description             = "Customer managed key for encrypting Redshift snapshot cross-region"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  tags = local.tags
+}
+
+data "aws_redshift_service_account" "this" {}
+
+data "aws_iam_policy_document" "s3_redshift" {
+  statement {
+    sid       = "RedshiftAcl"
+    actions   = ["s3:GetBucketAcl"]
+    resources = [module.s3_logs.s3_bucket_arn]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_redshift_service_account.this.arn]
+    }
+  }
+
+  statement {
+    sid       = "RedshiftWrite"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.s3_logs.s3_bucket_arn}/${local.s3_prefix}*"]
+    condition {
+      test     = "StringEquals"
+      values   = ["bucket-owner-full-control"]
+      variable = "s3:x-amz-acl"
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_redshift_service_account.this.arn]
+    }
+  }
+}
+
+resource "random_pet" "s3_bucket" {
+  length = 2
+}
+
+module "s3_logs" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 3.0"
+
+  bucket = "${local.name}-${random_pet.s3_bucket.id}"
+  acl    = "log-delivery-write"
+
+  attach_policy = true
+  policy        = data.aws_iam_policy_document.s3_redshift.json
+
+  attach_deny_insecure_transport_policy = true
+  force_destroy                         = true
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   tags = local.tags
 }

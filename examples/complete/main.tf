@@ -111,7 +111,7 @@ resource "random_pet" "s3_bucket" {
 
 module "s3_logs" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   bucket = "${local.name}-${random_pet.s3_bucket.id}"
   acl    = "log-delivery-write"

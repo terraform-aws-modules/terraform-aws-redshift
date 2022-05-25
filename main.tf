@@ -237,3 +237,44 @@ resource "aws_iam_role" "scheduled_action" {
 
   tags = merge(var.tags, var.iam_role_tags)
 }
+
+################################################################################
+# Usage Limit
+################################################################################
+
+resource "aws_redshift_usage_limit" "this" {
+  for_each = { for k, v in var.usage_limits : k => v if var.create }
+
+  cluster_identifier = aws_redshift_cluster.this[0].id
+
+  amount        = each.value.amount
+  breach_action = try(each.value.breach_action, null)
+  feature_type  = each.value.feature_type
+  limit_type    = each.value.limit_type
+  period = try(each.value.period, null)
+
+  tags = merge(var.tags, try(each.value.tags, {}))
+}
+
+################################################################################
+# Authentication Profile
+################################################################################
+
+resource "aws_redshift_authentication_profile" "this" {
+  for_each = { for k, v in var.authentication_profiles : k => v if var.create }
+
+  authentication_profile_name    = each.value.name
+  authentication_profile_content = jsonencode(each.value.content)
+}
+
+################################################################################
+# HSM Client Certificate
+################################################################################
+
+resource "aws_redshift_hsm_client_certificate" "this" {
+  count = var.create_hsm_client_certificate ? 1 : 0
+
+  hsm_client_certificate_identifier = var.hsm_client_certificate_identifier
+
+  tags = var.tags
+}

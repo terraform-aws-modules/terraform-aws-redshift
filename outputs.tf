@@ -171,3 +171,35 @@ output "scheduled_action_iam_role_unique_id" {
   description = "Stable and unique string identifying the scheduled action IAM role"
   value       = try(aws_iam_role.scheduled_action[0].unique_id, "")
 }
+
+################################################################################
+# Usage Limit
+################################################################################
+
+output "usage_limits" {
+  description = "Map of usage limits created and their associated attributes"
+  value       = aws_redshift_usage_limit.this
+}
+
+################################################################################
+# Authentication Profile
+################################################################################
+
+output "authentication_profiles" {
+  description = "Map of authentication profiles created and their associated attributes"
+  value       = aws_redshift_authentication_profile.this
+}
+
+################################################################################
+# HSM Client Certificate
+################################################################################
+
+output "hsm_client_certificate_arn" {
+  description = "Amazon Resource Name (ARN) of the HSM client certificate"
+  value       = try(aws_redshift_hsm_client_certificate.this[0].arn, "")
+}
+
+output "hsm_client_certificate_public_key" {
+  description = "The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM"
+  value       = try(aws_redshift_hsm_client_certificate.this[0].hsm_client_certificate_public_key, "")
+}

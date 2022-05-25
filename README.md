@@ -37,15 +37,15 @@ module "redshift" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.57 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.16 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.57 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.16 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
 ## Modules
@@ -57,12 +57,15 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_iam_role.scheduled_action](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_redshift_authentication_profile.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_authentication_profile) | resource |
 | [aws_redshift_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster) | resource |
+| [aws_redshift_hsm_client_certificate.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_hsm_client_certificate) | resource |
 | [aws_redshift_parameter_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) | resource |
 | [aws_redshift_scheduled_action.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_scheduled_action) | resource |
 | [aws_redshift_snapshot_schedule.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_snapshot_schedule) | resource |
 | [aws_redshift_snapshot_schedule_association.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_snapshot_schedule_association) | resource |
 | [aws_redshift_subnet_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_subnet_group) | resource |
+| [aws_redshift_usage_limit.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_usage_limit) | resource |
 | [random_password.master_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 
 ## Inputs
@@ -70,6 +73,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_allow_version_upgrade"></a> [allow\_version\_upgrade](#input\_allow\_version\_upgrade) | If true , major version upgrades can be applied during the maintenance window to the Amazon Redshift engine that is running on the cluster. Default is `true` | `bool` | `null` | no |
+| <a name="input_authentication_profiles"></a> [authentication\_profiles](#input\_authentication\_profiles) | Map of authentication profiles to create | `any` | `{}` | no |
 | <a name="input_automated_snapshot_retention_period"></a> [automated\_snapshot\_retention\_period](#input\_automated\_snapshot\_retention\_period) | The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with create-cluster-snapshot. Default is 1 | `number` | `null` | no |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | The EC2 Availability Zone (AZ) in which you want Amazon Redshift to provision the cluster | `string` | `null` | no |
 | <a name="input_cluster_identifier"></a> [cluster\_identifier](#input\_cluster\_identifier) | The Cluster Identifier. Must be a lower case string | `string` | `""` | no |
@@ -77,6 +81,7 @@ No modules.
 | <a name="input_cluster_timeouts"></a> [cluster\_timeouts](#input\_cluster\_timeouts) | Create, update, and delete timeout configurations for the cluster | `map(string)` | `{}` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | The version of the Amazon Redshift engine software that you want to deploy on the cluster. The version selected runs on all the nodes in the cluster | `string` | `null` | no |
 | <a name="input_create"></a> [create](#input\_create) | Determines whether to create Redshift cluster and resources (affects all resources) | `bool` | `true` | no |
+| <a name="input_create_hsm_client_certificate"></a> [create\_hsm\_client\_certificate](#input\_create\_hsm\_client\_certificate) | Determines whether to create a HSM client certificate | `bool` | `false` | no |
 | <a name="input_create_parameter_group"></a> [create\_parameter\_group](#input\_create\_parameter\_group) | Determines whether to create a parameter group or use existing | `bool` | `true` | no |
 | <a name="input_create_random_password"></a> [create\_random\_password](#input\_create\_random\_password) | Determines whether to create random password for RDS primary cluster | `bool` | `true` | no |
 | <a name="input_create_scheduled_action_iam_role"></a> [create\_scheduled\_action\_iam\_role](#input\_create\_scheduled\_action\_iam\_role) | Determines whether a scheduled action IAM role is created | `bool` | `false` | no |
@@ -87,6 +92,7 @@ No modules.
 | <a name="input_encrypted"></a> [encrypted](#input\_encrypted) | If true, the data in the cluster is encrypted at rest | `bool` | `null` | no |
 | <a name="input_enhanced_vpc_routing"></a> [enhanced\_vpc\_routing](#input\_enhanced\_vpc\_routing) | If `true`, enhanced VPC routing is enabled | `bool` | `null` | no |
 | <a name="input_final_snapshot_identifier"></a> [final\_snapshot\_identifier](#input\_final\_snapshot\_identifier) | The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false` | `string` | `null` | no |
+| <a name="input_hsm_client_certificate_identifier"></a> [hsm\_client\_certificate\_identifier](#input\_hsm\_client\_certificate\_identifier) | The identifier of the HSM client certificate | `string` | `null` | no |
 | <a name="input_iam_role_description"></a> [iam\_role\_description](#input\_iam\_role\_description) | Description of the scheduled action IAM role | `string` | `null` | no |
 | <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name to use on scheduled action IAM role created | `string` | `null` | no |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | Scheduled action IAM role path | `string` | `null` | no |
@@ -131,6 +137,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_authentication_profiles"></a> [authentication\_profiles](#output\_authentication\_profiles) | Map of authentication profiles created and their associated attributes |
 | <a name="output_cluster_arn"></a> [cluster\_arn](#output\_cluster\_arn) | The Redshift cluster ARN |
 | <a name="output_cluster_automated_snapshot_retention_period"></a> [cluster\_automated\_snapshot\_retention\_period](#output\_cluster\_automated\_snapshot\_retention\_period) | The backup retention period |
 | <a name="output_cluster_availability_zone"></a> [cluster\_availability\_zone](#output\_cluster\_availability\_zone) | The availability zone of the Cluster |
@@ -152,6 +159,8 @@ No modules.
 | <a name="output_cluster_type"></a> [cluster\_type](#output\_cluster\_type) | The Redshift cluster type |
 | <a name="output_cluster_version"></a> [cluster\_version](#output\_cluster\_version) | The version of Redshift engine software |
 | <a name="output_cluster_vpc_security_group_ids"></a> [cluster\_vpc\_security\_group\_ids](#output\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
+| <a name="output_hsm_client_certificate_arn"></a> [hsm\_client\_certificate\_arn](#output\_hsm\_client\_certificate\_arn) | Amazon Resource Name (ARN) of the HSM client certificate |
+| <a name="output_hsm_client_certificate_public_key"></a> [hsm\_client\_certificate\_public\_key](#output\_hsm\_client\_certificate\_public\_key) | The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM |
 | <a name="output_parameter_group_arn"></a> [parameter\_group\_arn](#output\_parameter\_group\_arn) | Amazon Resource Name (ARN) of the parameter group created |
 | <a name="output_parameter_group_id"></a> [parameter\_group\_id](#output\_parameter\_group\_id) | The name of the Redshift parameter group created |
 | <a name="output_scheduled_action_iam_role_arn"></a> [scheduled\_action\_iam\_role\_arn](#output\_scheduled\_action\_iam\_role\_arn) | Scheduled actions IAM role ARN |
@@ -161,6 +170,7 @@ No modules.
 | <a name="output_snapshot_schedule_arn"></a> [snapshot\_schedule\_arn](#output\_snapshot\_schedule\_arn) | Amazon Resource Name (ARN) of the Redshift Snapshot Schedule |
 | <a name="output_subnet_group_arn"></a> [subnet\_group\_arn](#output\_subnet\_group\_arn) | Amazon Resource Name (ARN) of the Redshift subnet group created |
 | <a name="output_subnet_group_id"></a> [subnet\_group\_id](#output\_subnet\_group\_id) | The ID of Redshift Subnet group created |
+| <a name="output_usage_limits"></a> [usage\_limits](#output\_usage\_limits) | Map of usage limits created and their associated attributes |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors

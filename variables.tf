@@ -362,3 +362,39 @@ variable "iam_role_tags" {
   type        = map(string)
   default     = {}
 }
+
+################################################################################
+# Usage Limit
+################################################################################
+
+varaible "usage_limits" {
+  description = "Map of usage limit defintions to create"
+  type        = any
+  default     = {}
+}
+
+################################################################################
+# Authentication Profile
+################################################################################
+
+variable "authentication_profiles" {
+  description = "Map of authentication profiles to create"
+  type        = any
+  default     = {}
+}
+
+################################################################################
+# HSM Client Certificate
+################################################################################
+
+variable "create_hsm_client_certificate" {
+  description = "Determines whether to create a HSM client certificate"
+  type        = bool
+  default     = false
+}
+
+variable "hsm_client_certificate_identifier" {
+  description = "The identifier of the HSM client certificate"
+  type        = string
+  default     = null
+}

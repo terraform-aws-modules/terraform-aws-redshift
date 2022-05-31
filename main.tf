@@ -219,6 +219,21 @@ data "aws_iam_policy_document" "scheduled_action_assume" {
   }
 }
 
+resource "aws_iam_role" "scheduled_action" {
+  count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
+
+  name        = var.iam_role_use_name_prefix ? null : local.iam_role_name
+  name_prefix = var.iam_role_use_name_prefix ? "${local.iam_role_name}-" : null
+  path        = var.iam_role_path
+  description = var.iam_role_description
+
+  permissions_boundary  = var.iam_role_permissions_boundary
+  force_detach_policies = true
+  assume_role_policy    = data.aws_iam_policy_document.scheduled_action_assume[0].json
+
+  tags = merge(var.tags, var.iam_role_tags)
+}
+
 data "aws_iam_policy_document" "scheduled_action" {
   count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
 
@@ -237,24 +252,27 @@ data "aws_iam_policy_document" "scheduled_action" {
   }
 }
 
-resource "aws_iam_role" "scheduled_action" {
+resource "aws_iam_role_policy" "scheduled_action" {
   count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
 
-  name        = var.iam_role_use_name_prefix ? null : local.iam_role_name
-  name_prefix = var.iam_role_use_name_prefix ? "${local.iam_role_name}-" : null
-  path        = var.iam_role_path
-  description = var.iam_role_description
+  name   = var.iam_role_name
+  role   = aws_iam_role.scheduled_action[0].name
+  policy = data.aws_iam_policy_document.scheduled_action[0].json
+}
 
-  permissions_boundary  = var.iam_role_permissions_boundary
-  force_detach_policies = true
-  assume_role_policy    = data.aws_iam_policy_document.scheduled_action_assume[0].json
+################################################################################
+# Endpoint Access
+################################################################################
 
-  inline_policy {
-    name   = var.iam_role_name
-    policy = data.aws_iam_policy_document.scheduled_action[0].json
-  }
+resource "aws_redshift_endpoint_access" "this" {
+  count = var.create && var.create_endpoint_access ? 1 : 0
 
-  tags = merge(var.tags, var.iam_role_tags)
+  cluster_identifier = aws_redshift_cluster.this[0].id
+
+  endpoint_name          = var.endpoint_name
+  resource_owner         = var.endpoint_resource_owner
+  subnet_group_name      = coalesce(var.endpoint_subnet_group_name, local.subnet_group_name)
+  vpc_security_group_ids = var.endpoint_vpc_security_group_ids
 }
 
 ################################################################################
@@ -282,7 +300,7 @@ resource "aws_redshift_usage_limit" "this" {
 resource "aws_redshift_authentication_profile" "this" {
   for_each = { for k, v in var.authentication_profiles : k => v if var.create }
 
-  authentication_profile_name    = each.value.name
+  authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
 }
 

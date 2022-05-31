@@ -178,6 +178,30 @@ output "scheduled_action_iam_role_unique_id" {
 }
 
 ################################################################################
+# Endpoint Access
+################################################################################
+
+output "endpoint_access_address" {
+  description = "The DNS address of the endpoint"
+  value       = try(aws_redshift_endpoint_access.this[0].address, "")
+}
+
+output "endpoint_access_id" {
+  description = "The Redshift-managed VPC endpoint name"
+  value       = try(aws_redshift_endpoint_access.this[0].id, "")
+}
+
+output "endpoint_access_port" {
+  description = "The port number on which the cluster accepts incoming connections"
+  value       = try(aws_redshift_endpoint_access.this[0].port, "")
+}
+
+output "endpoint_access_vpc_endpoint" {
+  description = "The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below"
+  value       = try(aws_redshift_endpoint_access.this[0].vpc_endpoint, "")
+}
+
+################################################################################
 # Usage Limit
 ################################################################################
 

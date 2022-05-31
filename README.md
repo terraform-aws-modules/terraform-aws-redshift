@@ -37,7 +37,7 @@ module "redshift" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.16 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
@@ -57,8 +57,10 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_iam_role.scheduled_action](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.scheduled_action](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_redshift_authentication_profile.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_authentication_profile) | resource |
 | [aws_redshift_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster) | resource |
+| [aws_redshift_endpoint_access.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_endpoint_access) | resource |
 | [aws_redshift_hsm_client_certificate.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_hsm_client_certificate) | resource |
 | [aws_redshift_parameter_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) | resource |
 | [aws_redshift_scheduled_action.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_scheduled_action) | resource |
@@ -86,6 +88,7 @@ No modules.
 | <a name="input_cluster_timeouts"></a> [cluster\_timeouts](#input\_cluster\_timeouts) | Create, update, and delete timeout configurations for the cluster | `map(string)` | `{}` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | The version of the Amazon Redshift engine software that you want to deploy on the cluster. The version selected runs on all the nodes in the cluster | `string` | `null` | no |
 | <a name="input_create"></a> [create](#input\_create) | Determines whether to create Redshift cluster and resources (affects all resources) | `bool` | `true` | no |
+| <a name="input_create_endpoint_access"></a> [create\_endpoint\_access](#input\_create\_endpoint\_access) | Determines whether to create an endpoint access (managed VPC endpoint) | `bool` | `false` | no |
 | <a name="input_create_hsm_client_certificate"></a> [create\_hsm\_client\_certificate](#input\_create\_hsm\_client\_certificate) | Determines whether to create a HSM client certificate | `bool` | `false` | no |
 | <a name="input_create_parameter_group"></a> [create\_parameter\_group](#input\_create\_parameter\_group) | Determines whether to create a parameter group or use existing | `bool` | `true` | no |
 | <a name="input_create_random_password"></a> [create\_random\_password](#input\_create\_random\_password) | Determines whether to create random password for cluster `master_password` | `bool` | `true` | no |
@@ -96,6 +99,10 @@ No modules.
 | <a name="input_default_iam_role_arn"></a> [default\_iam\_role\_arn](#input\_default\_iam\_role\_arn) | The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created | `string` | `null` | no |
 | <a name="input_elastic_ip"></a> [elastic\_ip](#input\_elastic\_ip) | The Elastic IP (EIP) address for the cluster | `string` | `null` | no |
 | <a name="input_encrypted"></a> [encrypted](#input\_encrypted) | If `true`, the data in the cluster is encrypted at rest | `bool` | `true` | no |
+| <a name="input_endpoint_name"></a> [endpoint\_name](#input\_endpoint\_name) | The Redshift-managed VPC endpoint name | `string` | `""` | no |
+| <a name="input_endpoint_resource_owner"></a> [endpoint\_resource\_owner](#input\_endpoint\_resource\_owner) | The Amazon Web Services account ID of the owner of the cluster. This is only required if the cluster is in another Amazon Web Services account | `string` | `null` | no |
+| <a name="input_endpoint_subnet_group_name"></a> [endpoint\_subnet\_group\_name](#input\_endpoint\_subnet\_group\_name) | The subnet group from which Amazon Redshift chooses the subnet to deploy the endpoint | `string` | `""` | no |
+| <a name="input_endpoint_vpc_security_group_ids"></a> [endpoint\_vpc\_security\_group\_ids](#input\_endpoint\_vpc\_security\_group\_ids) | The security group IDs to use for the endpoint access (managed VPC endpoint) | `list(string)` | `[]` | no |
 | <a name="input_enhanced_vpc_routing"></a> [enhanced\_vpc\_routing](#input\_enhanced\_vpc\_routing) | If `true`, enhanced VPC routing is enabled | `bool` | `null` | no |
 | <a name="input_final_snapshot_identifier"></a> [final\_snapshot\_identifier](#input\_final\_snapshot\_identifier) | The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false` | `string` | `null` | no |
 | <a name="input_hsm_client_certificate_identifier"></a> [hsm\_client\_certificate\_identifier](#input\_hsm\_client\_certificate\_identifier) | The identifier of the HSM client certificate | `string` | `null` | no |
@@ -169,6 +176,10 @@ No modules.
 | <a name="output_cluster_type"></a> [cluster\_type](#output\_cluster\_type) | The Redshift cluster type |
 | <a name="output_cluster_version"></a> [cluster\_version](#output\_cluster\_version) | The version of Redshift engine software |
 | <a name="output_cluster_vpc_security_group_ids"></a> [cluster\_vpc\_security\_group\_ids](#output\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
+| <a name="output_endpoint_access_address"></a> [endpoint\_access\_address](#output\_endpoint\_access\_address) | The DNS address of the endpoint |
+| <a name="output_endpoint_access_id"></a> [endpoint\_access\_id](#output\_endpoint\_access\_id) | The Redshift-managed VPC endpoint name |
+| <a name="output_endpoint_access_port"></a> [endpoint\_access\_port](#output\_endpoint\_access\_port) | The port number on which the cluster accepts incoming connections |
+| <a name="output_endpoint_access_vpc_endpoint"></a> [endpoint\_access\_vpc\_endpoint](#output\_endpoint\_access\_vpc\_endpoint) | The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below |
 | <a name="output_hsm_client_certificate_arn"></a> [hsm\_client\_certificate\_arn](#output\_hsm\_client\_certificate\_arn) | Amazon Resource Name (ARN) of the HSM client certificate |
 | <a name="output_hsm_client_certificate_public_key"></a> [hsm\_client\_certificate\_public\_key](#output\_hsm\_client\_certificate\_public\_key) | The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM |
 | <a name="output_parameter_group_arn"></a> [parameter\_group\_arn](#output\_parameter\_group\_arn) | Amazon Resource Name (ARN) of the parameter group created |

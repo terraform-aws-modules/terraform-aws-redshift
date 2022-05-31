@@ -39,9 +39,9 @@ module "disabled" {
 module "default" {
   source = "../../"
 
-  cluster_identifier = local.name
+  cluster_identifier = "${local.name}-default"
 
-  vpc_security_group_ids = [module.sg.security_group_id]
+  vpc_security_group_ids = [module.security_group.security_group_id]
   subnet_ids             = module.vpc.redshift_subnets
 
   tags = local.tags
@@ -65,9 +65,9 @@ resource "aws_redshift_snapshot_copy_grant" "useast1" {
 module "redshift" {
   source = "../../"
 
-  cluster_identifier    = "${local.name}-complete"
+  cluster_identifier    = local.name
   allow_version_upgrade = true
-  node_type             = "ds2.xlarge"
+  node_type             = "ra3.xlplus"
   number_of_nodes       = 3
 
   database_name          = "mydb"
@@ -79,8 +79,10 @@ module "redshift" {
   kms_key_arn = aws_kms_key.redshift.arn
 
   enhanced_vpc_routing   = true
-  vpc_security_group_ids = [module.sg.security_group_id]
+  vpc_security_group_ids = [module.security_group.security_group_id]
   subnet_ids             = module.vpc.redshift_subnets
+
+  availability_zone_relocation_enabled = true
 
   snapshot_copy = {
     useast1 = {
@@ -173,6 +175,50 @@ module "redshift" {
     }
   }
 
+  # Endpoint access
+  create_endpoint_access          = true
+  endpoint_name                   = "${local.name}-example"
+  endpoint_subnet_group_name      = aws_redshift_subnet_group.endpoint.id
+  endpoint_vpc_security_group_ids = [module.security_group.security_group_id]
+
+  # Usage limits
+  usage_limits = {
+    currency_scaling = {
+      feature_type  = "concurrency-scaling"
+      limit_type    = "time"
+      amount        = 60
+      breach_action = "emit-metric"
+    }
+    spectrum = {
+      feature_type  = "spectrum"
+      limit_type    = "data-scanned"
+      amount        = 2
+      breach_action = "disable"
+      tags = {
+        Additional = "CustomUsageLimits"
+      }
+    }
+  }
+
+  # Authentication profile
+  authentication_profiles = {
+    example = {
+      name = "example"
+      content = {
+        AllowDBUserOverride = "1"
+        Client_ID           = "ExampleClientID"
+        App_ID              = "example"
+      }
+    }
+    bar = {
+      content = {
+        AllowDBUserOverride = "1"
+        Client_ID           = "ExampleClientID"
+        App_ID              = "bar"
+      }
+    }
+  }
+
   tags = local.tags
 }
 
@@ -188,23 +234,25 @@ module "vpc" {
   cidr = "10.99.0.0/18"
 
   azs              = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  redshift_subnets = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
+  private_subnets  = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
+  redshift_subnets = ["10.99.3.0/24", "10.99.4.0/24", "10.99.5.0/24"]
 
-  # Disabling here since module creates one by default, named the same which conflicts
+  # Use subnet group created by module
   create_redshift_subnet_group = false
 
   tags = local.tags
 }
 
-module "sg" {
+module "security_group" {
   source  = "terraform-aws-modules/security-group/aws//modules/redshift"
   version = "~> 4.0"
 
   name        = local.name
-  description = "A security group"
+  description = "Redshift security group"
   vpc_id      = module.vpc.vpc_id
 
   # Allow ingress rules to be accessed only within current VPC
+  ingress_rules       = ["redshift-tcp"]
   ingress_cidr_blocks = [module.vpc.vpc_cidr_block]
 
   # Allow all rules for all protocols
@@ -283,6 +331,13 @@ module "s3_logs" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+
+  tags = local.tags
+}
+
+resource "aws_redshift_subnet_group" "endpoint" {
+  name       = "${local.name}-endpoint"
+  subnet_ids = module.vpc.private_subnets
 
   tags = local.tags
 }

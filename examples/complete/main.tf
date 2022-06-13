@@ -21,46 +21,8 @@ locals {
 }
 
 ################################################################################
-# Disabled
-################################################################################
-
-module "disabled" {
-  source = "../../"
-
-  create = false
-
-  cluster_identifier = local.name
-}
-
-################################################################################
-# Default
-################################################################################
-
-module "default" {
-  source = "../../"
-
-  cluster_identifier = "${local.name}-default"
-
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
-
-  tags = local.tags
-}
-
-################################################################################
 # Complete
 ################################################################################
-
-resource "aws_redshift_snapshot_copy_grant" "useast1" {
-  # Grants are declared outside of module because they are generally performed
-  # in the destination region and we do not embed multiple providers in the root module
-  provider = aws.us_east_1
-
-  snapshot_copy_grant_name = "${local.name}-us-east-1"
-  kms_key_id               = aws_kms_key.redshift_us_east_1.arn
-
-  tags = local.tags
-}
 
 module "redshift" {
   source = "../../"
@@ -220,6 +182,44 @@ module "redshift" {
   }
 
   tags = local.tags
+}
+
+resource "aws_redshift_snapshot_copy_grant" "useast1" {
+  # Grants are declared outside of module because they are generally performed
+  # in the destination region and we do not embed multiple providers in the root module
+  provider = aws.us_east_1
+
+  snapshot_copy_grant_name = "${local.name}-us-east-1"
+  kms_key_id               = aws_kms_key.redshift_us_east_1.arn
+
+  tags = local.tags
+}
+
+################################################################################
+# Default
+################################################################################
+
+module "default" {
+  source = "../../"
+
+  cluster_identifier = "${local.name}-default"
+
+  vpc_security_group_ids = [module.security_group.security_group_id]
+  subnet_ids             = module.vpc.redshift_subnets
+
+  tags = local.tags
+}
+
+################################################################################
+# Disabled
+################################################################################
+
+module "disabled" {
+  source = "../../"
+
+  create = false
+
+  cluster_identifier = local.name
 }
 
 ################################################################################

@@ -447,19 +447,3 @@ variable "authentication_profiles" {
   type        = any
   default     = {}
 }
-
-################################################################################
-# HSM Client Certificate
-################################################################################
-
-variable "create_hsm_client_certificate" {
-  description = "Determines whether to create a HSM client certificate"
-  type        = bool
-  default     = false
-}
-
-variable "hsm_client_certificate_identifier" {
-  description = "The identifier of the HSM client certificate"
-  type        = string
-  default     = null
-}

@@ -303,15 +303,3 @@ resource "aws_redshift_authentication_profile" "this" {
   authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
 }
-
-################################################################################
-# HSM Client Certificate
-################################################################################
-
-resource "aws_redshift_hsm_client_certificate" "this" {
-  count = var.create_hsm_client_certificate ? 1 : 0
-
-  hsm_client_certificate_identifier = var.hsm_client_certificate_identifier
-
-  tags = var.tags
-}

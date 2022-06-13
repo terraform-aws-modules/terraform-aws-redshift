@@ -61,7 +61,6 @@ No modules.
 | [aws_redshift_authentication_profile.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_authentication_profile) | resource |
 | [aws_redshift_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster) | resource |
 | [aws_redshift_endpoint_access.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_endpoint_access) | resource |
-| [aws_redshift_hsm_client_certificate.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_hsm_client_certificate) | resource |
 | [aws_redshift_parameter_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) | resource |
 | [aws_redshift_scheduled_action.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_scheduled_action) | resource |
 | [aws_redshift_snapshot_schedule.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_snapshot_schedule) | resource |
@@ -89,7 +88,6 @@ No modules.
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | The version of the Amazon Redshift engine software that you want to deploy on the cluster. The version selected runs on all the nodes in the cluster | `string` | `null` | no |
 | <a name="input_create"></a> [create](#input\_create) | Determines whether to create Redshift cluster and resources (affects all resources) | `bool` | `true` | no |
 | <a name="input_create_endpoint_access"></a> [create\_endpoint\_access](#input\_create\_endpoint\_access) | Determines whether to create an endpoint access (managed VPC endpoint) | `bool` | `false` | no |
-| <a name="input_create_hsm_client_certificate"></a> [create\_hsm\_client\_certificate](#input\_create\_hsm\_client\_certificate) | Determines whether to create a HSM client certificate | `bool` | `false` | no |
 | <a name="input_create_parameter_group"></a> [create\_parameter\_group](#input\_create\_parameter\_group) | Determines whether to create a parameter group or use existing | `bool` | `true` | no |
 | <a name="input_create_random_password"></a> [create\_random\_password](#input\_create\_random\_password) | Determines whether to create random password for cluster `master_password` | `bool` | `true` | no |
 | <a name="input_create_scheduled_action_iam_role"></a> [create\_scheduled\_action\_iam\_role](#input\_create\_scheduled\_action\_iam\_role) | Determines whether a scheduled action IAM role is created | `bool` | `false` | no |
@@ -105,7 +103,6 @@ No modules.
 | <a name="input_endpoint_vpc_security_group_ids"></a> [endpoint\_vpc\_security\_group\_ids](#input\_endpoint\_vpc\_security\_group\_ids) | The security group IDs to use for the endpoint access (managed VPC endpoint) | `list(string)` | `[]` | no |
 | <a name="input_enhanced_vpc_routing"></a> [enhanced\_vpc\_routing](#input\_enhanced\_vpc\_routing) | If `true`, enhanced VPC routing is enabled | `bool` | `null` | no |
 | <a name="input_final_snapshot_identifier"></a> [final\_snapshot\_identifier](#input\_final\_snapshot\_identifier) | The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false` | `string` | `null` | no |
-| <a name="input_hsm_client_certificate_identifier"></a> [hsm\_client\_certificate\_identifier](#input\_hsm\_client\_certificate\_identifier) | The identifier of the HSM client certificate | `string` | `null` | no |
 | <a name="input_iam_role_description"></a> [iam\_role\_description](#input\_iam\_role\_description) | Description of the scheduled action IAM role | `string` | `null` | no |
 | <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name to use on scheduled action IAM role created | `string` | `null` | no |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | Scheduled action IAM role path | `string` | `null` | no |
@@ -180,8 +177,6 @@ No modules.
 | <a name="output_endpoint_access_id"></a> [endpoint\_access\_id](#output\_endpoint\_access\_id) | The Redshift-managed VPC endpoint name |
 | <a name="output_endpoint_access_port"></a> [endpoint\_access\_port](#output\_endpoint\_access\_port) | The port number on which the cluster accepts incoming connections |
 | <a name="output_endpoint_access_vpc_endpoint"></a> [endpoint\_access\_vpc\_endpoint](#output\_endpoint\_access\_vpc\_endpoint) | The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below |
-| <a name="output_hsm_client_certificate_arn"></a> [hsm\_client\_certificate\_arn](#output\_hsm\_client\_certificate\_arn) | Amazon Resource Name (ARN) of the HSM client certificate |
-| <a name="output_hsm_client_certificate_public_key"></a> [hsm\_client\_certificate\_public\_key](#output\_hsm\_client\_certificate\_public\_key) | The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM |
 | <a name="output_parameter_group_arn"></a> [parameter\_group\_arn](#output\_parameter\_group\_arn) | Amazon Resource Name (ARN) of the parameter group created |
 | <a name="output_parameter_group_id"></a> [parameter\_group\_id](#output\_parameter\_group\_id) | The name of the Redshift parameter group created |
 | <a name="output_scheduled_action_iam_role_arn"></a> [scheduled\_action\_iam\_role\_arn](#output\_scheduled\_action\_iam\_role\_arn) | Scheduled actions IAM role ARN |

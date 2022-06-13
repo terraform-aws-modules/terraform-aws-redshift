@@ -214,17 +214,3 @@ output "authentication_profiles" {
   description = "Map of authentication profiles created and their associated attributes"
   value       = module.redshift.authentication_profiles
 }
-
-################################################################################
-# HSM Client Certificate
-################################################################################
-
-output "hsm_client_certificate_arn" {
-  description = "Amazon Resource Name (ARN) of the HSM client certificate"
-  value       = module.redshift.hsm_client_certificate_arn
-}
-
-output "hsm_client_certificate_public_key" {
-  description = "The public key that the Amazon Redshift cluster will use to connect to the HSM. You must register the public key in the HSM"
-  value       = module.redshift.hsm_client_certificate_public_key
-}

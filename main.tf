@@ -101,7 +101,7 @@ resource "aws_redshift_cluster" "this" {
 ################################################################################
 
 resource "aws_redshift_cluster_iam_roles" "this" {
-  count = var.create ? 1 : 0
+  count = var.create && length(var.iam_role_arns) > 0 && var.default_iam_role_arn != null ? 1 : 0
 
   cluster_identifier   = aws_redshift_cluster.this[0].id
   iam_role_arns        = var.iam_role_arns

@@ -37,7 +37,6 @@ resource "aws_redshift_cluster" "this" {
   cluster_type                         = var.number_of_nodes > 1 ? "multi-node" : "single-node"
   cluster_version                      = var.cluster_version
   database_name                        = var.database_name
-  default_iam_role_arn                 = var.default_iam_role_arn
   elastic_ip                           = var.elastic_ip
   encrypted                            = var.encrypted
   enhanced_vpc_routing                 = var.enhanced_vpc_routing
@@ -302,4 +301,16 @@ resource "aws_redshift_authentication_profile" "this" {
 
   authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
+}
+
+################################################################################
+# IAM Roles
+################################################################################
+
+resource "aws_redshift_cluster_iam_roles" "this" {
+  count = var.create ? 1 : 0
+
+  cluster_identifier   = aws_redshift_cluster.this[0].id
+  iam_role_arns        = var.iam_role_arns
+  default_iam_role_arn = var.default_iam_role_arn
 }

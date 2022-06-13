@@ -37,15 +37,15 @@ module "redshift" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.16 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.17 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.16 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.17 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
 ## Modules
@@ -60,6 +60,7 @@ No modules.
 | [aws_iam_role_policy.scheduled_action](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_redshift_authentication_profile.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_authentication_profile) | resource |
 | [aws_redshift_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster) | resource |
+| [aws_redshift_cluster_iam_roles.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster_iam_roles) | resource |
 | [aws_redshift_endpoint_access.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_endpoint_access) | resource |
 | [aws_redshift_parameter_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) | resource |
 | [aws_redshift_scheduled_action.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_scheduled_action) | resource |
@@ -103,6 +104,7 @@ No modules.
 | <a name="input_endpoint_vpc_security_group_ids"></a> [endpoint\_vpc\_security\_group\_ids](#input\_endpoint\_vpc\_security\_group\_ids) | The security group IDs to use for the endpoint access (managed VPC endpoint) | `list(string)` | `[]` | no |
 | <a name="input_enhanced_vpc_routing"></a> [enhanced\_vpc\_routing](#input\_enhanced\_vpc\_routing) | If `true`, enhanced VPC routing is enabled | `bool` | `null` | no |
 | <a name="input_final_snapshot_identifier"></a> [final\_snapshot\_identifier](#input\_final\_snapshot\_identifier) | The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false` | `string` | `null` | no |
+| <a name="input_iam_role_arns"></a> [iam\_role\_arns](#input\_iam\_role\_arns) | A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time | `list(string)` | `[]` | no |
 | <a name="input_iam_role_description"></a> [iam\_role\_description](#input\_iam\_role\_description) | Description of the scheduled action IAM role | `string` | `null` | no |
 | <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name to use on scheduled action IAM role created | `string` | `null` | no |
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | Scheduled action IAM role path | `string` | `null` | no |

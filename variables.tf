@@ -71,11 +71,7 @@ variable "database_name" {
   default     = null
 }
 
-variable "default_iam_role_arn" {
-  description = "The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created"
-  type        = string
-  default     = null
-}
+# default_iam_role_arn -> see iam roles section
 
 variable "elastic_ip" {
   description = "The Elastic IP (EIP) address for the cluster"
@@ -446,4 +442,20 @@ variable "authentication_profiles" {
   description = "Map of authentication profiles to create"
   type        = any
   default     = {}
+}
+
+################################################################################
+# IAM Roles
+################################################################################
+
+variable "iam_role_arns" {
+  description = "A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time"
+  type        = list(string)
+  default     = []
+}
+
+variable "default_iam_role_arn" {
+  description = "The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created"
+  type        = string
+  default     = null
 }

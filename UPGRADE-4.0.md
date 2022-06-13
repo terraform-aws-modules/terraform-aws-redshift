@@ -4,7 +4,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ## List of backwards incompatible changes
 
-- Minimum supported version of Terraform AWS provider updated to v4.16 to support latest resources
+- Minimum supported version of Terraform AWS provider updated to v4.17 to support latest resources
 - Minimum supported version of Terraform updated to v1.0
 - `create` variable added to control whether all resources are created or not. This means that all resources now use the zeroth index `[0]` in the resource name
 
@@ -18,7 +18,7 @@ Please consult the `examples` directory for reference example configurations. If
 - `aws_redshift_scheduled_action` resource including support for creating the IAM role and policies plus the associated variables and outputs to support
 - `aws_redshift_usage_limit` resource including the variables and outputs used to support it
 - `aws_redshift_authentication_profile` resource including the variables and outputs used to support it
-- `aws_redshift_hsm_client_certificate` resource including the variables and outputs used to support it
+- `aws_redshift_cluster_iam_roles` resource including the variables and outputs used to support it
 
 ### Modified
 
@@ -47,6 +47,7 @@ Please consult the `examples` directory for reference example configurations. If
     - Cluster variables that per the AWS provider do not start with `cluster_` have been renamed to remove the `cluster_` prefix.
     - `enable_logging`, `logging_bucket_name`, and `logging_s3_key_prefix` have been replaced with the top level variable `logging` where their equivalent parameters `enable`, `bucket_name`, and `s3_key_prefix` are set, and support for new parameters `log_destination_type`, and `log_exports` have been added.
     - `snapshot_copy_destination_region`, `automated_snapshot_retention_period`, `snapshot_copy_grant_name` have been replaced with the top level variable `snapshot_copy` where their equivalent parameters `destination_region`, `retention_period`, and `grant_name` are set.
+    - `iam_roles` has been renamed to `iam_role_arns` to match API of `aws_redshift_cluster_iam_roles` resource now used
 
   - Parameter Group
     - `cluster_parameter_group` ->`parameter_group_family`
@@ -95,3 +96,148 @@ Please consult the `examples` directory for reference example configurations. If
     - `subnet_group_arn`
 
 ## Upgrade Migrations
+
+### Before v3.x Example
+
+```hcl
+module "redshift" {
+  source  = "terraform-aws-modules/redshift/aws"
+  version = "3.4.1"
+
+  cluster_identifier      = local.name
+  cluster_node_type       = "dc2.large"
+  cluster_number_of_nodes = 1
+
+  cluster_database_name   = "mydb"
+  cluster_master_username = "mydbuser"
+  cluster_master_password = "MySecretPassw0rd"
+
+  subnets                = module.vpc.redshift_subnets
+  vpc_security_group_ids = [module.sg.security_group_id]
+}
+```
+
+### After v4.x Example
+
+```hcl
+module "redshift" {
+  source  = "terraform-aws-modules/redshift/aws"
+  version = "4.0.0"
+
+  cluster_identifier = local.name
+  node_type          = "dc2.large"
+  number_of_nodes    = 1
+
+  database_name   = "mydb"
+  master_username = "mydbuser"
+  master_password = "MySecretPassw0rd"
+
+  subnet_ids             = module.vpc.redshift_subnets
+  vpc_security_group_ids = [module.sg.security_group_id]
+
+  # Maintain v3.x settings
+  encrypted                           = false
+  automated_snapshot_retention_period = 0
+  parameter_group_name                = "${local.name}-redshift-1-0-custom-params"
+  parameter_group_parameters = {
+    wlm_json_configuration = {
+      name = "wlm_json_configuration"
+      value = jsonencode([
+        {
+          query_concurrency = 5
+        }
+      ])
+    }
+    require_ssl = {
+      name  = "require_ssl"
+      value = false
+    }
+    use_fips_ssl = {
+      name  = "use_fips_ssl"
+      value = false
+    }
+    enable_user_activity_logging = {
+      name  = "enable_user_activity_logging"
+      value = false
+    }
+    max_concurrency_scaling_clusters = {
+      name  = "max_concurrency_scaling_clusters"
+      value = 1
+    }
+    enable_case_sensitive_identifier = {
+      name  = "enable_case_sensitive_identifier"
+      value = false
+    }
+  }
+  subnet_group_description = "Redshift subnet group of ${local.name}"
+  create_random_password   = false
+}
+```
+
+### Diff of Before vs After
+
+```diff
+module "redshift" {
+  source  = "terraform-aws-modules/redshift/aws"
+- version = "3.4.1"
++ version = "4.0.0"
+
+  cluster_identifier       = local.name
+-  cluster_node_type       = "dc2.large"
++  node_type               = "dc2.large"
+-  cluster_number_of_nodes = 1
++  number_of_nodes         = 1
+
+-  cluster_database_name   = "mydb"
++  database_name           = "mydb"
+-  cluster_master_username = "mydbuser"
++  master_username         = "mydbuser"
+-  cluster_master_password = "MySecretPassw0rd"
++  master_password         = "MySecretPassw0rd"
+
+-  subnets               = module.vpc.redshift_subnets
++  subnet_ids            = module.vpc.redshift_subnets
+  vpc_security_group_ids = [module.sg.security_group_id]
+
++  # Maintain v3.x settings
++  encrypted                           = false
++  automated_snapshot_retention_period = 0
++  parameter_group_name                = "${local.name}-redshift-1-0-custom-params"
++  parameter_group_parameters = {
++    wlm_json_configuration = {
++      name = "wlm_json_configuration"
++      value = jsonencode([
++        {
++          query_concurrency = 5
++        }
++      ])
++    }
++    require_ssl = {
++      name  = "require_ssl"
++      value = false
++    }
++    use_fips_ssl = {
++      name  = "use_fips_ssl"
++      value = false
++    }
++    enable_user_activity_logging = {
++      name  = "enable_user_activity_logging"
++      value = false
++    }
++    max_concurrency_scaling_clusters = {
++      name  = "max_concurrency_scaling_clusters"
++      value = 1
++    }
++    enable_case_sensitive_identifier = {
++      name  = "enable_case_sensitive_identifier"
++      value = false
++    }
++  }
++  subnet_group_description = "Redshift subnet group of ${local.name}"
++  create_random_password   = false
+}
+```
+
+### State Move Commands
+
+None required

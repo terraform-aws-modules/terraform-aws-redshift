@@ -41,8 +41,9 @@ resource "aws_redshift_cluster" "this" {
   encrypted                            = var.encrypted
   enhanced_vpc_routing                 = var.enhanced_vpc_routing
   final_snapshot_identifier            = var.skip_final_snapshot ? null : var.final_snapshot_identifier
-  iam_roles                            = var.iam_roles
   kms_key_id                           = var.kms_key_arn
+
+  # iam_roles and default_iam_roles are managed in the aws_redshift_cluster_iam_roles resource below
 
   dynamic "logging" {
     for_each = can(var.logging.enable) ? [var.logging] : []
@@ -93,6 +94,18 @@ resource "aws_redshift_cluster" "this" {
   lifecycle {
     ignore_changes = [master_password]
   }
+}
+
+################################################################################
+# IAM Roles
+################################################################################
+
+resource "aws_redshift_cluster_iam_roles" "this" {
+  count = var.create ? 1 : 0
+
+  cluster_identifier   = aws_redshift_cluster.this[0].id
+  iam_role_arns        = var.iam_role_arns
+  default_iam_role_arn = var.default_iam_role_arn
 }
 
 ################################################################################
@@ -301,16 +314,4 @@ resource "aws_redshift_authentication_profile" "this" {
 
   authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
-}
-
-################################################################################
-# IAM Roles
-################################################################################
-
-resource "aws_redshift_cluster_iam_roles" "this" {
-  count = var.create ? 1 : 0
-
-  cluster_identifier   = aws_redshift_cluster.this[0].id
-  iam_role_arns        = var.iam_role_arns
-  default_iam_role_arn = var.default_iam_role_arn
 }

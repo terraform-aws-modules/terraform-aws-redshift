@@ -97,11 +97,7 @@ variable "final_snapshot_identifier" {
   default     = null
 }
 
-variable "iam_roles" {
-  description = "A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time"
-  type        = list(string)
-  default     = []
-}
+# iam_roles -> see iam roles section
 
 variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `encrypted` needs to be set to `true`"
@@ -222,6 +218,22 @@ variable "cluster_timeouts" {
   description = "Create, update, and delete timeout configurations for the cluster"
   type        = map(string)
   default     = {}
+}
+
+################################################################################
+# IAM Roles
+################################################################################
+
+variable "iam_role_arns" {
+  description = "A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time"
+  type        = list(string)
+  default     = []
+}
+
+variable "default_iam_role_arn" {
+  description = "The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created"
+  type        = string
+  default     = null
 }
 
 ################################################################################
@@ -442,20 +454,4 @@ variable "authentication_profiles" {
   description = "Map of authentication profiles to create"
   type        = any
   default     = {}
-}
-
-################################################################################
-# IAM Roles
-################################################################################
-
-variable "iam_role_arns" {
-  description = "A list of IAM Role ARNs to associate with the cluster. A Maximum of 10 can be associated to the cluster at any time"
-  type        = list(string)
-  default     = []
-}
-
-variable "default_iam_role_arn" {
-  description = "The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created"
-  type        = string
-  default     = null
 }

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.4.1...v4.0.0) (2022-06-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Refactor module to align with current standards, add missing addtional Redshift resources to module (#61)
+
+### Features
+
+* Refactor module to align with current standards, add missing addtional Redshift resources to module ([#61](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/61)) ([c8a4c97](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/c8a4c97aa881e4e0d0c24489618704888554f901))
+
 ### [3.4.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.4.0...v3.4.1) (2022-01-10)
 
 

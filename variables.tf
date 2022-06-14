@@ -151,7 +151,7 @@ variable "master_username" {
 variable "node_type" {
   description = "The node type to be provisioned for the cluster"
   type        = string
-  default     = "dc2.large"
+  default     = ""
 }
 
 variable "number_of_nodes" {

@@ -24,7 +24,6 @@ Please consult the `examples` directory for reference example configurations. If
 
 - `number_of_nodes` default value of `3` changed to `1`
 - `cluster_version` default value of `"1.0"` changed to `null`
-- `cluster_node_type` default value of `dc2.large` added
 - `master_username` default value of `"awsuser"` added
 - `encrypted` default value changed to `true`
 - By default, a randomly generated password of length `16` is used for the `master_password`
@@ -32,7 +31,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Removed
 
--
+- None
 
 ### Variable and output changes
 
@@ -83,7 +82,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 4. Removed outputs:
 
-    -
+    - None
 
 5. Renamed outputs:
 

@@ -44,6 +44,7 @@ module "redshift" {
   vpc_security_group_ids = [module.security_group.security_group_id]
   subnet_ids             = module.vpc.redshift_subnets
 
+  # Only available when using the ra3.x type
   availability_zone_relocation_enabled = true
 
   snapshot_copy = {
@@ -137,7 +138,7 @@ module "redshift" {
     }
   }
 
-  # Endpoint access
+  # Endpoint access - only available when using the ra3.x type
   create_endpoint_access          = true
   endpoint_name                   = "${local.name}-example"
   endpoint_subnet_group_name      = aws_redshift_subnet_group.endpoint.id
@@ -203,6 +204,7 @@ module "default" {
   source = "../../"
 
   cluster_identifier = "${local.name}-default"
+  node_type          = "dc2.large"
 
   vpc_security_group_ids = [module.security_group.security_group_id]
   subnet_ids             = module.vpc.redshift_subnets
@@ -218,8 +220,6 @@ module "disabled" {
   source = "../../"
 
   create = false
-
-  cluster_identifier = local.name
 }
 
 ################################################################################
@@ -310,7 +310,7 @@ data "aws_iam_policy_document" "s3_redshift" {
   }
 }
 
-resource "random_pet" "s3_bucket" {
+resource "random_pet" "this" {
   length = 2
 }
 
@@ -318,7 +318,7 @@ module "s3_logs" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 3.0"
 
-  bucket = "${local.name}-${random_pet.s3_bucket.id}"
+  bucket = "${local.name}-${random_pet.this.id}"
   acl    = "log-delivery-write"
 
   attach_policy = true

@@ -107,7 +107,7 @@ variable "kms_key_arn" {
 
 variable "logging" {
   description = "Logging configuration for the cluster"
-  type        = map(string)
+  type        = map(any)
   default     = {}
 }
 

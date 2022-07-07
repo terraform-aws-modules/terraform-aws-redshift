@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.0.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.0...v4.0.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* Allow usage of log_exports key ([#68](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/68)) ([91264f1](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/91264f100fb21bd7fb3e23a37d3e6238d0fccc3d))
+
 ## [4.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v3.4.1...v4.0.0) (2022-06-14)
 
 

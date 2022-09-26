@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.0.2](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.1...v4.0.2) (2022-09-26)
+
+
+### Bug Fixes
+
+* Master username when specifying snapshot identifier ([#70](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/70)) ([d34e832](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/d34e832246822698b3d12fe1b6bd58f8c79613b1))
+
 ### [4.0.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.0...v4.0.1) (2022-07-07)
 
 

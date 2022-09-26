@@ -60,7 +60,7 @@ resource "aws_redshift_cluster" "this" {
   maintenance_track_name           = var.maintenance_track_name
   manual_snapshot_retention_period = var.manual_snapshot_retention_period
   master_password                  = var.snapshot_identifier != null ? null : local.master_password
-  master_username                  = var.snapshot_identifier != null ? null : var.master_username
+  master_username                  = var.master_username
   node_type                        = var.node_type
   number_of_nodes                  = var.number_of_nodes
   owner_account                    = var.owner_account

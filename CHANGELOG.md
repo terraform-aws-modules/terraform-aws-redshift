@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.0.3](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.2...v4.0.3) (2022-10-27)
+
+
+### Bug Fixes
+
+* Update CI configuration files to use latest version ([#74](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/74)) ([c6f65aa](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/c6f65aa12b6aec53bbcc00357bd4edfe243d4f56))
+
 ### [4.0.2](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.1...v4.0.2) (2022-09-26)
 
 

@@ -37,6 +37,7 @@ resource "aws_redshift_cluster" "this" {
   cluster_subnet_group_name            = local.subnet_group_name
   cluster_type                         = var.number_of_nodes > 1 ? "multi-node" : "single-node"
   cluster_version                      = var.cluster_version
+  cluster_revision_number              = var.cluster_revision_number
   database_name                        = var.database_name
   elastic_ip                           = var.elastic_ip
   encrypted                            = var.encrypted

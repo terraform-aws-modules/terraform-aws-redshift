@@ -65,6 +65,12 @@ variable "cluster_version" {
   default     = null
 }
 
+variable "cluster_revision_number" {
+  description = "The specific revision number of the database in the cluster"
+  type        = string
+  default     = null
+}
+
 variable "database_name" {
   description = "The name of the first database to be created when the cluster is created. If you do not provide a name, Amazon Redshift will create a default database called `dev`"
   type        = string

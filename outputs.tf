@@ -91,6 +91,11 @@ output "cluster_version" {
   value       = try(aws_redshift_cluster.this[0].cluster_version, "")
 }
 
+output "cluster_revision_number" {
+  description = "The specific revision number of the database in the cluster"
+  value       = try(aws_redshift_cluster.this[0].cluster_revision_number, "")
+}
+
 output "cluster_parameter_group_name" {
   description = "The name of the parameter group to be associated with this cluster"
   value       = try(aws_redshift_cluster.this[0].cluster_parameter_group_name, "")

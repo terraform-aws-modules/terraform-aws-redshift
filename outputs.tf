@@ -116,6 +116,18 @@ output "cluster_nodes" {
   value       = try(aws_redshift_cluster.this[0].cluster_nodes, {})
 }
 
+output "cluster_username" {
+  description = "The master username for the database"
+  value       = var.master_username
+  sensitive   = true
+}
+
+output "cluster_password" {
+  description = "The database password (this password may be old, because Terraform doesn't track it after initial creation)"
+  value       = var.snapshot_identifier != null ? null : local.master_password
+  sensitive   = true
+}
+
 ################################################################################
 # Parameter Group
 ################################################################################

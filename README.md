@@ -308,6 +308,7 @@ No modules.
 | <a name="output_cluster_node_type"></a> [cluster\_node\_type](#output\_cluster\_node\_type) | The type of nodes in the cluster |
 | <a name="output_cluster_nodes"></a> [cluster\_nodes](#output\_cluster\_nodes) | The nodes in the cluster. Each node is a map of the following attributes: `node_role`, `private_ip_address`, and `public_ip_address` |
 | <a name="output_cluster_parameter_group_name"></a> [cluster\_parameter\_group\_name](#output\_cluster\_parameter\_group\_name) | The name of the parameter group to be associated with this cluster |
+| <a name="output_cluster_password"></a> [cluster\_password](#output\_cluster\_password) | The database password (this password may be old, because Terraform doesn't track it after initial creation) |
 | <a name="output_cluster_port"></a> [cluster\_port](#output\_cluster\_port) | The port the cluster responds on |
 | <a name="output_cluster_preferred_maintenance_window"></a> [cluster\_preferred\_maintenance\_window](#output\_cluster\_preferred\_maintenance\_window) | The backup window |
 | <a name="output_cluster_public_key"></a> [cluster\_public\_key](#output\_cluster\_public\_key) | The public key for the cluster |
@@ -315,6 +316,7 @@ No modules.
 | <a name="output_cluster_security_groups"></a> [cluster\_security\_groups](#output\_cluster\_security\_groups) | The security groups associated with the cluster |
 | <a name="output_cluster_subnet_group_name"></a> [cluster\_subnet\_group\_name](#output\_cluster\_subnet\_group\_name) | The name of a cluster subnet group to be associated with this cluster |
 | <a name="output_cluster_type"></a> [cluster\_type](#output\_cluster\_type) | The Redshift cluster type |
+| <a name="output_cluster_username"></a> [cluster\_username](#output\_cluster\_username) | The master username for the database |
 | <a name="output_cluster_version"></a> [cluster\_version](#output\_cluster\_version) | The version of Redshift engine software |
 | <a name="output_cluster_vpc_security_group_ids"></a> [cluster\_vpc\_security\_group\_ids](#output\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
 | <a name="output_endpoint_access_address"></a> [endpoint\_access\_address](#output\_endpoint\_access\_address) | The DNS address of the endpoint |

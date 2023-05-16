@@ -128,6 +128,10 @@ resource "aws_redshift_parameter_group" "this" {
     }
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = merge(var.tags, var.parameter_group_tags)
 }
 

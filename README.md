@@ -30,10 +30,9 @@ module "redshift" {
   availability_zone_relocation_enabled = true
 
   snapshot_copy = {
-    useast1 = {
       destination_region = "us-east-1"
       grant_name         = "example-grant"
-    }
+      retention_period   = 1
   }
 
   logging = {

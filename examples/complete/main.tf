@@ -48,9 +48,9 @@ module "redshift" {
   availability_zone_relocation_enabled = true
 
   snapshot_copy = {
-      destination_region = "us-east-1"
-      grant_name         = aws_redshift_snapshot_copy_grant.useast1.snapshot_copy_grant_name
-      rentention_period  = 1
+    destination_region = "us-east-1"
+    grant_name         = aws_redshift_snapshot_copy_grant.useast1.snapshot_copy_grant_name
+    rentention_period  = 1
   }
 
   logging = {

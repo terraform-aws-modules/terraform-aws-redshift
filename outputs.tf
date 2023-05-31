@@ -66,11 +66,6 @@ output "cluster_encrypted" {
   value       = try(aws_redshift_cluster.this[0].encrypted, "")
 }
 
-output "cluster_security_groups" {
-  description = "The security groups associated with the cluster"
-  value       = try(aws_redshift_cluster.this[0].cluster_security_groups, [])
-}
-
 output "cluster_vpc_security_group_ids" {
   description = "The VPC security group ids associated with the cluster"
   value       = try(aws_redshift_cluster.this[0].vpc_security_group_ids, [])

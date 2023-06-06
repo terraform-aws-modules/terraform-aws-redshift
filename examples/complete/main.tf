@@ -7,9 +7,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_availability_zones" "available" {}
+
 locals {
-  name   = "ex-${replace(basename(path.cwd), "_", "-")}"
+  name   = "ex-${basename(path.cwd)}"
   region = "eu-west-1"
+
+  vpc_cidr = "10.0.0.0/16"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   s3_prefix = "redshift/${local.name}/"
 
@@ -48,10 +53,8 @@ module "redshift" {
   availability_zone_relocation_enabled = true
 
   snapshot_copy = {
-    useast1 = {
-      destination_region = "us-east-1"
-      grant_name         = aws_redshift_snapshot_copy_grant.useast1.snapshot_copy_grant_name
-    }
+    destination_region = "us-east-1"
+    grant_name         = aws_redshift_snapshot_copy_grant.useast1.snapshot_copy_grant_name
   }
 
   logging = {
@@ -228,14 +231,14 @@ module "disabled" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   name = local.name
-  cidr = "10.99.0.0/18"
+  cidr = local.vpc_cidr
 
-  azs              = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  private_subnets  = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
-  redshift_subnets = ["10.99.3.0/24", "10.99.4.0/24", "10.99.5.0/24"]
+  azs              = local.azs
+  private_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  redshift_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
 
   # Use subnet group created by module
   create_redshift_subnet_group = false
@@ -245,7 +248,7 @@ module "vpc" {
 
 module "security_group" {
   source  = "terraform-aws-modules/security-group/aws//modules/redshift"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name        = local.name
   description = "Redshift security group"
@@ -279,8 +282,6 @@ resource "aws_kms_key" "redshift_us_east_1" {
   tags = local.tags
 }
 
-data "aws_redshift_service_account" "this" {}
-
 data "aws_iam_policy_document" "s3_redshift" {
   statement {
     sid       = "RedshiftAcl"
@@ -288,8 +289,8 @@ data "aws_iam_policy_document" "s3_redshift" {
     resources = [module.s3_logs.s3_bucket_arn]
 
     principals {
-      type        = "AWS"
-      identifiers = [data.aws_redshift_service_account.this.arn]
+      type        = "Service"
+      identifiers = ["redshift.amazonaws.com"]
     }
   }
 
@@ -304,33 +305,27 @@ data "aws_iam_policy_document" "s3_redshift" {
     }
 
     principals {
-      type        = "AWS"
-      identifiers = [data.aws_redshift_service_account.this.arn]
+      type        = "Service"
+      identifiers = ["redshift.amazonaws.com"]
     }
   }
-}
-
-resource "random_pet" "this" {
-  length = 2
 }
 
 module "s3_logs" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 3.0"
 
-  bucket = "${local.name}-${random_pet.this.id}"
-  acl    = "log-delivery-write"
+  bucket_prefix = local.name
+  acl           = "log-delivery-write"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
 
   attach_policy = true
   policy        = data.aws_iam_policy_document.s3_redshift.json
 
   attach_deny_insecure_transport_policy = true
   force_destroy                         = true
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 
   tags = local.tags
 }

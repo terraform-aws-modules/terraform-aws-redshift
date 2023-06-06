@@ -45,7 +45,7 @@ variable "availability_zone" {
 }
 
 variable "availability_zone_relocation_enabled" {
-  description = "If `true`, the cluster can be relocated to another availabity zone, either automatically by AWS or when requested. Default is `false`. Available for use on clusters from the RA3 instance family"
+  description = "If `true`, the cluster can be relocated to another availability zone, either automatically by AWS or when requested. Default is `false`. Available for use on clusters from the RA3 instance family"
   type        = bool
   default     = null
 }
@@ -355,7 +355,7 @@ variable "snapshot_schedule_force_destroy" {
 ################################################################################
 
 variable "scheduled_actions" {
-  description = "Map of maps containing scheduled action defintions"
+  description = "Map of maps containing scheduled action definitions"
   type        = any
   default     = {}
 }
@@ -441,7 +441,7 @@ variable "endpoint_vpc_security_group_ids" {
 ################################################################################
 
 variable "usage_limits" {
-  description = "Map of usage limit defintions to create"
+  description = "Map of usage limit definitions to create"
   type        = any
   default     = {}
 }

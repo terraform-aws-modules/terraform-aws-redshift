@@ -72,7 +72,7 @@ resource "aws_redshift_cluster" "this" {
   snapshot_cluster_identifier      = var.snapshot_cluster_identifier
 
   dynamic "snapshot_copy" {
-    for_each = can(var.snapshot_copy.destination_region) ? [var.snapshot_copy] : []
+    for_each = length(var.snapshot_copy) > 0 ? [var.snapshot_copy] : []
 
     content {
       destination_region = snapshot_copy.value.destination_region
@@ -193,7 +193,7 @@ resource "aws_redshift_scheduled_action" "this" {
 
   target_action {
     dynamic "pause_cluster" {
-      for_each = can(each.value.pause_cluster) ? [each.value.pause_cluster] : []
+      for_each = try([each.value.pause_cluster], [])
 
       content {
         cluster_identifier = aws_redshift_cluster.this[0].id
@@ -201,7 +201,7 @@ resource "aws_redshift_scheduled_action" "this" {
     }
 
     dynamic "resize_cluster" {
-      for_each = can(each.value.resize_cluster) ? [each.value.resize_cluster] : []
+      for_each = try([each.value.resize_cluster], [])
 
       content {
         classic            = try(resize_cluster.value.classic, null)
@@ -213,7 +213,7 @@ resource "aws_redshift_scheduled_action" "this" {
     }
 
     dynamic "resume_cluster" {
-      for_each = can(each.value.resume_cluster) ? [each.value.resume_cluster] : []
+      for_each = try([each.value.resume_cluster], [])
 
       content {
         cluster_identifier = aws_redshift_cluster.this[0].id

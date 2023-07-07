@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.3...v5.0.0) (2023-06-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove deprecated EC2 classic fields removed in AWS provider v5.0 (#86)
+
+### Features
+
+* Remove deprecated EC2 classic fields removed in AWS provider v5.0 ([#86](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/86)) ([41fc56a](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/41fc56a7294ffdde4205c95445f0d8a603ff9711))
+
 ### [4.0.3](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.2...v4.0.3) (2022-10-27)
 
 

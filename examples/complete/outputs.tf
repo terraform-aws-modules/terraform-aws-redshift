@@ -62,11 +62,6 @@ output "cluster_encrypted" {
   value       = module.redshift.cluster_encrypted
 }
 
-output "cluster_security_groups" {
-  description = "The security groups associated with the cluster"
-  value       = module.redshift.cluster_security_groups
-}
-
 output "cluster_vpc_security_group_ids" {
   description = "The VPC security group ids associated with the cluster"
   value       = module.redshift.cluster_vpc_security_group_ids

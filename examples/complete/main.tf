@@ -37,10 +37,13 @@ module "redshift" {
   node_type             = "ra3.xlplus"
   number_of_nodes       = 3
 
-  database_name          = "mydb"
-  master_username        = "mydbuser"
-  create_random_password = false
-  master_password        = "MySecretPassw0rd1!" # Do better!
+  database_name   = "mydb"
+  master_username = "mydbuser"
+  # Either provide a good master password
+  #  create_random_password = false
+  #  master_password        = "MySecretPassw0rd1!" # Do better!
+  # Or make Redshift manage it in secrets manager
+  manage_master_password = true
 
   encrypted   = true
   kms_key_arn = aws_kms_key.redshift.arn

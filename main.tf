@@ -58,18 +58,20 @@ resource "aws_redshift_cluster" "this" {
     }
   }
 
-  maintenance_track_name           = var.maintenance_track_name
-  manual_snapshot_retention_period = var.manual_snapshot_retention_period
-  master_password                  = var.snapshot_identifier != null ? null : local.master_password
-  master_username                  = var.master_username
-  node_type                        = var.node_type
-  number_of_nodes                  = var.number_of_nodes
-  owner_account                    = var.owner_account
-  port                             = var.port
-  preferred_maintenance_window     = var.preferred_maintenance_window
-  publicly_accessible              = var.publicly_accessible
-  skip_final_snapshot              = var.skip_final_snapshot
-  snapshot_cluster_identifier      = var.snapshot_cluster_identifier
+  maintenance_track_name            = var.maintenance_track_name
+  manual_snapshot_retention_period  = var.manual_snapshot_retention_period
+  manage_master_password            = try(var.manage_master_password, false) ? var.manage_master_password : null
+  master_password                   = var.snapshot_identifier == null && !try(var.manage_master_password, false) ? local.master_password : null
+  master_password_secret_kms_key_id = try(var.master_password_secret_kms_key_id, null)
+  master_username                   = var.master_username
+  node_type                         = var.node_type
+  number_of_nodes                   = var.number_of_nodes
+  owner_account                     = var.owner_account
+  port                              = var.port
+  preferred_maintenance_window      = var.preferred_maintenance_window
+  publicly_accessible               = var.publicly_accessible
+  skip_final_snapshot               = var.skip_final_snapshot
+  snapshot_cluster_identifier       = var.snapshot_cluster_identifier
 
   dynamic "snapshot_copy" {
     for_each = length(var.snapshot_copy) > 0 ? [var.snapshot_copy] : []

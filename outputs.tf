@@ -213,3 +213,12 @@ output "authentication_profiles" {
   description = "Map of authentication profiles created and their associated attributes"
   value       = aws_redshift_authentication_profile.this
 }
+
+################################################################################
+# Managed Master Password Secret
+################################################################################
+
+output "master_password_secret_arn" {
+  description = "ARN of managed master password secret"
+  value       = try(aws_redshift_cluster.this[0].master_password_secret_arn, null)
+}

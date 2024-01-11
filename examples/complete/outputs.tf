@@ -209,3 +209,11 @@ output "authentication_profiles" {
   description = "Map of authentication profiles created and their associated attributes"
   value       = module.redshift.authentication_profiles
 }
+
+################################################################################
+# Managed Master Password Secret
+################################################################################
+output "master_password_secret_arn" {
+  description = "ARN of managed master password secret"
+  value       = module.redshift.master_password_secret_arn
+}

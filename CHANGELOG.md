@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.1.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.0.0...v5.1.0) (2024-01-13)
+
+
+### Features
+
+* Add managed secrets option (release for PR 87) ([51b112f](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/51b112f51f16476ff81ab6157020875e47b8f9fd))
+
 ## [5.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v4.0.3...v5.0.0) (2023-06-06)
 
 

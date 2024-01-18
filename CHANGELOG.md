@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [5.1.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.1.0...v5.1.1) (2024-01-18)
+
+
+### Bug Fixes
+
+* Correct `try()` lookup on `manage_master_password` variables ([#90](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/90)) ([b1090c4](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/b1090c4a8b95eb0886b6b06343985be1b6f8f8ca))
+
 ## [5.1.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.0.0...v5.1.0) (2024-01-13)
 
 

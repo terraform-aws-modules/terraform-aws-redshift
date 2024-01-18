@@ -125,13 +125,13 @@ variable "manual_snapshot_retention_period" {
 
 
 variable "manage_master_password" {
-  description = "(Optional) Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with master_password. One of master_password or manage_master_password is required unless snapshot_identifier is provided."
+  description = "Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password`. One of `master_password` or `manage_master_password` is required unless `snapshot_identifier` is provided"
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "master_password_secret_kms_key_id" {
-  description = "(Optional) ID of the KMS key used to encrypt the cluster admin credentials secret."
+  description = "ID of the KMS key used to encrypt the cluster admin credentials secret"
   type        = string
   default     = null
 }

@@ -20,8 +20,7 @@ locals {
   subnet_group_name    = var.create && var.create_subnet_group ? aws_redshift_subnet_group.this[0].name : var.subnet_group_name
   parameter_group_name = var.create && var.create_parameter_group ? aws_redshift_parameter_group.this[0].id : var.parameter_group_name
 
-  master_password        = var.create && var.create_random_password ? random_password.master_password[0].result : var.master_password
-  manage_master_password = try(var.manage_master_password, false) == true ? var.manage_master_password : false
+  master_password = var.create && var.create_random_password ? random_password.master_password[0].result : var.master_password
 }
 
 resource "aws_redshift_cluster" "this" {
@@ -61,9 +60,9 @@ resource "aws_redshift_cluster" "this" {
 
   maintenance_track_name            = var.maintenance_track_name
   manual_snapshot_retention_period  = var.manual_snapshot_retention_period
-  manage_master_password            = local.manage_master_password ? local.manage_master_password : null
-  master_password                   = var.snapshot_identifier == null && !local.manage_master_password ? local.master_password : null
-  master_password_secret_kms_key_id = try(var.master_password_secret_kms_key_id, null)
+  manage_master_password            = var.manage_master_password ? var.manage_master_password : null
+  master_password                   = var.snapshot_identifier == null && !var.manage_master_password ? local.master_password : null
+  master_password_secret_kms_key_id = var.master_password_secret_kms_key_id
   master_username                   = var.master_username
   node_type                         = var.node_type
   number_of_nodes                   = var.number_of_nodes

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.2.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.1.1...v5.2.0) (2024-02-10)
+
+
+### Features
+
+* Add `multi_az` support and add `cluster_namespace_arn` ([#93](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/93)) ([b4c2141](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/b4c2141e2f62a9507aafa43358e88541ca9993b8))
+
 ### [5.1.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.1.0...v5.1.1) (2024-01-18)
 
 

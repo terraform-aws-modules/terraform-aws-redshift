@@ -107,6 +107,11 @@ output "cluster_nodes" {
   value       = module.redshift.cluster_nodes
 }
 
+output "cluster_namespace_arn" {
+  description = "The namespace Amazon Resource Name (ARN) of the cluster"
+  value       = module.redshift.cluster_namespace_arn
+}
+
 ################################################################################
 # Parameter Group
 ################################################################################

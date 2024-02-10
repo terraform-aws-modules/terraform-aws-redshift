@@ -474,3 +474,25 @@ variable "authentication_profiles" {
   type        = any
   default     = {}
 }
+
+################################################################################
+# CloudWatch Log Group
+################################################################################
+
+variable "create_cloudwatch_log_group" {
+  description = "Determines whether a CloudWatch log group is created for each `var.logging.log_exports`"
+  type        = bool
+  default     = false
+}
+
+variable "cloudwatch_log_group_retention_in_days" {
+  description = "The number of days to retain CloudWatch logs for the redshift cluster"
+  type        = number
+  default     = 7
+}
+
+variable "cloudwatch_log_group_kms_key_id" {
+  description = "The ARN of the KMS Key to use when encrypting log data"
+  type        = string
+  default     = null
+}

@@ -43,6 +43,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | <a name="module_s3_logs"></a> [s3\_logs](#module\_s3\_logs) | terraform-aws-modules/s3-bucket/aws | ~> 3.0 |
 | <a name="module_security_group"></a> [security\_group](#module\_security\_group) | terraform-aws-modules/security-group/aws//modules/redshift | ~> 5.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.0 |
+| <a name="module_with_cloudwatch_logging"></a> [with\_cloudwatch\_logging](#module\_with\_cloudwatch\_logging) | ../../ | n/a |
 
 ## Resources
 

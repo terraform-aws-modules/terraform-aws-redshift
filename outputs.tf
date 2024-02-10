@@ -111,6 +111,11 @@ output "cluster_nodes" {
   value       = try(aws_redshift_cluster.this[0].cluster_nodes, {})
 }
 
+output "cluster_namespace_arn" {
+  description = "The namespace Amazon Resource Name (ARN) of the cluster"
+  value       = try(aws_redshift_cluster.this[0].cluster_namespace_arn, null)
+}
+
 ################################################################################
 # Parameter Group
 ################################################################################

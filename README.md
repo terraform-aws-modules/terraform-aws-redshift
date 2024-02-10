@@ -179,14 +179,14 @@ module "redshift" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.24 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.25 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.24 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.25 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
 ## Modules
@@ -260,6 +260,7 @@ No modules.
 | <a name="input_master_password"></a> [master\_password](#input\_master\_password) | Password for the master DB user. (Required unless a `snapshot_identifier` is provided). Must contain at least 8 chars, one uppercase letter, one lowercase letter, and one number | `string` | `null` | no |
 | <a name="input_master_password_secret_kms_key_id"></a> [master\_password\_secret\_kms\_key\_id](#input\_master\_password\_secret\_kms\_key\_id) | ID of the KMS key used to encrypt the cluster admin credentials secret | `string` | `null` | no |
 | <a name="input_master_username"></a> [master\_username](#input\_master\_username) | Username for the master DB user (Required unless a `snapshot_identifier` is provided). Defaults to `awsuser` | `string` | `"awsuser"` | no |
+| <a name="input_multi_az"></a> [multi\_az](#input\_multi\_az) | Specifies if the Redshift cluster is multi-AZ | `bool` | `null` | no |
 | <a name="input_node_type"></a> [node\_type](#input\_node\_type) | The node type to be provisioned for the cluster | `string` | `""` | no |
 | <a name="input_number_of_nodes"></a> [number\_of\_nodes](#input\_number\_of\_nodes) | Number of nodes in the cluster. Defaults to 1. Note: values greater than 1 will trigger `cluster_type` to switch to `multi-node` | `number` | `1` | no |
 | <a name="input_owner_account"></a> [owner\_account](#input\_owner\_account) | The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot | `string` | `null` | no |

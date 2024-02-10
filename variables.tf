@@ -143,6 +143,12 @@ variable "master_password" {
   sensitive   = true
 }
 
+variable "multi_az" {
+  description = "Specifies if the Redshift cluster is multi-AZ"
+  type        = bool
+  default     = null
+}
+
 variable "create_random_password" {
   description = "Determines whether to create random password for cluster `master_password`"
   type        = bool

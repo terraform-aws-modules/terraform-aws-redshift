@@ -64,7 +64,7 @@ resource "aws_redshift_cluster" "this" {
   master_password                   = var.snapshot_identifier == null && !var.manage_master_password ? local.master_password : null
   master_password_secret_kms_key_id = var.master_password_secret_kms_key_id
   master_username                   = var.master_username
-  multi_az                          = var.number_of_nodes > 1 ? var.multi_az : null
+  multi_az                          = var.multi_az
   node_type                         = var.node_type
   number_of_nodes                   = var.number_of_nodes
   owner_account                     = var.owner_account

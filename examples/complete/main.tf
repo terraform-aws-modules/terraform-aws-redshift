@@ -217,6 +217,7 @@ module "with_cloudwatch_logging" {
 
   create_cloudwatch_log_group = true
   logging = {
+    enable               = true
     log_destination_type = "cloudwatch"
     log_exports          = ["connectionlog", "userlog", "useractivitylog"]
   }

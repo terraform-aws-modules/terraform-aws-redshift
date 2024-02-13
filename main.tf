@@ -332,6 +332,7 @@ resource "aws_cloudwatch_log_group" "this" {
   name              = "/aws/redshift/cluster/${var.cluster_identifier}/${each.value}"
   retention_in_days = var.cloudwatch_log_group_retention_in_days
   kms_key_id        = var.cloudwatch_log_group_kms_key_id
+  skip_destroy      = var.cloudwatch_log_group_skip_destroy
 
   tags = var.tags
 }

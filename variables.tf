@@ -496,3 +496,9 @@ variable "cloudwatch_log_group_kms_key_id" {
   type        = string
   default     = null
 }
+
+variable "cloudwatch_log_group_skip_destroy" {
+  description = "Set to true if you do not wish the log group (and any logs it may contain) to be deleted at destroy time, and instead just remove the log group from the Terraform state"
+  type        = bool
+  default     = null
+}

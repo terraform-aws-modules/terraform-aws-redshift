@@ -488,7 +488,7 @@ variable "create_cloudwatch_log_group" {
 variable "cloudwatch_log_group_retention_in_days" {
   description = "The number of days to retain CloudWatch logs for the redshift cluster"
   type        = number
-  default     = 7
+  default     = 0
 }
 
 variable "cloudwatch_log_group_kms_key_id" {

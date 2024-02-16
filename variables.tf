@@ -502,3 +502,9 @@ variable "cloudwatch_log_group_skip_destroy" {
   type        = bool
   default     = null
 }
+
+variable "cloudwatch_log_group_tags" {
+  description = "Additional tags to add to cloudwatch log groups created"
+  type        = map(string)
+  default     = {}
+}

@@ -334,5 +334,5 @@ resource "aws_cloudwatch_log_group" "this" {
   kms_key_id        = var.cloudwatch_log_group_kms_key_id
   skip_destroy      = var.cloudwatch_log_group_skip_destroy
 
-  tags = var.tags
+  tags = merge(var.tags, var.cloudwatch_log_group_tags)
 }

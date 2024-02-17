@@ -474,3 +474,37 @@ variable "authentication_profiles" {
   type        = any
   default     = {}
 }
+
+################################################################################
+# CloudWatch Log Group
+################################################################################
+
+variable "create_cloudwatch_log_group" {
+  description = "Determines whether a CloudWatch log group is created for each `var.logging.log_exports`"
+  type        = bool
+  default     = false
+}
+
+variable "cloudwatch_log_group_retention_in_days" {
+  description = "The number of days to retain CloudWatch logs for the redshift cluster"
+  type        = number
+  default     = 0
+}
+
+variable "cloudwatch_log_group_kms_key_id" {
+  description = "The ARN of the KMS Key to use when encrypting log data"
+  type        = string
+  default     = null
+}
+
+variable "cloudwatch_log_group_skip_destroy" {
+  description = "Set to true if you do not wish the log group (and any logs it may contain) to be deleted at destroy time, and instead just remove the log group from the Terraform state"
+  type        = bool
+  default     = null
+}
+
+variable "cloudwatch_log_group_tags" {
+  description = "Additional tags to add to cloudwatch log groups created"
+  type        = map(string)
+  default     = {}
+}

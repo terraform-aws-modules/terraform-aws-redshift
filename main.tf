@@ -98,6 +98,8 @@ resource "aws_redshift_cluster" "this" {
   lifecycle {
     ignore_changes = [master_password]
   }
+
+  depends_on = [aws_cloudwatch_log_group.this]
 }
 
 ################################################################################
@@ -318,4 +320,19 @@ resource "aws_redshift_authentication_profile" "this" {
 
   authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
+}
+
+################################################################################
+# CloudWatch Log Group
+################################################################################
+
+resource "aws_cloudwatch_log_group" "this" {
+  for_each = toset([for log in try(var.logging.log_exports, []) : log if var.create && var.create_cloudwatch_log_group])
+
+  name              = "/aws/redshift/cluster/${var.cluster_identifier}/${each.value}"
+  retention_in_days = var.cloudwatch_log_group_retention_in_days
+  kms_key_id        = var.cloudwatch_log_group_kms_key_id
+  skip_destroy      = var.cloudwatch_log_group_skip_destroy
+
+  tags = merge(var.tags, var.cloudwatch_log_group_tags)
 }

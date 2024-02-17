@@ -203,6 +203,30 @@ resource "aws_redshift_snapshot_copy_grant" "useast1" {
 }
 
 ################################################################################
+# Cloudwatch Logging
+################################################################################
+
+module "with_cloudwatch_logging" {
+  source = "../../"
+
+  cluster_identifier = "${local.name}-with-cloudwatch-logging"
+  node_type          = "dc2.large"
+
+  vpc_security_group_ids = [module.security_group.security_group_id]
+  subnet_ids             = module.vpc.redshift_subnets
+
+  create_cloudwatch_log_group            = true
+  cloudwatch_log_group_retention_in_days = 7
+  logging = {
+    enable               = true
+    log_destination_type = "cloudwatch"
+    log_exports          = ["connectionlog", "userlog", "useractivitylog"]
+  }
+
+  tags = local.tags
+}
+
+################################################################################
 # Default
 ################################################################################
 

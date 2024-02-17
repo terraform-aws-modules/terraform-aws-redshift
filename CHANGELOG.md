@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.3.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.2.0...v5.3.0) (2024-02-17)
+
+
+### Features
+
+* Add support for creating cloudwatch log groups ([#94](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/94)) ([d8e144c](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/d8e144ce91803360c03b1985bdf860966a96dc48))
+
 ## [5.2.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.1.1...v5.2.0) (2024-02-10)
 
 

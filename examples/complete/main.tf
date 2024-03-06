@@ -45,6 +45,9 @@ module "redshift" {
   # Or make Redshift manage it in secrets manager
   manage_master_password = true
 
+  manage_master_password_rotation              = true
+  master_password_rotation_schedule_expression = "rate(90 days)"
+
   encrypted   = true
   kms_key_arn = aws_kms_key.redshift.arn
 

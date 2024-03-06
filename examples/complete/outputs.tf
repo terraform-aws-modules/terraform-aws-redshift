@@ -222,3 +222,8 @@ output "master_password_secret_arn" {
   description = "ARN of managed master password secret"
   value       = module.redshift.master_password_secret_arn
 }
+
+output "master_password_secretsmanager_secret_rotation_enabled" {
+  description = "Specifies whether automatic rotation is enabled for the secret"
+  value       = module.redshift.cluster_secretsmanager_secret_rotation_enabled
+}

@@ -538,7 +538,7 @@ variable "master_password_rotation_duration" {
 }
 
 variable "master_password_rotation_schedule_expression" {
-  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either automatically_after_days or schedule_expression must be specified."
+  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified."
   type        = string
   default     = null
 }

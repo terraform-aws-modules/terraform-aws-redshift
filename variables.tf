@@ -526,7 +526,7 @@ variable "master_password_rotate_immediately" {
 }
 
 variable "master_password_rotation_automatically_after_days" {
-  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either automatically_after_days or schedule_expression must be specified."
+  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified."
   type        = number
   default     = null
 }

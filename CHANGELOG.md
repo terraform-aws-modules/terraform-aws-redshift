@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.3.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.3.0...v5.3.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* Update CI workflow versions to remove deprecated runtime warnings ([#96](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/96)) ([bd1679d](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/bd1679dfb4ea1770598ba72a03558581a9573b40))
+
 ## [5.3.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.2.0...v5.3.0) (2024-02-17)
 
 

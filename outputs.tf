@@ -227,3 +227,12 @@ output "master_password_secret_arn" {
   description = "ARN of managed master password secret"
   value       = try(aws_redshift_cluster.this[0].master_password_secret_arn, null)
 }
+
+################################################################################
+# Managed Secret Rotation
+################################################################################
+
+output "cluster_secretsmanager_secret_rotation_enabled" {
+  description = "Specifies whether automatic rotation is enabled for the secret"
+  value       = try(aws_secretsmanager_secret_rotation.this[0].rotation_enabled, null)
+}

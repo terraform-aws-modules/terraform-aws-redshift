@@ -336,3 +336,20 @@ resource "aws_cloudwatch_log_group" "this" {
 
   tags = merge(var.tags, var.cloudwatch_log_group_tags)
 }
+
+################################################################################
+# Managed Secret Rotation
+################################################################################
+
+resource "aws_secretsmanager_secret_rotation" "this" {
+  count = var.create && var.manage_master_password && var.manage_master_password_rotation ? 1 : 0
+
+  secret_id          = aws_redshift_cluster.this[0].master_password_secret_arn
+  rotate_immediately = var.master_password_rotate_immediately
+
+  rotation_rules {
+    automatically_after_days = var.master_password_rotation_automatically_after_days
+    duration                 = var.master_password_rotation_duration
+    schedule_expression      = var.master_password_rotation_schedule_expression
+  }
+}

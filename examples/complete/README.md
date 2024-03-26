@@ -92,6 +92,7 @@ No inputs.
 | <a name="output_endpoint_access_port"></a> [endpoint\_access\_port](#output\_endpoint\_access\_port) | The port number on which the cluster accepts incoming connections |
 | <a name="output_endpoint_access_vpc_endpoint"></a> [endpoint\_access\_vpc\_endpoint](#output\_endpoint\_access\_vpc\_endpoint) | The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below |
 | <a name="output_master_password_secret_arn"></a> [master\_password\_secret\_arn](#output\_master\_password\_secret\_arn) | ARN of managed master password secret |
+| <a name="output_master_password_secretsmanager_secret_rotation_enabled"></a> [master\_password\_secretsmanager\_secret\_rotation\_enabled](#output\_master\_password\_secretsmanager\_secret\_rotation\_enabled) | Specifies whether automatic rotation is enabled for the secret |
 | <a name="output_parameter_group_arn"></a> [parameter\_group\_arn](#output\_parameter\_group\_arn) | Amazon Resource Name (ARN) of the parameter group created |
 | <a name="output_parameter_group_id"></a> [parameter\_group\_id](#output\_parameter\_group\_id) | The name of the Redshift parameter group created |
 | <a name="output_scheduled_action_iam_role_arn"></a> [scheduled\_action\_iam\_role\_arn](#output\_scheduled\_action\_iam\_role\_arn) | Scheduled actions IAM role ARN |

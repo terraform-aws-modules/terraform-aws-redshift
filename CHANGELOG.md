@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.4.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.3.1...v5.4.0) (2024-03-26)
+
+
+### Features
+
+* Secretsmanager secret rotation for master user password ([#97](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/97)) ([e542e41](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/e542e41b233742bb8789c2a391c2ca89775f7ec3))
+
 ## [5.3.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.3.0...v5.3.1) (2024-03-06)
 
 

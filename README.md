@@ -179,14 +179,14 @@ module "redshift" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.35 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.45 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.35 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.45 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
 ## Modules
@@ -204,8 +204,10 @@ No modules.
 | [aws_redshift_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster) | resource |
 | [aws_redshift_cluster_iam_roles.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster_iam_roles) | resource |
 | [aws_redshift_endpoint_access.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_endpoint_access) | resource |
+| [aws_redshift_logging.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_logging) | resource |
 | [aws_redshift_parameter_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) | resource |
 | [aws_redshift_scheduled_action.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_scheduled_action) | resource |
+| [aws_redshift_snapshot_copy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_snapshot_copy) | resource |
 | [aws_redshift_snapshot_schedule.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_snapshot_schedule) | resource |
 | [aws_redshift_snapshot_schedule_association.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_snapshot_schedule_association) | resource |
 | [aws_redshift_subnet_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_subnet_group) | resource |

@@ -97,6 +97,7 @@ resource "aws_redshift_cluster" "this" {
 
   lifecycle {
     ignore_changes = [master_password]
+    prevent_destroy = var.prevent_deletion
   }
 
   depends_on = [aws_cloudwatch_log_group.this]

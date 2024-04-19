@@ -197,6 +197,12 @@ variable "preferred_maintenance_window" {
   default     = "sat:10:00-sat:10:30"
 }
 
+variable "prevent_deletion" {
+  description = "If true, the cluster can't be deleted by Terraform"
+  type        = bool
+  default     = false
+}
+
 variable "publicly_accessible" {
   description = "If true, the cluster can be accessed from a public network"
   type        = bool

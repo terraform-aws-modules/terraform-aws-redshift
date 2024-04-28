@@ -59,7 +59,7 @@ Please consult the `examples` directory for reference example configurations. If
 ```hcl
 module "redshift" {
   source  = "terraform-aws-modules/redshift/aws"
-  version = "5.4.0"
+  version = "~> 5.0"
 
   snapshot_copy = {
     destination_region = "us-east-1"
@@ -79,7 +79,7 @@ module "redshift" {
 ```hcl
 module "redshift" {
   source  = "terraform-aws-modules/redshift/aws"
-  version = "6.0.0"
+  version = "~> 6.0"
 
   snapshot_copy = {
     destination_region = "us-east-1"

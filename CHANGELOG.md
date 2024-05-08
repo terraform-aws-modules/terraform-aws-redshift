@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.5.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.4.0...v5.5.0) (2024-05-08)
+## [6.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.4.0...v6.0.0) (2024-05-08)
 
+### ⚠ BREAKING CHANGES
 
 ### Features
 

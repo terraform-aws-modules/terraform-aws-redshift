@@ -4,7 +4,8 @@ Please consult the `examples` directory for reference example configurations. If
 
 ## List of backwards incompatible changes
 
-- Minimum supported version of Terraform AWS provider updated to v5.45 to support latest resources
+- Minimum supported version of Terraform AWS provider updated to `v5.45` to support latest resources
+- Minimum supported version of Terraform raised to `v1.3`
 - logging block within the `aws_redshift_cluster` resource has been replaced with a standalone resource. After upgrade, a new resource for logging will be created.
 - snapshot_copy block within the `aws_redshift_cluster` resource has been replaced with a standalone resource. After upgrade, to prevent errors due to already existing `snapshot_copy` configurations, import of the new resource is required.
 

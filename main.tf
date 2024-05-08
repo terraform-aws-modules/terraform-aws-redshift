@@ -46,18 +46,6 @@ resource "aws_redshift_cluster" "this" {
 
   # iam_roles and default_iam_roles are managed in the aws_redshift_cluster_iam_roles resource below
 
-  dynamic "logging" {
-    for_each = can(var.logging.enable) ? [var.logging] : []
-
-    content {
-      bucket_name          = try(logging.value.bucket_name, null)
-      enable               = logging.value.enable
-      log_destination_type = try(logging.value.log_destination_type, null)
-      log_exports          = try(logging.value.log_exports, null)
-      s3_key_prefix        = try(logging.value.s3_key_prefix, null)
-    }
-  }
-
   maintenance_track_name            = var.maintenance_track_name
   manual_snapshot_retention_period  = var.manual_snapshot_retention_period
   manage_master_password            = var.manage_master_password ? var.manage_master_password : null
@@ -73,16 +61,6 @@ resource "aws_redshift_cluster" "this" {
   publicly_accessible               = var.publicly_accessible
   skip_final_snapshot               = var.skip_final_snapshot
   snapshot_cluster_identifier       = var.snapshot_cluster_identifier
-
-  dynamic "snapshot_copy" {
-    for_each = length(var.snapshot_copy) > 0 ? [var.snapshot_copy] : []
-
-    content {
-      destination_region = snapshot_copy.value.destination_region
-      grant_name         = try(snapshot_copy.value.grant_name, null)
-      retention_period   = try(snapshot_copy.value.retention_period, null)
-    }
-  }
 
   snapshot_identifier    = var.snapshot_identifier
   vpc_security_group_ids = var.vpc_security_group_ids
@@ -320,6 +298,34 @@ resource "aws_redshift_authentication_profile" "this" {
 
   authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
+}
+
+################################################################################
+# Logging
+################################################################################
+
+resource "aws_redshift_logging" "this" {
+  count = var.create && length(var.logging) > 0 ? 1 : 0
+
+  cluster_identifier   = aws_redshift_cluster.this[0].id
+  bucket_name          = try(var.logging.bucket_name, null)
+  log_destination_type = try(var.logging.log_destination_type, null)
+  log_exports          = try(var.logging.log_exports, null)
+  s3_key_prefix        = try(var.logging.s3_key_prefix, null)
+}
+
+################################################################################
+# Snapshot Copy
+################################################################################
+
+resource "aws_redshift_snapshot_copy" "this" {
+  count = var.create && length(var.snapshot_copy) > 0 ? 1 : 0
+
+  cluster_identifier               = aws_redshift_cluster.this[0].id
+  destination_region               = var.snapshot_copy.destination_region
+  manual_snapshot_retention_period = try(var.snapshot_copy.manual_snapshot_retention_period, null)
+  retention_period                 = try(var.snapshot_copy.retention_period, null)
+  snapshot_copy_grant_name         = try(var.snapshot_copy.grant_name, null)
 }
 
 ################################################################################

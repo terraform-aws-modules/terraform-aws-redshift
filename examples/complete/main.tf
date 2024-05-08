@@ -64,7 +64,6 @@ module "redshift" {
   }
 
   logging = {
-    enable        = true
     bucket_name   = module.s3_logs.s3_bucket_id
     s3_key_prefix = local.s3_prefix
   }
@@ -221,7 +220,6 @@ module "with_cloudwatch_logging" {
   create_cloudwatch_log_group            = true
   cloudwatch_log_group_retention_in_days = 7
   logging = {
-    enable               = true
     log_destination_type = "cloudwatch"
     log_exports          = ["connectionlog", "userlog", "useractivitylog"]
   }

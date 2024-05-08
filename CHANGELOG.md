@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.5.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.4.0...v5.5.0) (2024-05-08)
+
+
+### Features
+
+* Logging and Snapshot copy resources converted to standalone resource equivalents, MSV of Terraform raised to `v1.3` ([#99](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/99)) ([2a2fbdc](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/2a2fbdcbd25d5b3f11e7b520309165a03aadf3a0))
+
 ## [5.4.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.3.1...v5.4.0) (2024-03-26)
 
 

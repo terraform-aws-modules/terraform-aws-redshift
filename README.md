@@ -35,7 +35,6 @@ module "redshift" {
   }
 
   logging = {
-    enable        = true
     bucket_name   = "my-s3-log-bucket"
     s3_key_prefix = "example/"
   }

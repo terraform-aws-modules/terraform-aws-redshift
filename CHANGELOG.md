@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.1.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.0.0...v6.1.0) (2025-03-30)
+
+
+### Features
+
+* Add Terragrunt module wrapper ([#105](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/105)) ([f973dd5](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/f973dd583b969d8c3f19cada0bbbb6e8be246996))
+
+
+### Bug Fixes
+
+* Update CI workflow versions to latest ([#102](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/102)) ([776da10](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/776da10c7872cc33b9b2a14b87e73397a4abc842))
+
 ## [5.5.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v5.4.0...v5.5.0) (2024-05-08)
 
 

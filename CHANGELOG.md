@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.1.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.1.0...v6.1.1) (2025-10-21)
+
+### Bug Fixes
+
+* Update CI workflow versions to latest ([#108](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/108)) ([8e5b004](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/8e5b004d80fc68df415b863e891482950f85ce44))
+
 ## [6.1.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.0.0...v6.1.0) (2025-03-30)
 
 

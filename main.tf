@@ -1,4 +1,10 @@
-data "aws_partition" "current" {}
+data "aws_partition" "current" {
+  count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
+}
+
+locals {
+  dns_suffix = try(data.aws_partition.current[0].dns_suffix, "")
+}
 
 resource "random_password" "master_password" {
   count = var.create && var.create_random_password ? 1 : 0
@@ -105,8 +111,9 @@ resource "aws_redshift_parameter_group" "this" {
 
   dynamic "parameter" {
     for_each = var.parameter_group_parameters
+
     content {
-      name  = parameter.value.name
+      name  = try(parameter.value.name, parameter.key)
       value = parameter.value.value
     }
   }
@@ -210,7 +217,7 @@ data "aws_iam_policy_document" "scheduled_action_assume" {
 
     principals {
       type        = "Service"
-      identifiers = ["scheduler.redshift.${data.aws_partition.current.dns_suffix}"]
+      identifiers = ["scheduler.redshift.${local.dns_suffix}"]
     }
   }
 }

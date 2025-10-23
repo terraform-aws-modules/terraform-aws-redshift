@@ -116,6 +116,18 @@ output "cluster_namespace_arn" {
   value       = try(aws_redshift_cluster.this[0].cluster_namespace_arn, null)
 }
 
+output "cluster_master_password" {
+  description = "The Redshift cluster master password"
+  value       = try(aws_redshift_cluster.this[0].master_password, null)
+  sensitive   = true
+}
+
+output "cluster_master_username" {
+  description = "The Redshift cluster master username"
+  value       = try(aws_redshift_cluster.this[0].master_username, null)
+  sensitive   = true
+}
+
 ################################################################################
 # Parameter Group
 ################################################################################

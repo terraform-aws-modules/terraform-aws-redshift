@@ -112,6 +112,16 @@ output "cluster_namespace_arn" {
   value       = module.redshift.cluster_namespace_arn
 }
 
+output "cluster_master_password" {
+  description = "The Redshift cluster master password"
+  value       = module.redshift.cluster_master_password
+}
+
+output "cluster_master_username" {
+  description = "The Redshift cluster master username"
+  value       = module.redshift.cluster_master_username
+}
+
 ################################################################################
 # Parameter Group
 ################################################################################

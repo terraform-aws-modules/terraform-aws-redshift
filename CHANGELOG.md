@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.2.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.1.1...v6.2.0) (2025-10-29)
+
+### Features
+
+* Allow parameter group key to be used as parameter group `name`, add outpust for cluster master password and username ([#109](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/109)) ([fce3dc0](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/fce3dc0f0452e85996cb3e752f408d0419f68f75))
+
 ## [6.1.1](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.1.0...v6.1.1) (2025-10-21)
 
 ### Bug Fixes

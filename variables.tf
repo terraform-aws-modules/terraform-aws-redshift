@@ -26,12 +26,6 @@ variable "apply_immediately" {
   default     = null
 }
 
-variable "aqua_configuration_status" {
-  description = "The value represents how the cluster is configured to use AQUA (Advanced Query Accelerator) after the cluster is restored. Possible values are `enabled`, `disabled`, and `auto`. Requires Cluster reboot"
-  type        = string
-  default     = null
-}
-
 variable "automated_snapshot_retention_period" {
   description = "The number of days that automated snapshots are retained. If the value is 0, automated snapshots are disabled. Even if automated snapshots are disabled, you can still create manual snapshots when you want with create-cluster-snapshot. Default is 1"
   type        = number

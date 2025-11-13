@@ -5,7 +5,6 @@ module "wrapper" {
 
   allow_version_upgrade                             = try(each.value.allow_version_upgrade, var.defaults.allow_version_upgrade, null)
   apply_immediately                                 = try(each.value.apply_immediately, var.defaults.apply_immediately, null)
-  aqua_configuration_status                         = try(each.value.aqua_configuration_status, var.defaults.aqua_configuration_status, null)
   authentication_profiles                           = try(each.value.authentication_profiles, var.defaults.authentication_profiles, {})
   automated_snapshot_retention_period               = try(each.value.automated_snapshot_retention_period, var.defaults.automated_snapshot_retention_period, null)
   availability_zone                                 = try(each.value.availability_zone, var.defaults.availability_zone, null)

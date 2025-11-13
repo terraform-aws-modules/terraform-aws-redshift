@@ -20,7 +20,6 @@ resource "aws_redshift_cluster" "this" {
 
   allow_version_upgrade                = var.allow_version_upgrade
   apply_immediately                    = var.apply_immediately
-  aqua_configuration_status            = var.aqua_configuration_status
   automated_snapshot_retention_period  = var.automated_snapshot_retention_period
   availability_zone                    = var.availability_zone
   availability_zone_relocation_enabled = var.availability_zone_relocation_enabled

@@ -26,8 +26,9 @@ Please consult the `examples` directory for reference example configurations. If
 
 1. Removed variables:
 
-    - `create_random_password`
-    - `random_password_length`
+    - `create_random_password` removed along with support for generating a random password
+    - `random_password_length` removed along with support for generating a random password
+    - `aqua_configuration_status` argument was deprecated
 
 2. Renamed variables:
 

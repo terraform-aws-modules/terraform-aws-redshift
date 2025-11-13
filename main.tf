@@ -6,18 +6,6 @@ locals {
   dns_suffix = try(data.aws_partition.current[0].dns_suffix, "")
 }
 
-resource "random_password" "master_password" {
-  count = var.create && var.create_random_password ? 1 : 0
-
-  length           = var.random_password_length
-  min_lower        = 1
-  min_numeric      = 1
-  min_special      = 1
-  min_upper        = 1
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
 ################################################################################
 # Cluster
 ################################################################################
@@ -25,8 +13,6 @@ resource "random_password" "master_password" {
 locals {
   subnet_group_name    = var.create && var.create_subnet_group ? aws_redshift_subnet_group.this[0].name : var.subnet_group_name
   parameter_group_name = var.create && var.create_parameter_group ? aws_redshift_parameter_group.this[0].id : var.parameter_group_name
-
-  master_password = var.create && var.create_random_password ? random_password.master_password[0].result : var.master_password
 }
 
 resource "aws_redshift_cluster" "this" {
@@ -55,7 +41,7 @@ resource "aws_redshift_cluster" "this" {
   maintenance_track_name            = var.maintenance_track_name
   manual_snapshot_retention_period  = var.manual_snapshot_retention_period
   manage_master_password            = var.manage_master_password ? var.manage_master_password : null
-  master_password                   = var.snapshot_identifier == null && !var.manage_master_password ? local.master_password : null
+  master_password                   = var.snapshot_identifier == null && !var.manage_master_password ? var.master_password : null
   master_password_secret_kms_key_id = var.master_password_secret_kms_key_id
   master_username                   = var.master_username
   multi_az                          = var.multi_az

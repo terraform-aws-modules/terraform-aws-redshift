@@ -149,18 +149,6 @@ variable "multi_az" {
   default     = null
 }
 
-variable "create_random_password" {
-  description = "Determines whether to create random password for cluster `master_password`"
-  type        = bool
-  default     = true
-}
-
-variable "random_password_length" {
-  description = "Length of random password to create. Defaults to `16`"
-  type        = number
-  default     = 16
-}
-
 variable "master_username" {
   description = "Username for the master DB user (Required unless a `snapshot_identifier` is provided). Defaults to `awsuser`"
   type        = string

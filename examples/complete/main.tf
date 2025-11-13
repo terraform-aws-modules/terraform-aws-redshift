@@ -259,7 +259,7 @@ module "disabled" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -341,7 +341,7 @@ data "aws_iam_policy_document" "s3_redshift" {
 
 module "s3_logs" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   bucket_prefix = local.name
   acl           = "log-delivery-write"

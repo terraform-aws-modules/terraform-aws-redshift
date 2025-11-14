@@ -28,37 +28,34 @@ resource "aws_redshift_cluster" "this" {
   enhanced_vpc_routing                 = var.enhanced_vpc_routing
   final_snapshot_identifier            = var.skip_final_snapshot ? null : var.final_snapshot_identifier
   kms_key_id                           = var.kms_key_arn
-
-  # iam_roles and default_iam_roles are managed in the aws_redshift_cluster_iam_roles resource below
-
-  maintenance_track_name            = var.maintenance_track_name
-  manual_snapshot_retention_period  = var.manual_snapshot_retention_period
-  manage_master_password            = var.manage_master_password ? var.manage_master_password : null
-  master_password                   = var.snapshot_identifier == null && !var.manage_master_password ? var.master_password : null
-  master_password_secret_kms_key_id = var.master_password_secret_kms_key_id
-  master_username                   = var.master_username
-  multi_az                          = var.multi_az
-  node_type                         = var.node_type
-  number_of_nodes                   = var.number_of_nodes
-  owner_account                     = var.owner_account
-  port                              = var.port
-  preferred_maintenance_window      = var.preferred_maintenance_window
-  publicly_accessible               = var.publicly_accessible
-  skip_final_snapshot               = var.skip_final_snapshot
-  snapshot_cluster_identifier       = var.snapshot_cluster_identifier
-
-  snapshot_identifier    = var.snapshot_identifier
-  vpc_security_group_ids = compact(concat(aws_security_group.this[*].id, var.vpc_security_group_ids))
-
-  tags = var.tags
+  maintenance_track_name               = var.maintenance_track_name
+  manage_master_password               = var.manage_master_password ? var.manage_master_password : null
+  manual_snapshot_retention_period     = var.manual_snapshot_retention_period
+  master_password_wo                   = var.snapshot_identifier == null && !var.manage_master_password ? var.master_password_wo : null
+  master_password_wo_version           = var.snapshot_identifier == null && !var.manage_master_password ? var.master_password_wo_version : null
+  master_password_secret_kms_key_id    = var.master_password_secret_kms_key_id
+  master_username                      = var.master_username
+  multi_az                             = var.multi_az
+  node_type                            = var.node_type
+  number_of_nodes                      = var.number_of_nodes
+  owner_account                        = var.owner_account
+  port                                 = var.port
+  preferred_maintenance_window         = var.preferred_maintenance_window
+  publicly_accessible                  = var.publicly_accessible
+  skip_final_snapshot                  = var.skip_final_snapshot
+  snapshot_arn                         = var.snapshot_arn
+  snapshot_cluster_identifier          = var.snapshot_cluster_identifier
+  snapshot_identifier                  = var.snapshot_identifier
+  tags                                 = var.tags
+  vpc_security_group_ids               = compact(concat(aws_security_group.this[*].id, var.vpc_security_group_ids))
 
   dynamic "timeouts" {
-    for_each = var.cluster_timeouts != null ? [1] : []
+    for_each = var.cluster_timeouts != null ? [var.cluster_timeouts] : []
 
     content {
-      create = var.cluster_timeouts.create
-      update = var.cluster_timeouts.update
-      delete = var.cluster_timeouts.delete
+      create = each.value.create
+      update = each.value.update
+      delete = each.value.delete
     }
   }
 

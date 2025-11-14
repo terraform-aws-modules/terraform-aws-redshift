@@ -56,9 +56,6 @@ variable "cluster_identifier" {
   default     = ""
 }
 
-# cluster_parameter_group_name -> see parameter group section
-# cluster_subnet_group_name -> see subnet group section
-
 variable "cluster_version" {
   description = "The version of the Amazon Redshift engine software that you want to deploy on the cluster. The version selected runs on all the nodes in the cluster"
   type        = string
@@ -71,8 +68,6 @@ variable "database_name" {
   default     = null
 }
 
-# default_iam_role_arn -> see iam roles section
-
 variable "elastic_ip" {
   description = "The Elastic IP (EIP) address for the cluster"
   type        = string
@@ -82,7 +77,7 @@ variable "elastic_ip" {
 variable "encrypted" {
   description = "If `true`, the data in the cluster is encrypted at rest"
   type        = bool
-  default     = true
+  default     = null
 }
 
 variable "enhanced_vpc_routing" {
@@ -97,34 +92,15 @@ variable "final_snapshot_identifier" {
   default     = null
 }
 
-# iam_roles -> see iam roles section
-
 variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `encrypted` needs to be set to `true`"
   type        = string
   default     = null
 }
 
-variable "logging" {
-  description = "Logging configuration for the cluster"
-  type = object({
-    bucket_name          = optional(string)
-    log_destination_type = optional(string)
-    log_exports          = optional(list(string))
-    s3_key_prefix        = optional(string)
-  })
-  default = null
-}
-
 variable "maintenance_track_name" {
   description = "The name of the maintenance track for the restored cluster. When you take a snapshot, the snapshot inherits the MaintenanceTrack value from the cluster. The snapshot might be on a different track than the cluster that was the source for the snapshot. Default value is `current`"
   type        = string
-  default     = null
-}
-
-variable "manual_snapshot_retention_period" {
-  description = "The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots. Valid values are between `-1` and `3653`. Default value is `-1`"
-  type        = number
   default     = null
 }
 
@@ -134,17 +110,29 @@ variable "manage_master_password" {
   default     = false
 }
 
-variable "master_password_secret_kms_key_id" {
-  description = "ID of the KMS key used to encrypt the cluster admin credentials secret"
+variable "manual_snapshot_retention_period" {
+  description = "The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots. Valid values are between `-1` and `3653`. Default value is `-1`"
+  type        = number
+  default     = null
+}
+
+variable "master_password_wo" {
+  description = "Password for the master DB user. Must contain at least 8 chars, one uppercase letter, one lowercase letter, and one number"
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "master_password_wo_version" {
+  description = "Used together with `master_password_wo` to trigger an update. Increment this value when an update to the `master_password_wo` is required"
   type        = string
   default     = null
 }
 
-variable "master_password" {
-  description = "Password for the master DB user. (Required unless a `snapshot_identifier` is provided). Must contain at least 8 chars, one uppercase letter, one lowercase letter, and one number"
+variable "master_password_secret_kms_key_id" {
+  description = "ID of the KMS key used to encrypt the cluster admin credentials secret"
   type        = string
   default     = null
-  sensitive   = true
 }
 
 variable "multi_az" {
@@ -154,7 +142,7 @@ variable "multi_az" {
 }
 
 variable "master_username" {
-  description = "Username for the master DB user (Required unless a `snapshot_identifier` is provided). Defaults to `awsuser`"
+  description = "Username for the master DB user. Defaults to `awsuser`"
   type        = string
   default     = "awsuser"
 }
@@ -192,7 +180,7 @@ variable "preferred_maintenance_window" {
 variable "publicly_accessible" {
   description = "If true, the cluster can be accessed from a public network"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "skip_final_snapshot" {
@@ -201,25 +189,20 @@ variable "skip_final_snapshot" {
   default     = true
 }
 
+variable "snapshot_arn" {
+  description = "The ARN of the snapshot from which to create the new cluster. Conflicts with `snapshot_identifier`"
+  type        = string
+  default     = null
+}
+
 variable "snapshot_cluster_identifier" {
   description = "The name of the cluster the source snapshot was created from"
   type        = string
   default     = null
 }
 
-variable "snapshot_copy" {
-  description = "Configuration of automatic copy of snapshots from one region to another"
-  type = object({
-    destination_region               = string
-    manual_snapshot_retention_period = optional(number)
-    retention_period                 = optional(number)
-    grant_name                       = optional(string)
-  })
-  default = null
-}
-
 variable "snapshot_identifier" {
-  description = "The name of the snapshot from which to create the new cluster"
+  description = "The name of the snapshot from which to create the new cluster. Conflicts with `snapshot_arn`"
   type        = string
   default     = null
 }
@@ -474,6 +457,21 @@ variable "authentication_profiles" {
 }
 
 ################################################################################
+# Logging
+################################################################################
+
+variable "logging" {
+  description = "Logging configuration for the cluster"
+  type = object({
+    bucket_name          = optional(string)
+    log_destination_type = optional(string)
+    log_exports          = optional(list(string))
+    s3_key_prefix        = optional(string)
+  })
+  default = null
+}
+
+################################################################################
 # CloudWatch Log Group
 ################################################################################
 
@@ -505,6 +503,21 @@ variable "cloudwatch_log_group_tags" {
   description = "Additional tags to add to cloudwatch log groups created"
   type        = map(string)
   default     = {}
+}
+
+################################################################################
+# Snapshot Copy
+################################################################################
+
+variable "snapshot_copy" {
+  description = "Configuration of automatic copy of snapshots from one region to another"
+  type = object({
+    destination_region               = string
+    manual_snapshot_retention_period = optional(number)
+    retention_period                 = optional(number)
+    grant_name                       = optional(string)
+  })
+  default = null
 }
 
 ################################################################################

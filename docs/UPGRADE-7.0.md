@@ -7,6 +7,7 @@ Please consult the `examples` directory for reference example configurations. If
 - Terraform `v1.11` is now minimum supported version to support write-only (`wo_*`) attributes.
 - AWS provider `v6.18` is now minimum supported version
 - The ability for the module to create a random password has been removed in order to ensure passwords are not stored in plain text within the state file. Users must now provide their own password via the `master_password_wo` variable.
+  - `master_password` is no longer supported and only the write-only equivalent is supported (`master_password_wo` and `master_password_wo_version`)
 
 ## Additional changes
 
@@ -47,7 +48,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 2. Renamed variables:
 
-    -
+    - `master_password` -> `master_password_wo`
 
 3. Added variables:
 
@@ -59,6 +60,7 @@ Please consult the `examples` directory for reference example configurations. If
     - `vpc_id`
     - `security_group_ingress_rules`
     - `security_group_egress_rules`
+    - `master_password_wo_version`
 
 4. Removed outputs:
 

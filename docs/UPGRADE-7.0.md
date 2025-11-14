@@ -13,6 +13,7 @@ Please consult the `examples` directory for reference example configurations. If
 ### Added
 
 - Support for `region` argument to specify the AWS region for the resources created if different from the provider region.
+- Support for creating security group
 
 ### Modified
 
@@ -37,7 +38,14 @@ Please consult the `examples` directory for reference example configurations. If
 
 3. Added variables:
 
-    -
+    - `region`
+    - `create_security_group`
+    - `security_group_name`
+    - `security_group_use_name_prefix`
+    - `security_group_description`
+    - `vpc_id`
+    - `security_group_ingress_rules`
+    - `security_group_egress_rules`
 
 4. Removed outputs:
 

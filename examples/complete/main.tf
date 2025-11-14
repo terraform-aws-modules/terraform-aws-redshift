@@ -52,9 +52,8 @@ module "redshift" {
   encrypted   = true
   kms_key_arn = aws_kms_key.redshift.arn
 
-  enhanced_vpc_routing   = true
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
+  enhanced_vpc_routing = true
+  subnet_ids           = module.vpc.redshift_subnets
 
   # Only available when using the ra3.x type
   availability_zone_relocation_enabled = true
@@ -221,8 +220,7 @@ module "with_cloudwatch_logging" {
   cluster_identifier = "${local.name}-with-cloudwatch-logging"
   node_type          = "dc2.large"
 
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
+  subnet_ids = module.vpc.redshift_subnets
 
   create_cloudwatch_log_group            = true
   cloudwatch_log_group_retention_in_days = 7
@@ -244,8 +242,7 @@ module "default" {
   cluster_identifier = "${local.name}-default"
   node_type          = "dc2.large"
 
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
+  subnet_ids = module.vpc.redshift_subnets
 
   tags = local.tags
 }

@@ -48,7 +48,7 @@ resource "aws_redshift_cluster" "this" {
   snapshot_cluster_identifier       = var.snapshot_cluster_identifier
 
   snapshot_identifier    = var.snapshot_identifier
-  vpc_security_group_ids = var.vpc_security_group_ids
+  vpc_security_group_ids = compact(concat(aws_security_group.this[*].id, var.vpc_security_group_ids))
 
   tags = var.tags
 
@@ -386,4 +386,76 @@ resource "aws_secretsmanager_secret_rotation" "this" {
     duration                 = var.master_password_rotation_duration
     schedule_expression      = var.master_password_rotation_schedule_expression
   }
+}
+
+################################################################################
+# Security Group
+################################################################################
+
+locals {
+  create_security_group = var.create && var.create_security_group
+  security_group_name   = try(coalesce(var.security_group_name, var.cluster_identifier), "")
+}
+
+resource "aws_security_group" "this" {
+  count = local.create_security_group ? 1 : 0
+
+  region = var.region
+
+  name        = var.security_group_use_name_prefix ? null : local.security_group_name
+  name_prefix = var.security_group_use_name_prefix ? "${local.security_group_name}-" : null
+  vpc_id      = var.vpc_id
+  description = coalesce(var.security_group_description, "Control traffic to/from Redshift cluster ${var.security_group_name}")
+
+  tags = merge(
+    var.tags,
+    var.security_group_tags,
+    { "Name" = local.security_group_name }
+  )
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "this" {
+  for_each = { for k, v in var.security_group_ingress_rules : k => v if var.security_group_ingress_rules != null && local.create_security_group }
+
+  region = var.region
+
+  cidr_ipv4                    = each.value.cidr_ipv4
+  cidr_ipv6                    = each.value.cidr_ipv6
+  description                  = each.value.description
+  from_port                    = try(coalesce(each.value.from_port, var.port), null)
+  ip_protocol                  = each.value.ip_protocol
+  prefix_list_id               = each.value.prefix_list_id
+  referenced_security_group_id = each.value.referenced_security_group_id == "self" ? aws_security_group.this[0].id : each.value.referenced_security_group_id
+  security_group_id            = aws_security_group.this[0].id
+  tags = merge(
+    var.tags,
+    { "Name" = coalesce(each.value.name, "${local.security_group_name}-${each.key}") },
+    each.value.tags
+  )
+  to_port = try(coalesce(each.value.to_port, each.value.from_port, var.port), null)
+}
+
+resource "aws_vpc_security_group_egress_rule" "this" {
+  for_each = { for k, v in var.security_group_egress_rules : k => v if var.security_group_egress_rules != null && local.create_security_group }
+
+  region = var.region
+
+  cidr_ipv4                    = each.value.cidr_ipv4
+  cidr_ipv6                    = each.value.cidr_ipv6
+  description                  = each.value.description
+  from_port                    = try(coalesce(each.value.from_port, each.value.to_port, var.port), null)
+  ip_protocol                  = each.value.ip_protocol
+  prefix_list_id               = each.value.prefix_list_id
+  referenced_security_group_id = each.value.referenced_security_group_id == "self" ? aws_security_group.this[0].id : each.value.referenced_security_group_id
+  security_group_id            = aws_security_group.this[0].id
+  tags = merge(
+    var.tags,
+    { "Name" = coalesce(each.value.name, "${local.security_group_name}-${each.key}") },
+    each.value.tags
+  )
+  to_port = try(coalesce(each.value.to_port, var.port), null)
 }

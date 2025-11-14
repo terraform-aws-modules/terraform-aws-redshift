@@ -65,6 +65,7 @@ module "wrapper" {
   port                                              = try(each.value.port, var.defaults.port, null)
   preferred_maintenance_window                      = try(each.value.preferred_maintenance_window, var.defaults.preferred_maintenance_window, "sat:10:00-sat:10:30")
   publicly_accessible                               = try(each.value.publicly_accessible, var.defaults.publicly_accessible, false)
+  region                                            = try(each.value.region, var.defaults.region, null)
   scheduled_actions                                 = try(each.value.scheduled_actions, var.defaults.scheduled_actions, {})
   skip_final_snapshot                               = try(each.value.skip_final_snapshot, var.defaults.skip_final_snapshot, true)
   snapshot_cluster_identifier                       = try(each.value.snapshot_cluster_identifier, var.defaults.snapshot_cluster_identifier, null)

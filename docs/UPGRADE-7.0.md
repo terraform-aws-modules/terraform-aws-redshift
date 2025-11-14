@@ -12,7 +12,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Added
 
--
+- Support for `region` argument to specify the AWS region for the resources created if different from the provider region.
 
 ### Modified
 

@@ -10,6 +10,8 @@ locals {
 resource "aws_redshift_cluster" "this" {
   count = var.create ? 1 : 0
 
+  region = var.region
+
   allow_version_upgrade                = var.allow_version_upgrade
   apply_immediately                    = var.apply_immediately
   automated_snapshot_retention_period  = var.automated_snapshot_retention_period
@@ -74,6 +76,8 @@ resource "aws_redshift_cluster" "this" {
 resource "aws_redshift_cluster_iam_roles" "this" {
   count = var.create && length(var.iam_role_arns) > 0 ? 1 : 0
 
+  region = var.region
+
   cluster_identifier   = aws_redshift_cluster.this[0].id
   iam_role_arns        = var.iam_role_arns
   default_iam_role_arn = var.default_iam_role_arn
@@ -85,6 +89,8 @@ resource "aws_redshift_cluster_iam_roles" "this" {
 
 resource "aws_redshift_parameter_group" "this" {
   count = var.create && var.create_parameter_group ? 1 : 0
+
+  region = var.region
 
   name        = coalesce(var.parameter_group_name, replace(var.cluster_identifier, ".", "-"))
   description = var.parameter_group_description
@@ -109,6 +115,8 @@ resource "aws_redshift_parameter_group" "this" {
 resource "aws_redshift_subnet_group" "this" {
   count = var.create && var.create_subnet_group ? 1 : 0
 
+  region = var.region
+
   name        = coalesce(var.subnet_group_name, var.cluster_identifier)
   description = var.subnet_group_description
   subnet_ids  = var.subnet_ids
@@ -123,6 +131,8 @@ resource "aws_redshift_subnet_group" "this" {
 resource "aws_redshift_snapshot_schedule" "this" {
   count = var.create && var.create_snapshot_schedule ? 1 : 0
 
+  region = var.region
+
   identifier        = var.use_snapshot_identifier_prefix ? null : var.snapshot_schedule_identifier
   identifier_prefix = var.use_snapshot_identifier_prefix ? "${var.snapshot_schedule_identifier}-" : null
   description       = var.snapshot_schedule_description
@@ -134,6 +144,8 @@ resource "aws_redshift_snapshot_schedule" "this" {
 
 resource "aws_redshift_snapshot_schedule_association" "this" {
   count = var.create && var.create_snapshot_schedule ? 1 : 0
+
+  region = var.region
 
   cluster_identifier  = aws_redshift_cluster.this[0].id
   schedule_identifier = aws_redshift_snapshot_schedule.this[0].id
@@ -149,6 +161,8 @@ locals {
 
 resource "aws_redshift_scheduled_action" "this" {
   for_each = { for k, v in var.scheduled_actions : k => v if var.create }
+
+  region = var.region
 
   name        = try(coalesce(each.value.name, each.key))
   description = each.value.description
@@ -265,8 +279,9 @@ resource "aws_iam_role_policy" "scheduled_action" {
 resource "aws_redshift_endpoint_access" "this" {
   count = var.create && var.create_endpoint_access ? 1 : 0
 
-  cluster_identifier = aws_redshift_cluster.this[0].id
+  region = var.region
 
+  cluster_identifier     = aws_redshift_cluster.this[0].id
   endpoint_name          = var.endpoint_name
   resource_owner         = var.endpoint_resource_owner
   subnet_group_name      = coalesce(var.endpoint_subnet_group_name, local.subnet_group_name)
@@ -280,13 +295,14 @@ resource "aws_redshift_endpoint_access" "this" {
 resource "aws_redshift_usage_limit" "this" {
   for_each = { for k, v in var.usage_limits : k => v if var.create }
 
-  cluster_identifier = aws_redshift_cluster.this[0].id
+  region = var.region
 
-  amount        = each.value.amount
-  breach_action = each.value.breach_action
-  feature_type  = each.value.feature_type
-  limit_type    = try(coalesce(each.value.limit_type))
-  period        = each.value.period
+  amount             = each.value.amount
+  breach_action      = each.value.breach_action
+  cluster_identifier = aws_redshift_cluster.this[0].id
+  feature_type       = each.value.feature_type
+  limit_type         = try(coalesce(each.value.limit_type))
+  period             = each.value.period
 
   tags = merge(var.tags, each.value.tags)
 }
@@ -298,6 +314,8 @@ resource "aws_redshift_usage_limit" "this" {
 resource "aws_redshift_authentication_profile" "this" {
   for_each = { for k, v in var.authentication_profiles : k => v if var.create }
 
+  region = var.region
+
   authentication_profile_name    = try(each.value.name, each.key)
   authentication_profile_content = jsonencode(each.value.content)
 }
@@ -308,6 +326,8 @@ resource "aws_redshift_authentication_profile" "this" {
 
 resource "aws_redshift_logging" "this" {
   count = var.create && var.logging != null ? 1 : 0
+
+  region = var.region
 
   cluster_identifier   = aws_redshift_cluster.this[0].id
   bucket_name          = var.logging.bucket_name
@@ -323,6 +343,8 @@ resource "aws_redshift_logging" "this" {
 resource "aws_redshift_snapshot_copy" "this" {
   count = var.create && var.snapshot_copy != null ? 1 : 0
 
+  region = var.region
+
   cluster_identifier               = aws_redshift_cluster.this[0].id
   destination_region               = var.snapshot_copy.destination_region
   manual_snapshot_retention_period = var.snapshot_copy.manual_snapshot_retention_period
@@ -336,6 +358,8 @@ resource "aws_redshift_snapshot_copy" "this" {
 
 resource "aws_cloudwatch_log_group" "this" {
   for_each = toset([for log in try(var.logging.log_exports, []) : log if var.create && var.create_cloudwatch_log_group])
+
+  region = var.region
 
   name              = "/aws/redshift/cluster/${var.cluster_identifier}/${each.value}"
   retention_in_days = var.cloudwatch_log_group_retention_in_days
@@ -351,6 +375,8 @@ resource "aws_cloudwatch_log_group" "this" {
 
 resource "aws_secretsmanager_secret_rotation" "this" {
   count = var.create && var.manage_master_password && var.manage_master_password_rotation ? 1 : 0
+
+  region = var.region
 
   secret_id          = aws_redshift_cluster.this[0].master_password_secret_arn
   rotate_immediately = var.master_password_rotate_immediately

@@ -2,12 +2,13 @@ provider "aws" {
   region = local.region
 }
 
-provider "aws" {
-  alias  = "us_east_1"
-  region = "us-east-1"
+data "aws_availability_zones" "available" {
+  # Exclude local zones
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
 }
-
-data "aws_availability_zones" "available" {}
 
 locals {
   name   = "ex-${basename(path.cwd)}"
@@ -202,7 +203,7 @@ module "redshift" {
 resource "aws_redshift_snapshot_copy_grant" "useast1" {
   # Grants are declared outside of module because they are generally performed
   # in the destination region and we do not embed multiple providers in the root module
-  provider = aws.us_east_1
+  region = "us-east-1"
 
   snapshot_copy_grant_name = "${local.name}-us-east-1"
   kms_key_id               = aws_kms_key.redshift_us_east_1.arn
@@ -307,7 +308,7 @@ resource "aws_kms_key" "redshift" {
 }
 
 resource "aws_kms_key" "redshift_us_east_1" {
-  provider = aws.us_east_1
+  region = "us-east-1"
 
   description             = "Customer managed key for encrypting Redshift snapshot cross-region"
   deletion_window_in_days = 7

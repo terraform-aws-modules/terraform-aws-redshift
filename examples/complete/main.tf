@@ -71,36 +71,36 @@ module "redshift" {
   # Parameter group
   parameter_group_name        = "${local.name}-custom"
   parameter_group_description = "Custom parameter group for ${local.name} cluster"
-  parameter_group_parameters = {
-    wlm_json_configuration = {
+  parameter_group_parameters = [
+    {
       name = "wlm_json_configuration"
       value = jsonencode([
         {
           query_concurrency = 15
         }
       ])
-    }
-    require_ssl = {
+    },
+    {
       name  = "require_ssl"
       value = true
-    }
-    use_fips_ssl = {
+    },
+    {
       name  = "use_fips_ssl"
       value = false
-    }
-    enable_user_activity_logging = {
+    },
+    {
       name  = "enable_user_activity_logging"
       value = true
-    }
-    max_concurrency_scaling_clusters = {
+    },
+    {
       name  = "max_concurrency_scaling_clusters"
       value = 3
-    }
-    enable_case_sensitive_identifier = {
+    },
+    {
       name  = "enable_case_sensitive_identifier"
       value = true
     }
-  }
+  ]
   parameter_group_tags = {
     Additional = "CustomParameterGroup"
   }
@@ -124,25 +124,31 @@ module "redshift" {
   create_scheduled_action_iam_role = true
   scheduled_actions = {
     pause = {
-      name          = "${local.name}-pause"
-      description   = "Pause cluster every night"
-      schedule      = "cron(0 22 * * ? *)"
-      pause_cluster = true
+      name        = "${local.name}-pause"
+      description = "Pause cluster every night"
+      schedule    = "cron(0 22 * * ? *)"
+      target_action = {
+        pause_cluster = {}
+      }
     }
     resize = {
       name        = "${local.name}-resize"
       description = "Resize cluster (demo only)"
       schedule    = "cron(00 13 * * ? *)"
-      resize_cluster = {
-        node_type       = "ds2.xlarge"
-        number_of_nodes = 5
+      target_action = {
+        resize_cluster = {
+          node_type       = "ds2.xlarge"
+          number_of_nodes = 5
+        }
       }
     }
     resume = {
-      name           = "${local.name}-resume"
-      description    = "Resume cluster every morning"
-      schedule       = "cron(0 12 * * ? *)"
-      resume_cluster = true
+      name        = "${local.name}-resume"
+      description = "Resume cluster every morning"
+      schedule    = "cron(0 12 * * ? *)"
+      target_action = {
+        resume_cluster = {}
+      }
     }
   }
 

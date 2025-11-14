@@ -1,11 +1,3 @@
-data "aws_partition" "current" {
-  count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
-}
-
-locals {
-  dns_suffix = try(data.aws_partition.current[0].dns_suffix, "")
-}
-
 ################################################################################
 # Cluster
 ################################################################################
@@ -58,10 +50,14 @@ resource "aws_redshift_cluster" "this" {
 
   tags = var.tags
 
-  timeouts {
-    create = try(var.cluster_timeouts.create, null)
-    update = try(var.cluster_timeouts.update, null)
-    delete = try(var.cluster_timeouts.delete, null)
+  dynamic "timeouts" {
+    for_each = var.cluster_timeouts != null ? [1] : []
+
+    content {
+      create = var.cluster_timeouts.create
+      update = var.cluster_timeouts.update
+      delete = var.cluster_timeouts.delete
+    }
   }
 
   lifecycle {
@@ -95,10 +91,10 @@ resource "aws_redshift_parameter_group" "this" {
   family      = var.parameter_group_family
 
   dynamic "parameter" {
-    for_each = var.parameter_group_parameters
+    for_each = var.parameter_group_parameters != null ? var.parameter_group_parameters : []
 
     content {
-      name  = try(parameter.value.name, parameter.key)
+      name  = parameter.value.name
       value = parameter.value.value
     }
   }
@@ -154,43 +150,57 @@ locals {
 resource "aws_redshift_scheduled_action" "this" {
   for_each = { for k, v in var.scheduled_actions : k => v if var.create }
 
-  name        = each.value.name
-  description = try(each.value.description, null)
-  enable      = try(each.value.enable, null)
-  start_time  = try(each.value.start_time, null)
-  end_time    = try(each.value.end_time, null)
+  name        = try(coalesce(each.value.name, each.key))
+  description = each.value.description
+  enable      = each.value.enable
+  start_time  = each.value.start_time
+  end_time    = each.value.end_time
   schedule    = each.value.schedule
   iam_role    = var.create_scheduled_action_iam_role ? aws_iam_role.scheduled_action[0].arn : each.value.iam_role
 
-  target_action {
-    dynamic "pause_cluster" {
-      for_each = try([each.value.pause_cluster], [])
+  dynamic "target_action" {
+    for_each = [each.value.target_action]
 
-      content {
-        cluster_identifier = aws_redshift_cluster.this[0].id
+    content {
+      dynamic "pause_cluster" {
+        for_each = each.value.pause_cluster != null ? [each.value.pause_cluster] : []
+
+        content {
+          cluster_identifier = aws_redshift_cluster.this[0].id
+        }
       }
-    }
 
-    dynamic "resize_cluster" {
-      for_each = try([each.value.resize_cluster], [])
+      dynamic "resize_cluster" {
+        for_each = each.value.resize_cluster != null ? [each.value.resize_cluster] : []
 
-      content {
-        classic            = try(resize_cluster.value.classic, null)
-        cluster_identifier = aws_redshift_cluster.this[0].id
-        cluster_type       = try(resize_cluster.value.cluster_type, null)
-        node_type          = try(resize_cluster.value.node_type, null)
-        number_of_nodes    = try(resize_cluster.value.number_of_nodes, null)
+        content {
+          classic            = resize_cluster.value.classic
+          cluster_identifier = aws_redshift_cluster.this[0].id
+          cluster_type       = resize_cluster.value.cluster_type
+          node_type          = resize_cluster.value.node_type
+          number_of_nodes    = resize_cluster.value.number_of_nodes
+        }
       }
-    }
 
-    dynamic "resume_cluster" {
-      for_each = try([each.value.resume_cluster], [])
+      dynamic "resume_cluster" {
+        for_each = each.value.resume_cluster != null ? [each.value.resume_cluster] : []
 
-      content {
-        cluster_identifier = aws_redshift_cluster.this[0].id
+        content {
+          cluster_identifier = aws_redshift_cluster.this[0].id
+        }
       }
     }
   }
+}
+
+################################################################################
+# Scheduled Action IAM Role
+################################################################################
+
+data "aws_service_principal" "scheduler_redshift" {
+  count = var.create && var.create_scheduled_action_iam_role ? 1 : 0
+
+  service_name = "scheduler.redshift"
 }
 
 data "aws_iam_policy_document" "scheduled_action_assume" {
@@ -202,7 +212,7 @@ data "aws_iam_policy_document" "scheduled_action_assume" {
 
     principals {
       type        = "Service"
-      identifiers = ["scheduler.redshift.${local.dns_suffix}"]
+      identifiers = [data.aws_service_principal.scheduler_redshift[0].name]
     }
   }
 }
@@ -273,12 +283,12 @@ resource "aws_redshift_usage_limit" "this" {
   cluster_identifier = aws_redshift_cluster.this[0].id
 
   amount        = each.value.amount
-  breach_action = try(each.value.breach_action, null)
+  breach_action = each.value.breach_action
   feature_type  = each.value.feature_type
-  limit_type    = each.value.limit_type
-  period        = try(each.value.period, null)
+  limit_type    = try(coalesce(each.value.limit_type))
+  period        = each.value.period
 
-  tags = merge(var.tags, try(each.value.tags, {}))
+  tags = merge(var.tags, each.value.tags)
 }
 
 ################################################################################
@@ -297,13 +307,13 @@ resource "aws_redshift_authentication_profile" "this" {
 ################################################################################
 
 resource "aws_redshift_logging" "this" {
-  count = var.create && length(var.logging) > 0 ? 1 : 0
+  count = var.create && var.logging != null ? 1 : 0
 
   cluster_identifier   = aws_redshift_cluster.this[0].id
-  bucket_name          = try(var.logging.bucket_name, null)
-  log_destination_type = try(var.logging.log_destination_type, null)
-  log_exports          = try(var.logging.log_exports, null)
-  s3_key_prefix        = try(var.logging.s3_key_prefix, null)
+  bucket_name          = var.logging.bucket_name
+  log_destination_type = var.logging.log_destination_type
+  log_exports          = var.logging.log_exports
+  s3_key_prefix        = var.logging.s3_key_prefix
 }
 
 ################################################################################
@@ -311,13 +321,13 @@ resource "aws_redshift_logging" "this" {
 ################################################################################
 
 resource "aws_redshift_snapshot_copy" "this" {
-  count = var.create && length(var.snapshot_copy) > 0 ? 1 : 0
+  count = var.create && var.snapshot_copy != null ? 1 : 0
 
   cluster_identifier               = aws_redshift_cluster.this[0].id
   destination_region               = var.snapshot_copy.destination_region
-  manual_snapshot_retention_period = try(var.snapshot_copy.manual_snapshot_retention_period, null)
-  retention_period                 = try(var.snapshot_copy.retention_period, null)
-  snapshot_copy_grant_name         = try(var.snapshot_copy.grant_name, null)
+  manual_snapshot_retention_period = var.snapshot_copy.manual_snapshot_retention_period
+  retention_period                 = var.snapshot_copy.retention_period
+  snapshot_copy_grant_name         = var.snapshot_copy.grant_name
 }
 
 ################################################################################

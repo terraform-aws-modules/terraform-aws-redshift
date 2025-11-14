@@ -16,7 +16,8 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Modified
 
--
+- Variable definitions now contain detailed `object` types in place of the previously used any type.
+- Default value for `parameter_group_family` changed from `redshift-1.0` to `redshift-2.0`
 
 ### Removed
 

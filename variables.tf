@@ -101,8 +101,13 @@ variable "kms_key_arn" {
 
 variable "logging" {
   description = "Logging configuration for the cluster"
-  type        = any
-  default     = {}
+  type = object({
+    bucket_name          = optional(string)
+    log_destination_type = optional(string)
+    log_exports          = optional(list(string))
+    s3_key_prefix        = optional(string)
+  })
+  default = null
 }
 
 variable "maintenance_track_name" {
@@ -116,7 +121,6 @@ variable "manual_snapshot_retention_period" {
   type        = number
   default     = null
 }
-
 
 variable "manage_master_password" {
   description = "Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password`. One of `master_password` or `manage_master_password` is required unless `snapshot_identifier` is provided"
@@ -168,7 +172,7 @@ variable "owner_account" {
 }
 
 variable "port" {
-  description = "The port number on which the cluster accepts incoming connections. Default port is 5439"
+  description = "The port number on which the cluster accepts incoming connections. Default port is `5439`"
   type        = number
   default     = null
 }
@@ -199,8 +203,13 @@ variable "snapshot_cluster_identifier" {
 
 variable "snapshot_copy" {
   description = "Configuration of automatic copy of snapshots from one region to another"
-  type        = any
-  default     = {}
+  type = object({
+    destination_region               = string
+    manual_snapshot_retention_period = optional(number)
+    retention_period                 = optional(number)
+    grant_name                       = optional(string)
+  })
+  default = null
 }
 
 variable "snapshot_identifier" {
@@ -217,8 +226,12 @@ variable "vpc_security_group_ids" {
 
 variable "cluster_timeouts" {
   description = "Create, update, and delete timeout configurations for the cluster"
-  type        = map(string)
-  default     = {}
+  type = object({
+    create = optional(string)
+    update = optional(string)
+    delete = optional(string)
+  })
+  default = null
 }
 
 ################################################################################
@@ -262,13 +275,16 @@ variable "parameter_group_description" {
 variable "parameter_group_family" {
   description = "The family of the Redshift parameter group"
   type        = string
-  default     = "redshift-1.0"
+  default     = "redshift-2.0"
 }
 
 variable "parameter_group_parameters" {
-  description = "value"
-  type        = map(any)
-  default     = {}
+  description = "A list of Redshift parameters to apply"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = null
 }
 
 variable "parameter_group_tags" {
@@ -356,10 +372,34 @@ variable "snapshot_schedule_force_destroy" {
 ################################################################################
 
 variable "scheduled_actions" {
-  description = "Map of maps containing scheduled action definitions"
-  type        = any
-  default     = {}
+  description = "Map of scheduled action definitions to create"
+  type = map(object({
+    name        = optional(string) # Will fall back to key if not set
+    description = optional(string)
+    enable      = optional(bool)
+    start_time  = optional(string)
+    end_time    = optional(string)
+    schedule    = string
+    iam_role    = optional(string)
+    target_action = object({
+      pause_cluster = optional(object({}))
+      resize_cluster = optional(object({
+        classic         = optional(bool)
+        cluster_type    = optional(string)
+        node_type       = optional(string)
+        number_of_nodes = optional(number)
+      }))
+      resume_cluster = optional(object({}))
+    })
+
+  }))
+  default  = {}
+  nullable = false
 }
+
+################################################################################
+# Scheduled Action IAM Role
+################################################################################
 
 variable "create_scheduled_action_iam_role" {
   description = "Determines whether a scheduled action IAM role is created"
@@ -443,8 +483,16 @@ variable "endpoint_vpc_security_group_ids" {
 
 variable "usage_limits" {
   description = "Map of usage limit definitions to create"
-  type        = any
-  default     = {}
+  type = map(object({
+    amount        = number
+    breach_action = optional(string)
+    feature_type  = string
+    limit_type    = optional(string) # Will fall back to key if not set
+    period        = optional(string)
+    tags          = optional(map(string), {})
+  }))
+  default  = {}
+  nullable = false
 }
 
 ################################################################################
@@ -453,8 +501,12 @@ variable "usage_limits" {
 
 variable "authentication_profiles" {
   description = "Map of authentication profiles to create"
-  type        = any
-  default     = {}
+  type = map(object({
+    name    = optional(string) # Will fall back to key if not set
+    content = any
+  }))
+  default  = {}
+  nullable = false
 }
 
 ################################################################################
@@ -496,31 +548,31 @@ variable "cloudwatch_log_group_tags" {
 ################################################################################
 
 variable "manage_master_password_rotation" {
-  description = "Whether to manage the master user password rotation. Setting this value to false after previously having been set to true will disable automatic rotation."
+  description = "Whether to manage the master user password rotation. Setting this value to false after previously having been set to true will disable automatic rotation"
   type        = bool
   default     = false
 }
 
 variable "master_password_rotate_immediately" {
-  description = "Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window."
+  description = "Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window"
   type        = bool
   default     = null
 }
 
 variable "master_password_rotation_automatically_after_days" {
-  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified."
+  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified"
   type        = number
   default     = null
 }
 
 variable "master_password_rotation_duration" {
-  description = "The length of the rotation window in hours. For example, 3h for a three hour window."
+  description = "The length of the rotation window in hours. For example, 3h for a three hour window"
   type        = string
   default     = null
 }
 
 variable "master_password_rotation_schedule_expression" {
-  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified."
+  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified"
   type        = string
   default     = null
 }

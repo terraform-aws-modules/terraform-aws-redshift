@@ -153,10 +153,13 @@ module "redshift" {
   }
 
   # Endpoint access - only available when using the ra3.x type
-  create_endpoint_access          = true
-  endpoint_name                   = "${local.name}-example"
-  endpoint_subnet_group_name      = aws_redshift_subnet_group.endpoint.id
-  endpoint_vpc_security_group_ids = [module.security_group.security_group_id]
+  endpoint_access = {
+    example = {
+      name                   = "${local.name}-example"
+      subnet_group_name      = aws_redshift_subnet_group.endpoint.id
+      vpc_security_group_ids = [module.security_group.security_group_id]
+    }
+  }
 
   # Usage limits
   usage_limits = {

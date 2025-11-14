@@ -31,6 +31,12 @@ Please consult the `examples` directory for reference example configurations. If
     - `create_random_password` removed along with support for generating a random password
     - `random_password_length` removed along with support for generating a random password
     - `aqua_configuration_status` argument was deprecated
+    - The variables for endpoint access have been nested under a single, top-level `endpoint_access` variable:
+        - `create_endpoint_access` removed - set `endpoint_access` to `null` or omit to disable
+        - `endpoint_name`
+        - `endpoint_resource_owner`
+        - `endpoint_subnet_group_name`
+        - `endpoint_vpc_security_group_ids`
 
 2. Renamed variables:
 

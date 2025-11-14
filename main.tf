@@ -277,15 +277,15 @@ resource "aws_iam_role_policy" "scheduled_action" {
 ################################################################################
 
 resource "aws_redshift_endpoint_access" "this" {
-  count = var.create && var.create_endpoint_access ? 1 : 0
+  for_each = var.create && var.endpoint_access != null ? var.endpoint_access : {}
 
   region = var.region
 
   cluster_identifier     = aws_redshift_cluster.this[0].id
-  endpoint_name          = var.endpoint_name
-  resource_owner         = var.endpoint_resource_owner
-  subnet_group_name      = coalesce(var.endpoint_subnet_group_name, local.subnet_group_name)
-  vpc_security_group_ids = var.endpoint_vpc_security_group_ids
+  endpoint_name          = try(coalesce(each.value.name, each.key))
+  resource_owner         = each.value.resource_owner
+  subnet_group_name      = each.value.subnet_group_name
+  vpc_security_group_ids = each.value.vpc_security_group_ids
 }
 
 ################################################################################

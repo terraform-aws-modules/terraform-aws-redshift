@@ -15,18 +15,17 @@ module "redshift" {
   node_type             = "ra3.xlplus"
   number_of_nodes       = 3
 
-  database_name          = "mydb"
-  master_username        = "mydbuser"
-  create_random_password = false
-  master_password        = "MySecretPassw0rd1!" # Do better!
+  database_name   = "mydb"
+  master_username = "mydbuser"
+
+  manage_master_password                       = true
+  manage_master_password_rotation              = true
+  master_password_rotation_schedule_expression = "rate(90 days)"
 
   encrypted   = true
   kms_key_arn = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
 
-  enhanced_vpc_routing   = true
-  vpc_security_group_ids = ["sg-12345678"]
-  subnet_ids             = ["subnet-123456", "subnet-654321"]
-
+  enhanced_vpc_routing                 = true
   availability_zone_relocation_enabled = true
 
   snapshot_copy = {
@@ -79,17 +78,19 @@ module "redshift" {
   # Subnet group
   subnet_group_name        = "example-custom"
   subnet_group_description = "Custom subnet group for example cluster"
+  subnet_ids               = ["subnet-123456", "subnet-654321"]
   subnet_group_tags = {
     Additional = "CustomSubnetGroup"
   }
 
   # Snapshot schedule
-  create_snapshot_schedule        = true
-  snapshot_schedule_identifier    = local.name
-  use_snapshot_identifier_prefix  = true
-  snapshot_schedule_description   = "Example snapshot schedule"
-  snapshot_schedule_definitions   = ["rate(12 hours)"]
-  snapshot_schedule_force_destroy = true
+  snapshot_schedule = {
+    identifier    = "example"
+    use_prefix    = true
+    description   = "Example snapshot schedule"
+    definitions   = ["rate(12 hours)"]
+    force_destroy = true
+  }
 
   # Scheduled actions
   create_scheduled_action_iam_role = true
@@ -98,30 +99,39 @@ module "redshift" {
       name          = "example-pause"
       description   = "Pause cluster every night"
       schedule      = "cron(0 22 * * ? *)"
-      pause_cluster = true
+      target_action = {
+        pause_cluster = true
+      }
     }
     resize = {
       name        = "example-resize"
       description = "Resize cluster (demo only)"
       schedule    = "cron(00 13 * * ? *)"
-      resize_cluster = {
-        node_type       = "ds2.xlarge"
-        number_of_nodes = 5
+      target_action = {
+        resize_cluster = {
+          node_type       = "ds2.xlarge"
+          number_of_nodes = 5
+        }
       }
     }
     resume = {
       name           = "example-resume"
       description    = "Resume cluster every morning"
       schedule       = "cron(0 12 * * ? *)"
-      resume_cluster = true
+      target_action = {
+        resume_cluster = true
+      }
     }
   }
 
   # Endpoint access
-  create_endpoint_access          = true
-  endpoint_name                   = "example-example"
-  endpoint_subnet_group_name      = "example-subnet-group"
-  endpoint_vpc_security_group_ids = ["sg-12345678"]
+  endpoint_access = {
+    example = {
+      name                   = "example-example"
+      subnet_group_name      = "example-subnet-group"
+      vpc_security_group_ids = ["sg-12345678"]
+    }
+  }
 
   # Usage limits
   usage_limits = {
@@ -239,7 +249,6 @@ No modules.
 | <a name="input_create_parameter_group"></a> [create\_parameter\_group](#input\_create\_parameter\_group) | Determines whether to create a parameter group or use existing | `bool` | `true` | no |
 | <a name="input_create_scheduled_action_iam_role"></a> [create\_scheduled\_action\_iam\_role](#input\_create\_scheduled\_action\_iam\_role) | Determines whether a scheduled action IAM role is created | `bool` | `false` | no |
 | <a name="input_create_security_group"></a> [create\_security\_group](#input\_create\_security\_group) | Determines whether to create security group for Redshift cluster | `bool` | `true` | no |
-| <a name="input_create_snapshot_schedule"></a> [create\_snapshot\_schedule](#input\_create\_snapshot\_schedule) | Determines whether to create a snapshot schedule | `bool` | `false` | no |
 | <a name="input_create_subnet_group"></a> [create\_subnet\_group](#input\_create\_subnet\_group) | Determines whether to create a subnet group or use existing | `bool` | `true` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | The name of the first database to be created when the cluster is created. If you do not provide a name, Amazon Redshift will create a default database called `dev` | `string` | `null` | no |
 | <a name="input_default_iam_role_arn"></a> [default\_iam\_role\_arn](#input\_default\_iam\_role\_arn) | The Amazon Resource Name (ARN) for the IAM role that was set as default for the cluster when the cluster was created | `string` | `null` | no |
@@ -281,7 +290,7 @@ No modules.
 | <a name="input_preferred_maintenance_window"></a> [preferred\_maintenance\_window](#input\_preferred\_maintenance\_window) | The weekly time range (in UTC) during which automated cluster maintenance can occur. Format: `ddd:hh24:mi-ddd:hh24:mi` | `string` | `"sat:10:00-sat:10:30"` | no |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | If true, the cluster can be accessed from a public network | `bool` | `false` | no |
 | <a name="input_region"></a> [region](#input\_region) | Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration | `string` | `null` | no |
-| <a name="input_scheduled_actions"></a> [scheduled\_actions](#input\_scheduled\_actions) | Map of scheduled action definitions to create | <pre>map(object({<br/>    name        = optional(string) # Will fall back to key if not set<br/>    description = optional(string)<br/>    enable      = optional(bool)<br/>    start_time  = optional(string)<br/>    end_time    = optional(string)<br/>    schedule    = string<br/>    iam_role    = optional(string)<br/>    target_action = object({<br/>      pause_cluster = optional(object({}))<br/>      resize_cluster = optional(object({<br/>        classic         = optional(bool)<br/>        cluster_type    = optional(string)<br/>        node_type       = optional(string)<br/>        number_of_nodes = optional(number)<br/>      }))<br/>      resume_cluster = optional(object({}))<br/>    })<br/>  }))</pre> | `{}` | no |
+| <a name="input_scheduled_actions"></a> [scheduled\_actions](#input\_scheduled\_actions) | Map of scheduled action definitions to create | <pre>map(object({<br/>    name        = optional(string) # Will fall back to key if not set<br/>    description = optional(string)<br/>    enable      = optional(bool)<br/>    start_time  = optional(string)<br/>    end_time    = optional(string)<br/>    schedule    = string<br/>    iam_role    = optional(string)<br/>    target_action = object({<br/>      pause_cluster = optional(bool, false)<br/>      resize_cluster = optional(object({<br/>        classic         = optional(bool)<br/>        cluster_type    = optional(string)<br/>        node_type       = optional(string)<br/>        number_of_nodes = optional(number)<br/>      }))<br/>      resume_cluster = optional(bool, false)<br/>    })<br/>  }))</pre> | `{}` | no |
 | <a name="input_security_group_description"></a> [security\_group\_description](#input\_security\_group\_description) | The description of the security group. If value is set to empty string it will contain cluster name in the description | `string` | `null` | no |
 | <a name="input_security_group_egress_rules"></a> [security\_group\_egress\_rules](#input\_security\_group\_egress\_rules) | Map of security group egress rules to add to the security group created | <pre>map(object({<br/>    name = optional(string)<br/><br/>    cidr_ipv4                    = optional(string)<br/>    cidr_ipv6                    = optional(string)<br/>    description                  = optional(string)<br/>    from_port                    = optional(number)<br/>    ip_protocol                  = optional(string, "tcp")<br/>    prefix_list_id               = optional(string)<br/>    referenced_security_group_id = optional(string)<br/>    region                       = optional(string)<br/>    tags                         = optional(map(string), {})<br/>    to_port                      = optional(number)<br/>  }))</pre> | `{}` | no |
 | <a name="input_security_group_ingress_rules"></a> [security\_group\_ingress\_rules](#input\_security\_group\_ingress\_rules) | Map of security group ingress rules to add to the security group created | <pre>map(object({<br/>    name = optional(string)<br/><br/>    cidr_ipv4                    = optional(string)<br/>    cidr_ipv6                    = optional(string)<br/>    description                  = optional(string)<br/>    from_port                    = optional(number)<br/>    ip_protocol                  = optional(string, "tcp")<br/>    prefix_list_id               = optional(string)<br/>    referenced_security_group_id = optional(string)<br/>    region                       = optional(string)<br/>    tags                         = optional(map(string), {})<br/>    to_port                      = optional(number)<br/>  }))</pre> | `{}` | no |
@@ -292,17 +301,13 @@ No modules.
 | <a name="input_snapshot_cluster_identifier"></a> [snapshot\_cluster\_identifier](#input\_snapshot\_cluster\_identifier) | The name of the cluster the source snapshot was created from | `string` | `null` | no |
 | <a name="input_snapshot_copy"></a> [snapshot\_copy](#input\_snapshot\_copy) | Configuration of automatic copy of snapshots from one region to another | <pre>object({<br/>    destination_region               = string<br/>    manual_snapshot_retention_period = optional(number)<br/>    retention_period                 = optional(number)<br/>    grant_name                       = optional(string)<br/>  })</pre> | `null` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | The name of the snapshot from which to create the new cluster | `string` | `null` | no |
-| <a name="input_snapshot_schedule_definitions"></a> [snapshot\_schedule\_definitions](#input\_snapshot\_schedule\_definitions) | The definition of the snapshot schedule. The definition is made up of schedule expressions, for example `cron(30 12 *)` or `rate(12 hours)` | `list(string)` | `[]` | no |
-| <a name="input_snapshot_schedule_description"></a> [snapshot\_schedule\_description](#input\_snapshot\_schedule\_description) | The description of the snapshot schedule | `string` | `null` | no |
-| <a name="input_snapshot_schedule_force_destroy"></a> [snapshot\_schedule\_force\_destroy](#input\_snapshot\_schedule\_force\_destroy) | Whether to destroy all associated clusters with this snapshot schedule on deletion. Must be enabled and applied before attempting deletion | `bool` | `null` | no |
-| <a name="input_snapshot_schedule_identifier"></a> [snapshot\_schedule\_identifier](#input\_snapshot\_schedule\_identifier) | The snapshot schedule identifier | `string` | `null` | no |
+| <a name="input_snapshot_schedule"></a> [snapshot\_schedule](#input\_snapshot\_schedule) | Configuration for creating a snapshot schedule and associating it with the cluster | <pre>object({<br/>    definitions   = list(string)<br/>    description   = optional(string)<br/>    force_destroy = optional(bool)<br/>    use_prefix    = optional(bool, false)<br/>    identifier    = optional(string)<br/>    tags          = optional(map(string), {})<br/>  })</pre> | `null` | no |
 | <a name="input_subnet_group_description"></a> [subnet\_group\_description](#input\_subnet\_group\_description) | The description of the Redshift Subnet group. Defaults to `Managed by Terraform` | `string` | `null` | no |
 | <a name="input_subnet_group_name"></a> [subnet\_group\_name](#input\_subnet\_group\_name) | The name of the Redshift subnet group, existing or to be created | `string` | `null` | no |
 | <a name="input_subnet_group_tags"></a> [subnet\_group\_tags](#input\_subnet\_group\_tags) | Additional tags to add to the subnet group | `map(string)` | `{}` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | An array of VPC subnet IDs to use in the subnet group | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_usage_limits"></a> [usage\_limits](#input\_usage\_limits) | Map of usage limit definitions to create | <pre>map(object({<br/>    amount        = number<br/>    breach_action = optional(string)<br/>    feature_type  = string<br/>    limit_type    = optional(string) # Will fall back to key if not set<br/>    period        = optional(string)<br/>    tags          = optional(map(string), {})<br/>  }))</pre> | `{}` | no |
-| <a name="input_use_snapshot_identifier_prefix"></a> [use\_snapshot\_identifier\_prefix](#input\_use\_snapshot\_identifier\_prefix) | Determines whether the identifier (`snapshot_schedule_identifier`) is used as a prefix | `bool` | `true` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC where to create security group | `string` | `""` | no |
 | <a name="input_vpc_security_group_ids"></a> [vpc\_security\_group\_ids](#input\_vpc\_security\_group\_ids) | A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster | `list(string)` | `[]` | no |
 

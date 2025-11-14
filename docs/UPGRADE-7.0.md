@@ -33,10 +33,17 @@ Please consult the `examples` directory for reference example configurations. If
     - `aqua_configuration_status` argument was deprecated
     - The variables for endpoint access have been nested under a single, top-level `endpoint_access` variable:
         - `create_endpoint_access` removed - set `endpoint_access` to `null` or omit to disable
-        - `endpoint_name`
-        - `endpoint_resource_owner`
-        - `endpoint_subnet_group_name`
-        - `endpoint_vpc_security_group_ids`
+        - `endpoint_name` -> `endpoint_access.name`
+        - `endpoint_resource_owner` -> `endpoint_access.resource_owner`
+        - `endpoint_subnet_group_name` -> `endpoint_access.subnet_group_name`
+        - `endpoint_vpc_security_group_ids` -> `endpoint_access.vpc_security_group_ids`
+    - The variables for snapshot schedule have been nested under a single, top-level `snapshot_schedule` variable:
+        - `create_snapshot_schedule` removed - set `snapshot_schedule` to `null` or omit to disable
+        - `snapshot_schedule_identifier` -> `snapshot_schedule.identifier`
+        - `use_snapshot_identifier_prefix` -> `snapshot_schedule.use_prefix`
+        - `snapshot_schedule_description` -> `snapshot_schedule.description`
+        - `snapshot_schedule_definitions` -> `snapshot_schedule.definitions`
+        - `snapshot_schedule_force_destroy` -> `snapshot_schedule.force_destroy`
 
 2. Renamed variables:
 
@@ -75,6 +82,46 @@ module "redshift" {
   version = "~> 6.0"
 
   # Only the affected attributes are shown
+
+  # Snapshot schedule
+  create_snapshot_schedule        = true
+  snapshot_schedule_identifier    = "example"
+  use_snapshot_identifier_prefix  = true
+  snapshot_schedule_description   = "Example snapshot schedule"
+  snapshot_schedule_definitions   = ["rate(12 hours)"]
+  snapshot_schedule_force_destroy = true
+
+  # Scheduled actions
+  create_scheduled_action_iam_role = true
+  scheduled_actions = {
+    pause = {
+      name          = "example-pause"
+      description   = "Pause cluster every night"
+      schedule      = "cron(0 22 * * ? *)"
+      pause_cluster = true
+    }
+    resize = {
+      name        = "example-resize"
+      description = "Resize cluster (demo only)"
+      schedule    = "cron(00 13 * * ? *)"
+      resize_cluster = {
+        node_type       = "ds2.xlarge"
+        number_of_nodes = 5
+      }
+    }
+    resume = {
+      name           = "example-resume"
+      description    = "Resume cluster every morning"
+      schedule       = "cron(0 12 * * ? *)"
+      resume_cluster = true
+    }
+  }
+
+  # Endpoint access - only available when using the ra3.x type
+  create_endpoint_access          = true
+  endpoint_name                   = "example-example"
+  endpoint_subnet_group_name      = aws_redshift_subnet_group.endpoint.id
+  endpoint_vpc_security_group_ids = [module.security_group.security_group_id]
 }
 ```
 
@@ -86,6 +133,56 @@ module "redshift" {
   version = "~> 7.0"
 
   # Only the affected attributes are shown
+
+  # Snapshot schedule
+  snapshot_schedule = {
+    identifier    = "example"
+    use_prefix    = true
+    description   = "Example snapshot schedule"
+    definitions   = ["rate(12 hours)"]
+    force_destroy = true
+  }
+
+  # Scheduled actions
+  create_scheduled_action_iam_role = true
+  scheduled_actions = {
+    pause = {
+      name        = "example-pause"
+      description = "Pause cluster every night"
+      schedule    = "cron(0 22 * * ? *)"
+      target_action = {
+        pause_cluster = true
+      }
+    }
+    resize = {
+      name        = "example-resize"
+      description = "Resize cluster (demo only)"
+      schedule    = "cron(00 13 * * ? *)"
+      target_action = {
+        resize_cluster = {
+          node_type       = "ds2.xlarge"
+          number_of_nodes = 5
+        }
+      }
+    }
+    resume = {
+      name        = "example-resume"
+      description = "Resume cluster every morning"
+      schedule    = "cron(0 12 * * ? *)"
+      target_action = {
+        resume_cluster = true
+      }
+    }
+  }
+
+  # Endpoint access - only available when using the ra3.x type
+  endpoint_access = {
+    example = {
+      name                   = "example-example"
+      subnet_group_name      = aws_redshift_subnet_group.endpoint.id
+      vpc_security_group_ids = [module.security_group.security_group_id]
+    }
+  }
 }
 ```
 

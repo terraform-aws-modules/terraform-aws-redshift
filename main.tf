@@ -128,22 +128,26 @@ resource "aws_redshift_subnet_group" "this" {
 # Snapshot Schedule
 ################################################################################
 
+locals {
+  snapshot_schedule_identifier = try(coalesce(var.snapshot_schedule.identifier, var.cluster_identifier))
+}
+
 resource "aws_redshift_snapshot_schedule" "this" {
-  count = var.create && var.create_snapshot_schedule ? 1 : 0
+  count = var.create && var.snapshot_schedule != null ? 1 : 0
 
   region = var.region
 
-  identifier        = var.use_snapshot_identifier_prefix ? null : var.snapshot_schedule_identifier
-  identifier_prefix = var.use_snapshot_identifier_prefix ? "${var.snapshot_schedule_identifier}-" : null
-  description       = var.snapshot_schedule_description
-  definitions       = var.snapshot_schedule_definitions
-  force_destroy     = var.snapshot_schedule_force_destroy
+  definitions       = var.snapshot_schedule.definitions
+  description       = var.snapshot_schedule.description
+  force_destroy     = var.snapshot_schedule.force_destroy
+  identifier        = var.snapshot_schedule.use_prefix ? null : local.snapshot_schedule_identifier
+  identifier_prefix = var.snapshot_schedule.use_prefix ? "${local.snapshot_schedule_identifier}-" : null
 
-  tags = var.tags
+  tags = merge(var.tags, var.snapshot_schedule.tags)
 }
 
 resource "aws_redshift_snapshot_schedule_association" "this" {
-  count = var.create && var.create_snapshot_schedule ? 1 : 0
+  count = var.create && var.snapshot_schedule != null ? 1 : 0
 
   region = var.region
 
@@ -177,7 +181,7 @@ resource "aws_redshift_scheduled_action" "this" {
 
     content {
       dynamic "pause_cluster" {
-        for_each = each.value.pause_cluster != null ? [each.value.pause_cluster] : []
+        for_each = each.value.pause_cluster != null ? [1] : []
 
         content {
           cluster_identifier = aws_redshift_cluster.this[0].id
@@ -185,7 +189,7 @@ resource "aws_redshift_scheduled_action" "this" {
       }
 
       dynamic "resize_cluster" {
-        for_each = each.value.resize_cluster != null ? [each.value.resize_cluster] : []
+        for_each = each.value.resize_cluster != null ? [1] : []
 
         content {
           classic            = resize_cluster.value.classic
@@ -337,22 +341,6 @@ resource "aws_redshift_logging" "this" {
 }
 
 ################################################################################
-# Snapshot Copy
-################################################################################
-
-resource "aws_redshift_snapshot_copy" "this" {
-  count = var.create && var.snapshot_copy != null ? 1 : 0
-
-  region = var.region
-
-  cluster_identifier               = aws_redshift_cluster.this[0].id
-  destination_region               = var.snapshot_copy.destination_region
-  manual_snapshot_retention_period = var.snapshot_copy.manual_snapshot_retention_period
-  retention_period                 = var.snapshot_copy.retention_period
-  snapshot_copy_grant_name         = var.snapshot_copy.grant_name
-}
-
-################################################################################
 # CloudWatch Log Group
 ################################################################################
 
@@ -367,6 +355,22 @@ resource "aws_cloudwatch_log_group" "this" {
   skip_destroy      = var.cloudwatch_log_group_skip_destroy
 
   tags = merge(var.tags, var.cloudwatch_log_group_tags)
+}
+
+################################################################################
+# Snapshot Copy
+################################################################################
+
+resource "aws_redshift_snapshot_copy" "this" {
+  count = var.create && var.snapshot_copy != null ? 1 : 0
+
+  region = var.region
+
+  cluster_identifier               = aws_redshift_cluster.this[0].id
+  destination_region               = var.snapshot_copy.destination_region
+  manual_snapshot_retention_period = var.snapshot_copy.manual_snapshot_retention_period
+  retention_period                 = var.snapshot_copy.retention_period
+  snapshot_copy_grant_name         = var.snapshot_copy.grant_name
 }
 
 ################################################################################

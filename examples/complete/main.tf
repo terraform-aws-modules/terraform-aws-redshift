@@ -40,23 +40,17 @@ module "redshift" {
 
   database_name   = "mydb"
   master_username = "mydbuser"
-  # Either provide a good master password
-  #  create_random_password = false
-  #  master_password        = "MySecretPassw0rd1!" # Do better!
-  # Or make Redshift manage it in secrets manager
-  manage_master_password = true
 
+  manage_master_password                       = true
   manage_master_password_rotation              = true
   master_password_rotation_schedule_expression = "rate(90 days)"
 
   encrypted   = true
   kms_key_arn = aws_kms_key.redshift.arn
 
-  enhanced_vpc_routing = true
-  subnet_ids           = module.vpc.redshift_subnets
-
   # Only available when using the ra3.x type
   availability_zone_relocation_enabled = true
+  enhanced_vpc_routing                 = true
 
   snapshot_copy = {
     destination_region = "us-east-1"
@@ -108,17 +102,19 @@ module "redshift" {
   # Subnet group
   subnet_group_name        = "${local.name}-custom"
   subnet_group_description = "Custom subnet group for ${local.name} cluster"
+  subnet_ids               = module.vpc.redshift_subnets
   subnet_group_tags = {
     Additional = "CustomSubnetGroup"
   }
 
   # Snapshot schedule
-  create_snapshot_schedule        = true
-  snapshot_schedule_identifier    = local.name
-  use_snapshot_identifier_prefix  = true
-  snapshot_schedule_description   = "Example snapshot schedule"
-  snapshot_schedule_definitions   = ["rate(12 hours)"]
-  snapshot_schedule_force_destroy = true
+  snapshot_schedule = {
+    identifier    = local.name
+    use_prefix    = true
+    description   = "Example snapshot schedule"
+    definitions   = ["rate(12 hours)"]
+    force_destroy = true
+  }
 
   # Scheduled actions
   create_scheduled_action_iam_role = true
@@ -128,7 +124,7 @@ module "redshift" {
       description = "Pause cluster every night"
       schedule    = "cron(0 22 * * ? *)"
       target_action = {
-        pause_cluster = {}
+        pause_cluster = true
       }
     }
     resize = {
@@ -147,7 +143,7 @@ module "redshift" {
       description = "Resume cluster every morning"
       schedule    = "cron(0 12 * * ? *)"
       target_action = {
-        resume_cluster = {}
+        resume_cluster = true
       }
     }
   }

@@ -337,40 +337,17 @@ variable "subnet_group_tags" {
 # Snapshot Schedule
 ################################################################################
 
-variable "create_snapshot_schedule" {
-  description = "Determines whether to create a snapshot schedule"
-  type        = bool
-  default     = false
-}
-
-variable "snapshot_schedule_identifier" {
-  description = "The snapshot schedule identifier"
-  type        = string
-  default     = null
-}
-
-variable "use_snapshot_identifier_prefix" {
-  description = "Determines whether the identifier (`snapshot_schedule_identifier`) is used as a prefix"
-  type        = bool
-  default     = true
-}
-
-variable "snapshot_schedule_description" {
-  description = "The description of the snapshot schedule"
-  type        = string
-  default     = null
-}
-
-variable "snapshot_schedule_definitions" {
-  description = "The definition of the snapshot schedule. The definition is made up of schedule expressions, for example `cron(30 12 *)` or `rate(12 hours)`"
-  type        = list(string)
-  default     = []
-}
-
-variable "snapshot_schedule_force_destroy" {
-  description = "Whether to destroy all associated clusters with this snapshot schedule on deletion. Must be enabled and applied before attempting deletion"
-  type        = bool
-  default     = null
+variable "snapshot_schedule" {
+  description = "Configuration for creating a snapshot schedule and associating it with the cluster"
+  type = object({
+    definitions   = list(string)
+    description   = optional(string)
+    force_destroy = optional(bool)
+    use_prefix    = optional(bool, false)
+    identifier    = optional(string)
+    tags          = optional(map(string), {})
+  })
+  default = null
 }
 
 ################################################################################
@@ -388,14 +365,14 @@ variable "scheduled_actions" {
     schedule    = string
     iam_role    = optional(string)
     target_action = object({
-      pause_cluster = optional(object({}))
+      pause_cluster = optional(bool, false)
       resize_cluster = optional(object({
         classic         = optional(bool)
         cluster_type    = optional(string)
         node_type       = optional(string)
         number_of_nodes = optional(number)
       }))
-      resume_cluster = optional(object({}))
+      resume_cluster = optional(bool, false)
     })
   }))
   default  = {}

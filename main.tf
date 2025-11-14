@@ -125,10 +125,6 @@ resource "aws_redshift_subnet_group" "this" {
 # Snapshot Schedule
 ################################################################################
 
-locals {
-  snapshot_schedule_identifier = try(coalesce(var.snapshot_schedule.identifier, var.cluster_identifier))
-}
-
 resource "aws_redshift_snapshot_schedule" "this" {
   count = var.create && var.snapshot_schedule != null ? 1 : 0
 
@@ -137,8 +133,8 @@ resource "aws_redshift_snapshot_schedule" "this" {
   definitions       = var.snapshot_schedule.definitions
   description       = var.snapshot_schedule.description
   force_destroy     = var.snapshot_schedule.force_destroy
-  identifier        = var.snapshot_schedule.use_prefix ? null : local.snapshot_schedule_identifier
-  identifier_prefix = var.snapshot_schedule.use_prefix ? "${local.snapshot_schedule_identifier}-" : null
+  identifier        = var.snapshot_schedule.use_prefix ? null : try(coalesce(var.snapshot_schedule.identifier, var.cluster_identifier), "")
+  identifier_prefix = var.snapshot_schedule.use_prefix ? "${try(coalesce(var.snapshot_schedule.identifier, var.cluster_identifier), "")}-" : null
 
   tags = merge(var.tags, var.snapshot_schedule.tags)
 }
@@ -178,7 +174,7 @@ resource "aws_redshift_scheduled_action" "this" {
 
     content {
       dynamic "pause_cluster" {
-        for_each = each.value.pause_cluster != null ? [1] : []
+        for_each = target_action.value.pause_cluster != null && target_action.value.pause_cluster ? [1] : []
 
         content {
           cluster_identifier = aws_redshift_cluster.this[0].id
@@ -186,7 +182,7 @@ resource "aws_redshift_scheduled_action" "this" {
       }
 
       dynamic "resize_cluster" {
-        for_each = each.value.resize_cluster != null ? [1] : []
+        for_each = target_action.value.resize_cluster != null ? [target_action.value.resize_cluster] : []
 
         content {
           classic            = resize_cluster.value.classic
@@ -198,7 +194,7 @@ resource "aws_redshift_scheduled_action" "this" {
       }
 
       dynamic "resume_cluster" {
-        for_each = each.value.resume_cluster != null ? [each.value.resume_cluster] : []
+        for_each = target_action.value.resume_cluster != null && target_action.value.resume_cluster ? [target_action.value.resume_cluster] : []
 
         content {
           cluster_identifier = aws_redshift_cluster.this[0].id
@@ -317,7 +313,7 @@ resource "aws_redshift_authentication_profile" "this" {
 
   region = var.region
 
-  authentication_profile_name    = try(each.value.name, each.key)
+  authentication_profile_name    = try(coalesce(each.value.name, each.key))
   authentication_profile_content = jsonencode(each.value.content)
 }
 
@@ -342,7 +338,7 @@ resource "aws_redshift_logging" "this" {
 ################################################################################
 
 resource "aws_cloudwatch_log_group" "this" {
-  for_each = toset([for log in try(var.logging.log_exports, []) : log if var.create && var.create_cloudwatch_log_group])
+  for_each = var.create && var.create_cloudwatch_log_group && var.logging != null ? toset([for log in try(var.logging.log_exports, []) : log]) : toset([])
 
   region = var.region
 

@@ -88,10 +88,7 @@ No inputs.
 | <a name="output_cluster_type"></a> [cluster\_type](#output\_cluster\_type) | The Redshift cluster type |
 | <a name="output_cluster_version"></a> [cluster\_version](#output\_cluster\_version) | The version of Redshift engine software |
 | <a name="output_cluster_vpc_security_group_ids"></a> [cluster\_vpc\_security\_group\_ids](#output\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
-| <a name="output_endpoint_access_address"></a> [endpoint\_access\_address](#output\_endpoint\_access\_address) | The DNS address of the endpoint |
-| <a name="output_endpoint_access_id"></a> [endpoint\_access\_id](#output\_endpoint\_access\_id) | The Redshift-managed VPC endpoint name |
-| <a name="output_endpoint_access_port"></a> [endpoint\_access\_port](#output\_endpoint\_access\_port) | The port number on which the cluster accepts incoming connections |
-| <a name="output_endpoint_access_vpc_endpoint"></a> [endpoint\_access\_vpc\_endpoint](#output\_endpoint\_access\_vpc\_endpoint) | The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below |
+| <a name="output_endpoint_access"></a> [endpoint\_access](#output\_endpoint\_access) | A map of access endpoints created and their attributes |
 | <a name="output_master_password_secret_arn"></a> [master\_password\_secret\_arn](#output\_master\_password\_secret\_arn) | ARN of managed master password secret |
 | <a name="output_master_password_secretsmanager_secret_rotation_enabled"></a> [master\_password\_secretsmanager\_secret\_rotation\_enabled](#output\_master\_password\_secretsmanager\_secret\_rotation\_enabled) | Specifies whether automatic rotation is enabled for the secret |
 | <a name="output_parameter_group_arn"></a> [parameter\_group\_arn](#output\_parameter\_group\_arn) | Amazon Resource Name (ARN) of the parameter group created |

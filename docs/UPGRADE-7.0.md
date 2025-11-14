@@ -8,13 +8,14 @@ Please consult the `examples` directory for reference example configurations. If
 - AWS provider `v6.18` is now minimum supported version
 - The ability for the module to create a random password has been removed in order to ensure passwords are not stored in plain text within the state file. Users must now provide their own password via the `master_password_wo` variable.
   - `master_password` is no longer supported and only the write-only equivalent is supported (`master_password_wo` and `master_password_wo_version`)
+- The variable(s) used to create access endpoints has changed from creating a single endpoint to n-number of endpoints
 
 ## Additional changes
 
 ### Added
 
 - Support for `region` argument to specify the AWS region for the resources created if different from the provider region.
-- Support for creating security group
+- Support for creating a security group used by the cluster
 
 ### Modified
 
@@ -23,7 +24,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 ### Removed
 
--
+- Support for generating random passwords has been removed.
 
 ### Variable and output changes
 
@@ -64,15 +65,18 @@ Please consult the `examples` directory for reference example configurations. If
 
 4. Removed outputs:
 
-    -
+    - `endpoint_access_address` -> see `endpoint_access` output
+    - `endpoint_access_port` -> see `endpoint_access` output
+    - `endpoint_access_id` -> see `endpoint_access` output
+    - `endpoint_access_vpc_endpoint` -> see `endpoint_access` output
 
 5. Renamed outputs:
 
-    -
+    - None
 
 6. Added outputs:
 
-    -
+    - None
 
 ## Upgrade Migration
 
@@ -121,9 +125,9 @@ module "redshift" {
 
   # Endpoint access - only available when using the ra3.x type
   create_endpoint_access          = true
-  endpoint_name                   = "example-example"
-  endpoint_subnet_group_name      = aws_redshift_subnet_group.endpoint.id
-  endpoint_vpc_security_group_ids = [module.security_group.security_group_id]
+  endpoint_name                   = "example"
+  endpoint_subnet_group_name      = "example"
+  endpoint_vpc_security_group_ids = ["sg-12345678"]
 }
 ```
 
@@ -135,6 +139,9 @@ module "redshift" {
   version = "~> 7.0"
 
   # Only the affected attributes are shown
+
+  # Security group
+  vpc_id = "vpc-1234556abcdef"
 
   # Snapshot schedule
   snapshot_schedule = {
@@ -180,14 +187,19 @@ module "redshift" {
   # Endpoint access - only available when using the ra3.x type
   endpoint_access = {
     example = {
-      name                   = "example-example"
-      subnet_group_name      = aws_redshift_subnet_group.endpoint.id
-      vpc_security_group_ids = [module.security_group.security_group_id]
+      name                   = "example"
+      subnet_group_name      = "example"
+      vpc_security_group_ids = ["sg-12345678"]
     }
   }
+
+  # Maintains backward compatibility, as needed
+  parameter_group_family = "redshift-1.0"
 }
 ```
 
 ### State Move Commands
 
-TBD
+```sh
+terraform state mv 'module.redshift.aws_redshift_endpoint_access.this[0]' 'module.redshift.aws_redshift_endpoint_access.this["example"]'
+```

@@ -25,6 +25,7 @@ module "redshift" {
   encrypted   = true
   kms_key_arn = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
 
+  vpc_id                               = "vpc-1234556abcdef"
   enhanced_vpc_routing                 = true
   availability_zone_relocation_enabled = true
 
@@ -265,7 +266,7 @@ No modules.
 | <a name="input_iam_role_tags"></a> [iam\_role\_tags](#input\_iam\_role\_tags) | A map of additional tags to add to the scheduled action IAM role created | `map(string)` | `{}` | no |
 | <a name="input_iam_role_use_name_prefix"></a> [iam\_role\_use\_name\_prefix](#input\_iam\_role\_use\_name\_prefix) | Determines whether scheduled action the IAM role name (`iam_role_name`) is used as a prefix | `string` | `true` | no |
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | The ARN for the KMS encryption key. When specifying `kms_key_arn`, `encrypted` needs to be set to `true` | `string` | `null` | no |
-| <a name="input_logging"></a> [logging](#input\_logging) | Logging configuration for the cluster | <pre>object({<br/>    bucket_name          = optional(string)<br/>    log_destination_type = optional(string)<br/>    log_exports          = optional(list(string))<br/>    s3_key_prefix        = optional(string)<br/>  })</pre> | `null` | no |
+| <a name="input_logging"></a> [logging](#input\_logging) | Logging configuration for the cluster | <pre>object({<br/>    bucket_name          = optional(string)<br/>    log_destination_type = optional(string)<br/>    log_exports          = optional(list(string), [])<br/>    s3_key_prefix        = optional(string)<br/>  })</pre> | `null` | no |
 | <a name="input_maintenance_track_name"></a> [maintenance\_track\_name](#input\_maintenance\_track\_name) | The name of the maintenance track for the restored cluster. When you take a snapshot, the snapshot inherits the MaintenanceTrack value from the cluster. The snapshot might be on a different track than the cluster that was the source for the snapshot. Default value is `current` | `string` | `null` | no |
 | <a name="input_manage_master_password"></a> [manage\_master\_password](#input\_manage\_master\_password) | Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password`. One of `master_password` or `manage_master_password` is required unless `snapshot_identifier` is provided | `bool` | `false` | no |
 | <a name="input_manage_master_password_rotation"></a> [manage\_master\_password\_rotation](#input\_manage\_master\_password\_rotation) | Whether to manage the master user password rotation. Setting this value to false after previously having been set to true will disable automatic rotation | `bool` | `false` | no |
@@ -343,10 +344,7 @@ No modules.
 | <a name="output_cluster_type"></a> [cluster\_type](#output\_cluster\_type) | The Redshift cluster type |
 | <a name="output_cluster_version"></a> [cluster\_version](#output\_cluster\_version) | The version of Redshift engine software |
 | <a name="output_cluster_vpc_security_group_ids"></a> [cluster\_vpc\_security\_group\_ids](#output\_cluster\_vpc\_security\_group\_ids) | The VPC security group ids associated with the cluster |
-| <a name="output_endpoint_access_address"></a> [endpoint\_access\_address](#output\_endpoint\_access\_address) | The DNS address of the endpoint |
-| <a name="output_endpoint_access_id"></a> [endpoint\_access\_id](#output\_endpoint\_access\_id) | The Redshift-managed VPC endpoint name |
-| <a name="output_endpoint_access_port"></a> [endpoint\_access\_port](#output\_endpoint\_access\_port) | The port number on which the cluster accepts incoming connections |
-| <a name="output_endpoint_access_vpc_endpoint"></a> [endpoint\_access\_vpc\_endpoint](#output\_endpoint\_access\_vpc\_endpoint) | The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below |
+| <a name="output_endpoint_access"></a> [endpoint\_access](#output\_endpoint\_access) | A map of access endpoints created and their attributes |
 | <a name="output_master_password_secret_arn"></a> [master\_password\_secret\_arn](#output\_master\_password\_secret\_arn) | ARN of managed master password secret |
 | <a name="output_parameter_group_arn"></a> [parameter\_group\_arn](#output\_parameter\_group\_arn) | Amazon Resource Name (ARN) of the parameter group created |
 | <a name="output_parameter_group_id"></a> [parameter\_group\_id](#output\_parameter\_group\_id) | The name of the Redshift parameter group created |

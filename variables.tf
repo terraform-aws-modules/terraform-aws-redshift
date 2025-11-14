@@ -465,7 +465,7 @@ variable "logging" {
   type = object({
     bucket_name          = optional(string)
     log_destination_type = optional(string)
-    log_exports          = optional(list(string))
+    log_exports          = optional(list(string), [])
     s3_key_prefix        = optional(string)
   })
   default = null

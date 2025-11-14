@@ -51,6 +51,7 @@ module "redshift" {
   # Only available when using the ra3.x type
   availability_zone_relocation_enabled = true
   enhanced_vpc_routing                 = true
+  vpc_id                               = module.vpc.vpc_id
 
   snapshot_copy = {
     destination_region = "us-east-1"
@@ -217,8 +218,9 @@ module "with_cloudwatch_logging" {
   source = "../../"
 
   cluster_identifier = "${local.name}-with-cloudwatch-logging"
-  node_type          = "dc2.large"
+  node_type          = "ra3.large"
 
+  vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.redshift_subnets
 
   create_cloudwatch_log_group            = true
@@ -239,8 +241,9 @@ module "default" {
   source = "../../"
 
   cluster_identifier = "${local.name}-default"
-  node_type          = "dc2.large"
+  node_type          = "ra3.large"
 
+  vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.redshift_subnets
 
   tags = local.tags

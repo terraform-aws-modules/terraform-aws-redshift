@@ -2,12 +2,13 @@ provider "aws" {
   region = local.region
 }
 
-provider "aws" {
-  alias  = "us_east_1"
-  region = "us-east-1"
+data "aws_availability_zones" "available" {
+  # Exclude local zones
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
 }
-
-data "aws_availability_zones" "available" {}
 
 locals {
   name   = "ex-${basename(path.cwd)}"
@@ -39,24 +40,18 @@ module "redshift" {
 
   database_name   = "mydb"
   master_username = "mydbuser"
-  # Either provide a good master password
-  #  create_random_password = false
-  #  master_password        = "MySecretPassw0rd1!" # Do better!
-  # Or make Redshift manage it in secrets manager
-  manage_master_password = true
 
+  manage_master_password                       = true
   manage_master_password_rotation              = true
   master_password_rotation_schedule_expression = "rate(90 days)"
 
   encrypted   = true
   kms_key_arn = aws_kms_key.redshift.arn
 
-  enhanced_vpc_routing   = true
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
-
   # Only available when using the ra3.x type
   availability_zone_relocation_enabled = true
+  enhanced_vpc_routing                 = true
+  vpc_id                               = module.vpc.vpc_id
 
   snapshot_copy = {
     destination_region = "us-east-1"
@@ -71,36 +66,36 @@ module "redshift" {
   # Parameter group
   parameter_group_name        = "${local.name}-custom"
   parameter_group_description = "Custom parameter group for ${local.name} cluster"
-  parameter_group_parameters = {
-    wlm_json_configuration = {
+  parameter_group_parameters = [
+    {
       name = "wlm_json_configuration"
       value = jsonencode([
         {
           query_concurrency = 15
         }
       ])
-    }
-    require_ssl = {
+    },
+    {
       name  = "require_ssl"
       value = true
-    }
-    use_fips_ssl = {
+    },
+    {
       name  = "use_fips_ssl"
       value = false
-    }
-    enable_user_activity_logging = {
+    },
+    {
       name  = "enable_user_activity_logging"
       value = true
-    }
-    max_concurrency_scaling_clusters = {
+    },
+    {
       name  = "max_concurrency_scaling_clusters"
       value = 3
-    }
-    enable_case_sensitive_identifier = {
+    },
+    {
       name  = "enable_case_sensitive_identifier"
       value = true
     }
-  }
+  ]
   parameter_group_tags = {
     Additional = "CustomParameterGroup"
   }
@@ -108,49 +103,60 @@ module "redshift" {
   # Subnet group
   subnet_group_name        = "${local.name}-custom"
   subnet_group_description = "Custom subnet group for ${local.name} cluster"
+  subnet_ids               = module.vpc.redshift_subnets
   subnet_group_tags = {
     Additional = "CustomSubnetGroup"
   }
 
   # Snapshot schedule
-  create_snapshot_schedule        = true
-  snapshot_schedule_identifier    = local.name
-  use_snapshot_identifier_prefix  = true
-  snapshot_schedule_description   = "Example snapshot schedule"
-  snapshot_schedule_definitions   = ["rate(12 hours)"]
-  snapshot_schedule_force_destroy = true
+  snapshot_schedule = {
+    identifier    = local.name
+    use_prefix    = true
+    description   = "Example snapshot schedule"
+    definitions   = ["rate(12 hours)"]
+    force_destroy = true
+  }
 
   # Scheduled actions
   create_scheduled_action_iam_role = true
   scheduled_actions = {
     pause = {
-      name          = "${local.name}-pause"
-      description   = "Pause cluster every night"
-      schedule      = "cron(0 22 * * ? *)"
-      pause_cluster = true
+      name        = "${local.name}-pause"
+      description = "Pause cluster every night"
+      schedule    = "cron(0 22 * * ? *)"
+      target_action = {
+        pause_cluster = true
+      }
     }
     resize = {
       name        = "${local.name}-resize"
       description = "Resize cluster (demo only)"
       schedule    = "cron(00 13 * * ? *)"
-      resize_cluster = {
-        node_type       = "ds2.xlarge"
-        number_of_nodes = 5
+      target_action = {
+        resize_cluster = {
+          node_type       = "ds2.xlarge"
+          number_of_nodes = 5
+        }
       }
     }
     resume = {
-      name           = "${local.name}-resume"
-      description    = "Resume cluster every morning"
-      schedule       = "cron(0 12 * * ? *)"
-      resume_cluster = true
+      name        = "${local.name}-resume"
+      description = "Resume cluster every morning"
+      schedule    = "cron(0 12 * * ? *)"
+      target_action = {
+        resume_cluster = true
+      }
     }
   }
 
   # Endpoint access - only available when using the ra3.x type
-  create_endpoint_access          = true
-  endpoint_name                   = "${local.name}-example"
-  endpoint_subnet_group_name      = aws_redshift_subnet_group.endpoint.id
-  endpoint_vpc_security_group_ids = [module.security_group.security_group_id]
+  endpoint_access = {
+    example = {
+      name                   = "${local.name}-example"
+      subnet_group_name      = aws_redshift_subnet_group.endpoint.id
+      vpc_security_group_ids = [module.security_group.security_group_id]
+    }
+  }
 
   # Usage limits
   usage_limits = {
@@ -196,7 +202,7 @@ module "redshift" {
 resource "aws_redshift_snapshot_copy_grant" "useast1" {
   # Grants are declared outside of module because they are generally performed
   # in the destination region and we do not embed multiple providers in the root module
-  provider = aws.us_east_1
+  region = "us-east-1"
 
   snapshot_copy_grant_name = "${local.name}-us-east-1"
   kms_key_id               = aws_kms_key.redshift_us_east_1.arn
@@ -212,10 +218,10 @@ module "with_cloudwatch_logging" {
   source = "../../"
 
   cluster_identifier = "${local.name}-with-cloudwatch-logging"
-  node_type          = "dc2.large"
+  node_type          = "ra3.large"
 
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.redshift_subnets
 
   create_cloudwatch_log_group            = true
   cloudwatch_log_group_retention_in_days = 7
@@ -235,10 +241,10 @@ module "default" {
   source = "../../"
 
   cluster_identifier = "${local.name}-default"
-  node_type          = "dc2.large"
+  node_type          = "ra3.large"
 
-  vpc_security_group_ids = [module.security_group.security_group_id]
-  subnet_ids             = module.vpc.redshift_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.redshift_subnets
 
   tags = local.tags
 }
@@ -259,7 +265,7 @@ module "disabled" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -301,7 +307,7 @@ resource "aws_kms_key" "redshift" {
 }
 
 resource "aws_kms_key" "redshift_us_east_1" {
-  provider = aws.us_east_1
+  region = "us-east-1"
 
   description             = "Customer managed key for encrypting Redshift snapshot cross-region"
   deletion_window_in_days = 7
@@ -341,7 +347,7 @@ data "aws_iam_policy_document" "s3_redshift" {
 
 module "s3_logs" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   bucket_prefix = local.name
   acl           = "log-delivery-write"

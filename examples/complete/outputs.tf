@@ -115,6 +115,7 @@ output "cluster_namespace_arn" {
 output "cluster_master_password" {
   description = "The Redshift cluster master password"
   value       = module.redshift.cluster_master_password
+  sensitive   = true
 }
 
 output "cluster_master_username" {
@@ -187,24 +188,9 @@ output "scheduled_action_iam_role_unique_id" {
 # Endpoint Access
 ################################################################################
 
-output "endpoint_access_address" {
-  description = "The DNS address of the endpoint"
-  value       = module.redshift.endpoint_access_address
-}
-
-output "endpoint_access_id" {
-  description = "The Redshift-managed VPC endpoint name"
-  value       = module.redshift.endpoint_access_id
-}
-
-output "endpoint_access_port" {
-  description = "The port number on which the cluster accepts incoming connections"
-  value       = module.redshift.endpoint_access_port
-}
-
-output "endpoint_access_vpc_endpoint" {
-  description = "The connection endpoint for connecting to an Amazon Redshift cluster through the proxy. See details below"
-  value       = module.redshift.endpoint_access_vpc_endpoint
+output "endpoint_access" {
+  description = "A map of access endpoints created and their attributes"
+  value       = module.redshift.endpoint_access
 }
 
 ################################################################################

@@ -53,9 +53,9 @@ resource "aws_redshift_cluster" "this" {
     for_each = var.cluster_timeouts != null ? [var.cluster_timeouts] : []
 
     content {
-      create = each.value.create
-      update = each.value.update
-      delete = each.value.delete
+      create = timeouts.value.create
+      update = timeouts.value.update
+      delete = timeouts.value.delete
     }
   }
 

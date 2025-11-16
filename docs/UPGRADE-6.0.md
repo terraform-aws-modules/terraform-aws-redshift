@@ -115,6 +115,7 @@ module "redshift" {
       + snapshot_copy_grant_name         = "ex-complete-us-east-1"
     }
 ```
+
 The `aws_redshift_logging` can be applied or imported. If setting the `log_destination_type`, an apply following an import will be required to clear the remaining diff.
 The `aws_redshift_snapshot_copy` resource requires importing if an existing snapshot_copy configuration exists.
 

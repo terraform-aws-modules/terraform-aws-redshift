@@ -4,6 +4,12 @@ variable "create" {
   default     = true
 }
 
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
@@ -23,12 +29,6 @@ variable "allow_version_upgrade" {
 variable "apply_immediately" {
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window. Default is `false`"
   type        = bool
-  default     = null
-}
-
-variable "aqua_configuration_status" {
-  description = "The value represents how the cluster is configured to use AQUA (Advanced Query Accelerator) after the cluster is restored. Possible values are `enabled`, `disabled`, and `auto`. Requires Cluster reboot"
-  type        = string
   default     = null
 }
 
@@ -56,9 +56,6 @@ variable "cluster_identifier" {
   default     = ""
 }
 
-# cluster_parameter_group_name -> see parameter group section
-# cluster_subnet_group_name -> see subnet group section
-
 variable "cluster_version" {
   description = "The version of the Amazon Redshift engine software that you want to deploy on the cluster. The version selected runs on all the nodes in the cluster"
   type        = string
@@ -71,8 +68,6 @@ variable "database_name" {
   default     = null
 }
 
-# default_iam_role_arn -> see iam roles section
-
 variable "elastic_ip" {
   description = "The Elastic IP (EIP) address for the cluster"
   type        = string
@@ -82,7 +77,7 @@ variable "elastic_ip" {
 variable "encrypted" {
   description = "If `true`, the data in the cluster is encrypted at rest"
   type        = bool
-  default     = true
+  default     = null
 }
 
 variable "enhanced_vpc_routing" {
@@ -97,18 +92,10 @@ variable "final_snapshot_identifier" {
   default     = null
 }
 
-# iam_roles -> see iam roles section
-
 variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `encrypted` needs to be set to `true`"
   type        = string
   default     = null
-}
-
-variable "logging" {
-  description = "Logging configuration for the cluster"
-  type        = any
-  default     = {}
 }
 
 variable "maintenance_track_name" {
@@ -117,17 +104,29 @@ variable "maintenance_track_name" {
   default     = null
 }
 
+variable "manage_master_password" {
+  description = "Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password_wo`. One of `master_password_wo` or `manage_master_password` is required unless `snapshot_identifier` is provided"
+  type        = bool
+  default     = true
+}
+
 variable "manual_snapshot_retention_period" {
   description = "The default number of days to retain a manual snapshot. If the value is -1, the snapshot is retained indefinitely. This setting doesn't change the retention period of existing snapshots. Valid values are between `-1` and `3653`. Default value is `-1`"
   type        = number
   default     = null
 }
 
+variable "master_password_wo" {
+  description = "Password for the master DB user. Must contain at least 8 chars, one uppercase letter, one lowercase letter, and one number"
+  type        = string
+  default     = null
+  sensitive   = true
+}
 
-variable "manage_master_password" {
-  description = "Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password`. One of `master_password` or `manage_master_password` is required unless `snapshot_identifier` is provided"
-  type        = bool
-  default     = false
+variable "master_password_wo_version" {
+  description = "Used together with `master_password_wo` to trigger an update. Increment this value when an update to the `master_password_wo` is required"
+  type        = string
+  default     = null
 }
 
 variable "master_password_secret_kms_key_id" {
@@ -136,33 +135,14 @@ variable "master_password_secret_kms_key_id" {
   default     = null
 }
 
-variable "master_password" {
-  description = "Password for the master DB user. (Required unless a `snapshot_identifier` is provided). Must contain at least 8 chars, one uppercase letter, one lowercase letter, and one number"
-  type        = string
-  default     = null
-  sensitive   = true
-}
-
 variable "multi_az" {
   description = "Specifies if the Redshift cluster is multi-AZ"
   type        = bool
   default     = null
 }
 
-variable "create_random_password" {
-  description = "Determines whether to create random password for cluster `master_password`"
-  type        = bool
-  default     = true
-}
-
-variable "random_password_length" {
-  description = "Length of random password to create. Defaults to `16`"
-  type        = number
-  default     = 16
-}
-
 variable "master_username" {
-  description = "Username for the master DB user (Required unless a `snapshot_identifier` is provided). Defaults to `awsuser`"
+  description = "Username for the master DB user. Defaults to `awsuser`"
   type        = string
   default     = "awsuser"
 }
@@ -186,9 +166,9 @@ variable "owner_account" {
 }
 
 variable "port" {
-  description = "The port number on which the cluster accepts incoming connections. Default port is 5439"
+  description = "The port number on which the cluster accepts incoming connections. Default port is `5439`"
   type        = number
-  default     = null
+  default     = 5439
 }
 
 variable "preferred_maintenance_window" {
@@ -200,7 +180,7 @@ variable "preferred_maintenance_window" {
 variable "publicly_accessible" {
   description = "If true, the cluster can be accessed from a public network"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "skip_final_snapshot" {
@@ -209,20 +189,20 @@ variable "skip_final_snapshot" {
   default     = true
 }
 
+variable "snapshot_arn" {
+  description = "The ARN of the snapshot from which to create the new cluster. Conflicts with `snapshot_identifier`"
+  type        = string
+  default     = null
+}
+
 variable "snapshot_cluster_identifier" {
   description = "The name of the cluster the source snapshot was created from"
   type        = string
   default     = null
 }
 
-variable "snapshot_copy" {
-  description = "Configuration of automatic copy of snapshots from one region to another"
-  type        = any
-  default     = {}
-}
-
 variable "snapshot_identifier" {
-  description = "The name of the snapshot from which to create the new cluster"
+  description = "The name of the snapshot from which to create the new cluster. Conflicts with `snapshot_arn`"
   type        = string
   default     = null
 }
@@ -235,8 +215,12 @@ variable "vpc_security_group_ids" {
 
 variable "cluster_timeouts" {
   description = "Create, update, and delete timeout configurations for the cluster"
-  type        = map(string)
-  default     = {}
+  type = object({
+    create = optional(string)
+    update = optional(string)
+    delete = optional(string)
+  })
+  default = null
 }
 
 ################################################################################
@@ -280,13 +264,16 @@ variable "parameter_group_description" {
 variable "parameter_group_family" {
   description = "The family of the Redshift parameter group"
   type        = string
-  default     = "redshift-1.0"
+  default     = "redshift-2.0"
 }
 
 variable "parameter_group_parameters" {
-  description = "value"
-  type        = map(any)
-  default     = {}
+  description = "A list of Redshift parameters to apply"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = null
 }
 
 variable "parameter_group_tags" {
@@ -333,40 +320,17 @@ variable "subnet_group_tags" {
 # Snapshot Schedule
 ################################################################################
 
-variable "create_snapshot_schedule" {
-  description = "Determines whether to create a snapshot schedule"
-  type        = bool
-  default     = false
-}
-
-variable "snapshot_schedule_identifier" {
-  description = "The snapshot schedule identifier"
-  type        = string
-  default     = null
-}
-
-variable "use_snapshot_identifier_prefix" {
-  description = "Determines whether the identifier (`snapshot_schedule_identifier`) is used as a prefix"
-  type        = bool
-  default     = true
-}
-
-variable "snapshot_schedule_description" {
-  description = "The description of the snapshot schedule"
-  type        = string
-  default     = null
-}
-
-variable "snapshot_schedule_definitions" {
-  description = "The definition of the snapshot schedule. The definition is made up of schedule expressions, for example `cron(30 12 *)` or `rate(12 hours)`"
-  type        = list(string)
-  default     = []
-}
-
-variable "snapshot_schedule_force_destroy" {
-  description = "Whether to destroy all associated clusters with this snapshot schedule on deletion. Must be enabled and applied before attempting deletion"
-  type        = bool
-  default     = null
+variable "snapshot_schedule" {
+  description = "Configuration for creating a snapshot schedule and associating it with the cluster"
+  type = object({
+    definitions   = list(string)
+    description   = optional(string)
+    force_destroy = optional(bool)
+    use_prefix    = optional(bool, false)
+    identifier    = optional(string)
+    tags          = optional(map(string), {})
+  })
+  default = null
 }
 
 ################################################################################
@@ -374,10 +338,33 @@ variable "snapshot_schedule_force_destroy" {
 ################################################################################
 
 variable "scheduled_actions" {
-  description = "Map of maps containing scheduled action definitions"
-  type        = any
-  default     = {}
+  description = "Map of scheduled action definitions to create"
+  type = map(object({
+    name        = optional(string) # Will fall back to key if not set
+    description = optional(string)
+    enable      = optional(bool)
+    start_time  = optional(string)
+    end_time    = optional(string)
+    schedule    = string
+    iam_role    = optional(string)
+    target_action = object({
+      pause_cluster = optional(bool, false)
+      resize_cluster = optional(object({
+        classic         = optional(bool)
+        cluster_type    = optional(string)
+        node_type       = optional(string)
+        number_of_nodes = optional(number)
+      }))
+      resume_cluster = optional(bool, false)
+    })
+  }))
+  default  = {}
+  nullable = false
 }
+
+################################################################################
+# Scheduled Action IAM Role
+################################################################################
 
 variable "create_scheduled_action_iam_role" {
   description = "Determines whether a scheduled action IAM role is created"
@@ -425,34 +412,16 @@ variable "iam_role_tags" {
 # Endpoint Access
 ################################################################################
 
-variable "create_endpoint_access" {
-  description = "Determines whether to create an endpoint access (managed VPC endpoint)"
-  type        = bool
-  default     = false
-}
-
-variable "endpoint_name" {
-  description = "The Redshift-managed VPC endpoint name"
-  type        = string
-  default     = ""
-}
-
-variable "endpoint_resource_owner" {
-  description = "The Amazon Web Services account ID of the owner of the cluster. This is only required if the cluster is in another Amazon Web Services account"
-  type        = string
-  default     = null
-}
-
-variable "endpoint_subnet_group_name" {
-  description = "The subnet group from which Amazon Redshift chooses the subnet to deploy the endpoint"
-  type        = string
-  default     = ""
-}
-
-variable "endpoint_vpc_security_group_ids" {
-  description = "The security group IDs to use for the endpoint access (managed VPC endpoint)"
-  type        = list(string)
-  default     = []
+variable "endpoint_access" {
+  description = "Map of endpoint access (managed VPC endpoint) definitions to create"
+  type = map(object({
+    name                   = optional(string) # Will fall back to key if not set
+    resource_owner         = optional(string)
+    subnet_group_name      = string
+    vpc_security_group_ids = optional(list(string))
+  }))
+  default  = {}
+  nullable = false
 }
 
 ################################################################################
@@ -461,8 +430,16 @@ variable "endpoint_vpc_security_group_ids" {
 
 variable "usage_limits" {
   description = "Map of usage limit definitions to create"
-  type        = any
-  default     = {}
+  type = map(object({
+    amount        = number
+    breach_action = optional(string)
+    feature_type  = string
+    limit_type    = optional(string) # Will fall back to key if not set
+    period        = optional(string)
+    tags          = optional(map(string), {})
+  }))
+  default  = {}
+  nullable = false
 }
 
 ################################################################################
@@ -471,8 +448,27 @@ variable "usage_limits" {
 
 variable "authentication_profiles" {
   description = "Map of authentication profiles to create"
-  type        = any
-  default     = {}
+  type = map(object({
+    name    = optional(string) # Will fall back to key if not set
+    content = any
+  }))
+  default  = {}
+  nullable = false
+}
+
+################################################################################
+# Logging
+################################################################################
+
+variable "logging" {
+  description = "Logging configuration for the cluster"
+  type = object({
+    bucket_name          = optional(string)
+    log_destination_type = optional(string)
+    log_exports          = optional(list(string))
+    s3_key_prefix        = optional(string)
+  })
+  default = null
 }
 
 ################################################################################
@@ -510,35 +506,130 @@ variable "cloudwatch_log_group_tags" {
 }
 
 ################################################################################
+# Snapshot Copy
+################################################################################
+
+variable "snapshot_copy" {
+  description = "Configuration of automatic copy of snapshots from one region to another"
+  type = object({
+    destination_region               = string
+    manual_snapshot_retention_period = optional(number)
+    retention_period                 = optional(number)
+    grant_name                       = optional(string)
+  })
+  default = null
+}
+
+################################################################################
 # Managed Secret Rotation
 ################################################################################
 
 variable "manage_master_password_rotation" {
-  description = "Whether to manage the master user password rotation. Setting this value to false after previously having been set to true will disable automatic rotation."
+  description = "Whether to manage the master user password rotation. Setting this value to false after previously having been set to true will disable automatic rotation"
   type        = bool
   default     = false
 }
 
 variable "master_password_rotate_immediately" {
-  description = "Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window."
+  description = "Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window"
   type        = bool
   default     = null
 }
 
 variable "master_password_rotation_automatically_after_days" {
-  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified."
+  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified"
   type        = number
   default     = null
 }
 
 variable "master_password_rotation_duration" {
-  description = "The length of the rotation window in hours. For example, 3h for a three hour window."
+  description = "The length of the rotation window in hours. For example, 3h for a three hour window"
   type        = string
   default     = null
 }
 
 variable "master_password_rotation_schedule_expression" {
-  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified."
+  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified"
   type        = string
   default     = null
+}
+
+################################################################################
+# Security Group
+################################################################################
+
+variable "create_security_group" {
+  description = "Determines whether to create security group for Redshift cluster"
+  type        = bool
+  default     = true
+}
+
+variable "security_group_name" {
+  description = "The security group name"
+  type        = string
+  default     = ""
+}
+
+variable "security_group_use_name_prefix" {
+  description = "Determines whether the security group name (`security_group_name`) is used as a prefix"
+  type        = bool
+  default     = true
+}
+
+variable "security_group_description" {
+  description = "The description of the security group. If value is set to empty string it will contain cluster name in the description"
+  type        = string
+  default     = null
+}
+
+variable "vpc_id" {
+  description = "ID of the VPC where to create security group"
+  type        = string
+  default     = ""
+}
+
+variable "security_group_ingress_rules" {
+  description = "Map of security group ingress rules to add to the security group created"
+  type = map(object({
+    name = optional(string)
+
+    cidr_ipv4                    = optional(string)
+    cidr_ipv6                    = optional(string)
+    description                  = optional(string)
+    from_port                    = optional(number)
+    ip_protocol                  = optional(string, "tcp")
+    prefix_list_id               = optional(string)
+    referenced_security_group_id = optional(string)
+    region                       = optional(string)
+    tags                         = optional(map(string), {})
+    to_port                      = optional(number)
+  }))
+  default  = {}
+  nullable = false
+}
+
+variable "security_group_egress_rules" {
+  description = "Map of security group egress rules to add to the security group created"
+  type = map(object({
+    name = optional(string)
+
+    cidr_ipv4                    = optional(string)
+    cidr_ipv6                    = optional(string)
+    description                  = optional(string)
+    from_port                    = optional(number)
+    ip_protocol                  = optional(string, "tcp")
+    prefix_list_id               = optional(string)
+    referenced_security_group_id = optional(string)
+    region                       = optional(string)
+    tags                         = optional(map(string), {})
+    to_port                      = optional(number)
+  }))
+  default  = {}
+  nullable = false
+}
+
+variable "security_group_tags" {
+  description = "Additional tags for the security group"
+  type        = map(string)
+  default     = {}
 }

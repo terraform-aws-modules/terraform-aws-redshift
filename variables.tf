@@ -105,9 +105,9 @@ variable "maintenance_track_name" {
 }
 
 variable "manage_master_password" {
-  description = "Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password`. One of `master_password` or `manage_master_password` is required unless `snapshot_identifier` is provided"
+  description = "Whether to use AWS SecretsManager to manage the cluster admin credentials. Conflicts with `master_password_wo`. One of `master_password_wo` or `manage_master_password` is required unless `snapshot_identifier` is provided"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "manual_snapshot_retention_period" {
@@ -465,7 +465,7 @@ variable "logging" {
   type = object({
     bucket_name          = optional(string)
     log_destination_type = optional(string)
-    log_exports          = optional(list(string), [])
+    log_exports          = optional(list(string))
     s3_key_prefix        = optional(string)
   })
   default = null

@@ -39,7 +39,7 @@ module "wrapper" {
   kms_key_arn                                       = try(each.value.kms_key_arn, var.defaults.kms_key_arn, null)
   logging                                           = try(each.value.logging, var.defaults.logging, null)
   maintenance_track_name                            = try(each.value.maintenance_track_name, var.defaults.maintenance_track_name, null)
-  manage_master_password                            = try(each.value.manage_master_password, var.defaults.manage_master_password, false)
+  manage_master_password                            = try(each.value.manage_master_password, var.defaults.manage_master_password, true)
   manage_master_password_rotation                   = try(each.value.manage_master_password_rotation, var.defaults.manage_master_password_rotation, false)
   manual_snapshot_retention_period                  = try(each.value.manual_snapshot_retention_period, var.defaults.manual_snapshot_retention_period, null)
   master_password_rotate_immediately                = try(each.value.master_password_rotate_immediately, var.defaults.master_password_rotate_immediately, null)

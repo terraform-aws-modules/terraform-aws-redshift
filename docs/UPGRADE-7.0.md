@@ -8,6 +8,7 @@ Please consult the `examples` directory for reference example configurations. If
 - AWS provider `v6.18` is now minimum supported version
 - The ability for the module to create a random password has been removed in order to ensure passwords are not stored in plain text within the state file. Users must now provide their own password via the `master_password_wo` variable.
   - `master_password` is no longer supported and only the write-only equivalent is supported (`master_password_wo` and `master_password_wo_version`)
+  - `manage_master_password` default changed from `false` to `true` to ensure password rotation is managed by default.
 - The variable(s) used to create access endpoints has changed from creating a single endpoint to n-number of endpoints
 
 ## Additional changes
@@ -21,6 +22,7 @@ Please consult the `examples` directory for reference example configurations. If
 
 - Variable definitions now contain detailed `object` types in place of the previously used any type.
 - Default value for `parameter_group_family` changed from `redshift-1.0` to `redshift-2.0`
+- `manage_master_password` default changed from `false` to `true`
 
 ### Removed
 

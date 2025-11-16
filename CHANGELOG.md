@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.2.0...v7.0.0) (2025-11-16)
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade AWS provider and min required Terraform version to `6.21` and `1.11` respectively (#110)
+
+### Features
+
+* Upgrade AWS provider and min required Terraform version to `6.21` and `1.11` respectively ([#110](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/110)) ([2694431](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/26944312e5c4f892c1b480126b8f72dbb9debc25))
+
 ## [6.2.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.1.1...v6.2.0) (2025-10-29)
 
 ### Features

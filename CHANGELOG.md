@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.1.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v7.0.0...v7.1.0) (2026-01-08)
+
+### Features
+
+* Add provider meta user-agent ([#111](https://github.com/terraform-aws-modules/terraform-aws-redshift/issues/111)) ([aaab914](https://github.com/terraform-aws-modules/terraform-aws-redshift/commit/aaab91480af402b432204f52e679158b847f045b))
+
 ## [7.0.0](https://github.com/terraform-aws-modules/terraform-aws-redshift/compare/v6.2.0...v7.0.0) (2025-11-16)
 
 ### ⚠ BREAKING CHANGES
